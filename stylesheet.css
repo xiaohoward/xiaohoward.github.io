@@ -133,3 +133,43 @@ h2 {
 span.highlight {
   background-color: #ffffd0;
 }
+
+.toc {
+  max-width: 800px;
+  margin: 40px auto;
+  font-family: inherit;
+}
+
+.toc-item {
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.toc-header {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.toc-line {
+  flex-grow: 1;
+  height: 1px;
+  background: #000;
+  transition: all 1.0s ease;
+}
+
+.toc-link {
+  color: #000;
+  text-decoration: none;
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+.toc-item:hover .toc-line {
+  height: 2px;
+}
+
+/* Hover effect - slight movement */
+.toc-item:hover .toc-link {
+  transform: translateX(10px);
+}

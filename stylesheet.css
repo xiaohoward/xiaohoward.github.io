@@ -110,8 +110,20 @@ h2 {
 }
 
 .one {
-  width: 160px;
-  height: 160px;
+  width: 250px;
+  height: 170px;
+  position: relative;
+}
+
+.three {
+  width: 280px;
+  height: 150px;
+  position: relative;
+}
+
+.four {
+  width: 280px;
+  height: 240px;
   position: relative;
 }
 
@@ -182,11 +194,11 @@ span.highlight {
 
 .timeline-line {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 0;
   right: 0;
   height: 1px;
-  background: #e5e5e5;
+  background: #000000;
   transform: translateY(-50%);
 }
 
@@ -224,14 +236,14 @@ span.highlight {
   position: absolute;
   top: 100%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-40%);
   background: white;
-  padding: 16px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 200px;
-  opacity: 0;
-  visibility: hidden;
+  width: 120px;
+  opacity: 1;
+  visibility: visible;
   transition: all 0.3s ease;
   margin-top: 15px;
   z-index: 1000;
@@ -240,9 +252,9 @@ span.highlight {
 .timeline-popup::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: 100%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-40%);
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-top: 8px solid white;
@@ -268,8 +280,38 @@ span.highlight {
   color: black;
 }
 
-.timeline-event:hover .timeline-popup {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(-8px);
+.lyrics-container {
+  height: 60px; /* Height for 3 lines */
+  overflow: hidden;
+  position: relative;
+  font-family: Arial, sans-serif;
+  line-height: 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 10px auto;
+}
+
+.lyrics-scroll {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.5s ease-in-out;
+}
+
+.lyrics-line {
+  height: 20px;
+  color: #888;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.lyrics-line:hover {
+  text-decoration: underline;
+}
+
+.current {
+  color: #000;
+  font-weight: bold;
 }

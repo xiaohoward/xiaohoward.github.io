@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // ===== Dark Mode Toggle =====
+  const themeToggle = document.getElementById('theme-toggle');
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+  }
+
   // ===== Fullpage Section Scroll =====
   const snapSections = document.querySelectorAll('.snap-section');
   let currentIndex = 0;

@@ -149,6 +149,13 @@ html {
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  html {
+    overflow: auto;
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   font-family: var(--font-primary);
   font-size: 17px;
@@ -350,10 +357,7 @@ h1, h2, h3 {
   letter-spacing: -0.03em;
   line-height: 1.05;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-text);
 }
 
 .hero-tagline {
@@ -450,7 +454,7 @@ h1, h2, h3 {
 
 .timeline-scroll {
   max-height: 385px;
-  overflow-y: auto;
+  overflow-y: scroll;
   padding-right: 24px;
   scrollbar-width: thin;
   scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
@@ -764,6 +768,51 @@ h1, h2, h3 {
   margin-bottom: 40px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.papers-scroll-wrapper {
+  position: relative;
+}
+
+.papers-scroll {
+  max-height: 520px;
+  overflow-y: scroll;
+  padding-right: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+}
+
+.papers-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.papers-scroll::-webkit-scrollbar-track {
+  background: var(--color-scrollbar-track);
+  border-radius: 6px;
+}
+
+.papers-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 6px;
+}
+
+.papers-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+.papers-scroll-hint {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  transition: opacity 0.4s ease;
+}
+
+.papers-scroll-hint.hidden {
+  opacity: 0;
 }
 
 .paper-card {
@@ -960,10 +1009,47 @@ h1, h2, h3 {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
+  /* Nav: scrollable, smaller gaps, smaller font */
+  .nav-inner {
+    gap: 16px;
+    padding: 10px 16px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-link {
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* Sections: allow content to exceed 100vh on mobile */
+  .section, .section-auto, .hero {
+    min-height: auto;
+    padding: 80px 16px 60px;
+  }
+
+  .section-media {
+    min-height: auto;
+    padding: 60px 16px;
+  }
+
+  /* Hero */
   .hero-inner {
     grid-template-columns: 1fr;
     text-align: center;
-    gap: 40px;
+    gap: 30px;
   }
 
   .hero-photo-wrapper {
@@ -971,56 +1057,127 @@ h1, h2, h3 {
   }
 
   .hero-slideshow {
-    width: 200px;
-    height: 290px;
+    width: 180px;
+    height: 260px;
+  }
+
+  .hero-name {
+    font-size: 2.5rem;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+  }
+
+  .hero-bio p {
+    font-size: 14px;
   }
 
   .hero-links {
     justify-content: center;
+    gap: 12px;
   }
 
+  .hero-links a {
+    font-size: 13px;
+    padding: 6px 16px;
+  }
 
+  /* Section headings */
+  .section-heading {
+    font-size: 2rem;
+  }
+
+  /* Timeline */
+  .timeline-scroll {
+    max-height: 300px;
+  }
+
+  .timeline-scroll-wrapper {
+    max-width: 100%;
+  }
+
+  /* Media section */
   .media-inner {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 30px;
   }
 
+  /* About / Bio */
   .about-grid {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 30px;
   }
 
   .bio-slideshow {
-    width: 200px;
-    height: 290px;
+    width: 180px;
+    height: 260px;
     margin: 0 auto;
     position: static;
   }
 
+  /* Research */
   .research-grid {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
   .research-slideshow {
-    width: 200px;
-    height: 270px;
+    width: 180px;
+    height: 240px;
     margin: 0 auto;
+  }
+
+  .research-subnav {
+    justify-content: center;
+  }
+
+  /* Papers */
+  .papers-heading {
+    font-size: 1.4rem;
   }
 
   .paper-card {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
+    padding: 24px 0;
   }
 
   .paper-media {
-    max-width: 300px;
+    max-width: 100%;
   }
 
+  .paper-title {
+    font-size: 16px;
+  }
+
+  .paper-authors {
+    font-size: 13px;
+  }
+
+  .paper-links {
+    gap: 8px;
+  }
+
+  .paper-links a {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+
+  /* Teaching */
   .teaching-grid {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
   .teaching-photo {
-    max-width: 300px;
+    max-width: 250px;
+    margin: 0 auto;
+  }
+
+  /* Scroll arrow: slightly higher on mobile */
+  .scroll-arrow {
+    bottom: 16px;
   }
 }

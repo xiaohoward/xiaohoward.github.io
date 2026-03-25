@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Fullpage Section Scroll =====
+  const isMobile = window.innerWidth <= 768;
   const snapSections = document.querySelectorAll('.snap-section');
   let currentIndex = 0;
   let isScrolling = false;
@@ -51,70 +52,83 @@ document.addEventListener('DOMContentLoaded', () => {
   // Trigger reveals for the initial (hero) section
   triggerReveals(snapSections[0]);
 
-  // Mouse wheel handler — batch rapid-fire events into one action
-  // Allow internal scrolling on the timeline before jumping sections
   const timelineScroll = document.getElementById('timeline-scroll');
+  const papersScrolls = document.querySelectorAll('.papers-scroll');
 
-  window.addEventListener('wheel', (e) => {
-    // If cursor is over the timeline scroll area, let it scroll internally first
-    if (timelineScroll && timelineScroll.matches(':hover')) {
-      const atTop = timelineScroll.scrollTop <= 0;
-      const atBottom = timelineScroll.scrollTop + timelineScroll.clientHeight >= timelineScroll.scrollHeight - 1;
-      if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
-        return; // let the timeline scroll naturally
+  if (!isMobile) {
+    // Mouse wheel handler — batch rapid-fire events into one action
+    // Allow internal scrolling on scrollable areas before jumping sections
+    const scrollableAreas = [timelineScroll, ...papersScrolls];
+
+    window.addEventListener('wheel', (e) => {
+      for (const area of scrollableAreas) {
+        if (area && area.matches(':hover') && area.scrollHeight > area.clientHeight) {
+          const atTop = area.scrollTop <= 0;
+          const atBottom = area.scrollTop + area.clientHeight >= area.scrollHeight - 1;
+          if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
+            return;
+          }
+        }
       }
-    }
 
-    e.preventDefault();
-    if (isScrolling) return;
-    wheelDelta += e.deltaY;
-    clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(() => {
-      if (wheelDelta > 0) {
+      e.preventDefault();
+      if (isScrolling) return;
+      wheelDelta += e.deltaY;
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        if (wheelDelta > 0) {
+          scrollToSection(currentIndex + 1);
+        } else if (wheelDelta < 0) {
+          scrollToSection(currentIndex - 1);
+        }
+        wheelDelta = 0;
+      }, 50);
+    }, { passive: false });
+
+    // Keyboard arrow keys & page up/down
+    window.addEventListener('keydown', (e) => {
+      if (isScrolling) return;
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
         scrollToSection(currentIndex + 1);
-      } else if (wheelDelta < 0) {
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
         scrollToSection(currentIndex - 1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        scrollToSection(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        scrollToSection(snapSections.length - 1);
       }
-      wheelDelta = 0;
-    }, 50);
-  }, { passive: false });
+    });
+  }
 
-  // Keyboard arrow keys & page up/down
-  window.addEventListener('keydown', (e) => {
-    if (isScrolling) return;
-    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-      e.preventDefault();
-      scrollToSection(currentIndex + 1);
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      e.preventDefault();
-      scrollToSection(currentIndex - 1);
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      scrollToSection(0);
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      scrollToSection(snapSections.length - 1);
-    }
-  });
+  // On mobile, trigger reveals via IntersectionObserver instead of section jumps
+  if (isMobile) {
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
 
-  // Touch swipe support
-  let touchStartY = 0;
-  window.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: true });
-
-  window.addEventListener('touchend', (e) => {
-    if (isScrolling) return;
-    const touchEndY = e.changedTouches[0].clientY;
-    const diff = touchStartY - touchEndY;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        scrollToSection(currentIndex + 1);
-      } else {
-        scrollToSection(currentIndex - 1);
-      }
-    }
-  }, { passive: true });
+    // Track active nav on mobile via scroll
+    const mobileNavObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          const nav = document.querySelector('.nav-top');
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+          nav.classList.toggle('scrolled', id !== 'hero');
+        }
+      });
+    }, { threshold: 0.3, rootMargin: '-50px 0px -40% 0px' });
+    snapSections.forEach(s => mobileNavObserver.observe(s));
+  }
 
   // Scroll-arrow clicks: find which section the arrow is in, go to next
   document.querySelectorAll('.scroll-arrow').forEach(arrow => {
@@ -147,6 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const idx = Array.from(snapSections).findIndex(s => s.id === targetId);
       if (idx >= 0) scrollToSection(idx);
     });
+  });
+
+  // ===== Papers scroll: hide hints when scrolled to bottom =====
+  papersScrolls.forEach(ps => {
+    const hint = ps.parentElement.querySelector('.papers-scroll-hint');
+    // Hide hint if content doesn't overflow
+    if (ps.scrollHeight <= ps.clientHeight && hint) {
+      hint.classList.add('hidden');
+    }
+    if (hint) {
+      ps.addEventListener('scroll', () => {
+        const atBottom = ps.scrollTop + ps.clientHeight >= ps.scrollHeight - 5;
+        hint.classList.toggle('hidden', atBottom);
+      });
+    }
   });
 
   // ===== Research Photo Slideshow (auto-discovers images/research/1.png, 2.png, ...) =====

@@ -163,6 +163,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Intercept all internal anchor links (e.g. #genvision in timeline)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const targetId = link.getAttribute('href').slice(1);
+    const idx = Array.from(snapSections).findIndex(s => s.id === targetId);
+    if (idx >= 0) {
+      e.preventDefault();
+      if (!isScrolling) scrollToSection(idx);
+    }
+  });
+
   // ===== Papers scroll: hide hints when scrolled to bottom =====
   papersScrolls.forEach(ps => {
     const hint = ps.parentElement.querySelector('.papers-scroll-hint');

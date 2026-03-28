@@ -155,7 +155,7 @@
     const foveatedSpan = title.querySelector('.title-foveated');
     const rainbowLayer = title.querySelector('.title-rainbow-layer');
     const rectEl = document.getElementById('title-rect');
-    const CYCLE = 9000;
+    const CYCLE = 10000;
     let slideSyncId = null;
 
     // Compute rect size and position to fit snugly over "Foveated"
@@ -198,31 +198,35 @@
       title.classList.add('phase-slide');
       slideSyncId = requestAnimationFrame(syncRainbowToRect);
 
-      // Phase 2: Rect slides back to "Foveated", blur starts (2.5s)
+      // Phase 2: Rect slides back to "Foveated" (2.5s)
       setTimeout(() => {
         stopRainbowSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
-        title.classList.add('phase-blur');
       }, 2500);
 
-      // Phase 3: Sharpen + Foveated rainbow (3.5s)
+      // Phase 3: Blur (4s — after rect has settled on Foveated)
+      setTimeout(() => {
+        title.classList.add('phase-blur');
+      }, 4000);
+
+      // Phase 4: Sharpen + Foveated rainbow (5s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
-      }, 3500);
+      }, 5000);
 
-      // Phase 4: Hold foveated rainbow (5.5s)
+      // Phase 5: Hold foveated rainbow (6.5s)
       setTimeout(() => {
         title.classList.remove('phase-sharpen');
         title.classList.add('phase-foveated-hold');
-      }, 5500);
+      }, 6500);
 
-      // Phase 5: Fade back to normal (7.5s)
+      // Phase 6: Fade back to normal (8.5s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
-      }, 7500);
+      }, 8500);
     }
 
     // Initial delay then loop

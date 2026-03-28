@@ -194,15 +194,28 @@
     function runTitleAnimation() {
       updateRectMetrics();
 
-      // Phase 1: Rectangle slides L→R, rainbow synced via rAF (0–2s)
+      // Reset rect to starting position (no transition)
+      rectEl.style.transition = 'none';
+      rectEl.style.left = '-30%';
+      rectEl.style.opacity = '0';
+
+      // Force reflow so the reset takes effect
+      void rectEl.offsetWidth;
+
+      // Phase 1: Slide rect L→R (0–2s)
+      rectEl.style.transition = 'left 2s ease-in-out, opacity 0.4s ease';
+      rectEl.style.opacity = '1';
+      rectEl.style.left = '80%';
       title.classList.add('phase-slide');
       slideSyncId = requestAnimationFrame(syncRainbowToRect);
 
-      // Phase 2: Rect slides back to "Foveated" (2.5s)
+      // Phase 2: Slide rect back to "Foveated" (2.5s)
       setTimeout(() => {
         stopRainbowSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
+        rectEl.style.transition = 'left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease';
+        rectEl.style.left = title.style.getPropertyValue('--rect-foveated-left');
       }, 2500);
 
       // Phase 3: Blur (4s — after rect has settled on Foveated)
@@ -226,6 +239,7 @@
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
+        rectEl.style.opacity = '0';
       }, 8500);
     }
 

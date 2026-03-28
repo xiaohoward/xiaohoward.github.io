@@ -223,7 +223,7 @@ body.dark-mode .icon-moon { display: none; }
 
 /* ===== Title Animation — Rectangle (positioned by JS via CSS custom props) ===== */
 
-/* The sliding rectangle box (16:9 aspect ratio) */
+/* The sliding rectangle box (16:9 aspect ratio) — all positioning via JS */
 .title-rect {
   position: absolute;
   width: var(--rect-width, 20%);
@@ -237,7 +237,7 @@ body.dark-mode .icon-moon { display: none; }
   pointer-events: none;
   z-index: 3;
   left: -30%;
-  transition: left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  transition: left 2s ease-in-out, opacity 0.4s ease;
 }
 
 body.dark-mode .title-rect {
@@ -245,29 +245,14 @@ body.dark-mode .title-rect {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.hero-title.phase-slide .title-rect {
-  opacity: 1;
-  animation: rectSlideRight 2s ease-in-out forwards;
-}
-
-/* After slide: JS sets --rect-foveated-left, rect transitions there */
-.hero-title.phase-rect-hold .title-rect {
-  opacity: 1;
-  left: var(--rect-foveated-left, 25%);
-  transition: left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-}
-
-@keyframes rectSlideRight {
-  0% { left: -25%; }
-  100% { left: 80%; }
-}
-
-/* Dimming: text outside rectangle is dimmed during rect-hold */
+/* Dimming: text outside rectangle is dimmed during slide and rect-hold */
+.hero-title.phase-slide .title-word,
 .hero-title.phase-rect-hold .title-word {
   opacity: 0.45;
   transition: opacity 0.5s ease;
 }
 
+.hero-title.phase-slide .title-foveated,
 .hero-title.phase-rect-hold .title-foveated {
   opacity: 1;
 }

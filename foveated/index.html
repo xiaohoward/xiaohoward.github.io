@@ -32,6 +32,7 @@
       <h1 class="hero-title" id="hero-title">
         <span class="title-word">Policy-based</span> <span class="title-word title-foveated">Foveated</span> <span class="title-word">Imaging</span> <span class="title-word">and</span> <span class="title-word">Perception</span>
         <span class="title-rainbow-layer" aria-hidden="true">Policy-based Foveated Imaging and Perception</span>
+        <div class="title-rect" id="title-rect"></div>
       </h1>
       <div class="hero-authors">
         <strong>Howard Xiao</strong>,
@@ -151,36 +152,50 @@
 
     // Title animation loop
     const title = document.getElementById('hero-title');
-    const CYCLE = 8000; // total cycle duration in ms
+    const foveatedSpan = title.querySelector('.title-foveated');
+    const CYCLE = 9000;
+
+    // Compute where to center the rect over "Foveated"
+    function getFoveatedLeft() {
+      const titleRect = title.getBoundingClientRect();
+      const fovRect = foveatedSpan.getBoundingClientRect();
+      const fovCenter = fovRect.left + fovRect.width / 2 - titleRect.left;
+      const rectWidth = titleRect.width * 0.28;
+      const left = ((fovCenter - rectWidth / 2) / titleRect.width) * 100;
+      return Math.max(0, Math.min(left, 72)) + '%';
+    }
 
     function runTitleAnimation() {
-      // Phase 1: Rectangle slides L→R with rainbow (0ms – 2000ms)
+      // Precompute rect position over "Foveated"
+      title.style.setProperty('--rect-foveated-left', getFoveatedLeft());
+
+      // Phase 1: Rectangle slides L→R (0–2s)
       title.classList.add('phase-slide');
 
-      // Phase 2: Slide done — hold rectangle at far right, start blur (2500ms)
+      // Phase 2: Rect slides back to "Foveated", blur starts (2.5s)
       setTimeout(() => {
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
         title.classList.add('phase-blur');
       }, 2500);
 
-      // Phase 3: Sharpen + Foveated rainbow (3500ms)
+      // Phase 3: Sharpen + Foveated rainbow (3.5s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
       }, 3500);
 
-      // Phase 4: Hold foveated rainbow (5000ms)
+      // Phase 4: Hold foveated rainbow (5.5s)
       setTimeout(() => {
         title.classList.remove('phase-sharpen');
         title.classList.add('phase-foveated-hold');
-      }, 5000);
+      }, 5500);
 
-      // Phase 5: Fade back to normal, remove rectangle (6500ms)
+      // Phase 5: Fade back to normal (7.5s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
-      }, 6500);
+      }, 7500);
     }
 
     // Initial delay then loop

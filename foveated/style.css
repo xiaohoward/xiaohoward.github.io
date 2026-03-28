@@ -17,7 +17,7 @@
   --color-border-light: #f0f0f0;
   --color-card-bg: #f5f5f7;
   --font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Lato', 'Helvetica Neue', sans-serif;
-  --max-width: 980px;
+  --max-width: 1200px;
   --section-padding: clamp(80px, 10vh, 120px) clamp(20px, 5vw, 40px);
   --transition-reveal: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.3s ease;
@@ -205,7 +205,7 @@ body.dark-mode .icon-moon { display: none; }
 
 /* ===== Title — base ===== */
 .hero-title {
-  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-size: clamp(1.8rem, 4.5vw, 3.4rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -221,43 +221,58 @@ body.dark-mode .icon-moon { display: none; }
   transition: color 0.6s ease;
 }
 
-/* ===== Title Animation — Phase 1: Rainbow rectangle slide ===== */
+/* ===== Title Animation — Rectangle (positioned by JS via CSS custom props) ===== */
 
-/* The sliding rectangle box (16:9 aspect ratio, ~36% width) */
-.hero-title::before {
-  content: '';
+/* The sliding rectangle box (16:9 aspect ratio) */
+.title-rect {
   position: absolute;
-  width: 36%;
+  width: 28%;
   aspect-ratio: 16 / 9;
   top: 50%;
   transform: translateY(-50%);
-  border: 2px solid rgba(128, 128, 128, 0.3);
+  border: 2px solid rgba(128, 128, 128, 0.4);
   border-radius: 6px;
-  background: rgba(128, 128, 128, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   opacity: 0;
   pointer-events: none;
-  z-index: 2;
-  left: -40%;
+  z-index: 3;
+  left: -30%;
+  transition: left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
-.hero-title.phase-slide::before {
-  animation: rectSlide 2s ease-in-out forwards;
+body.dark-mode .title-rect {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Stays at far right after sliding */
-.hero-title.phase-rect-hold::before {
+.hero-title.phase-slide .title-rect {
   opacity: 1;
-  left: 64%;
-  top: 50%;
-  transform: translateY(-50%);
+  animation: rectSlideRight 2s ease-in-out forwards;
 }
 
-@keyframes rectSlide {
-  0% { left: -40%; opacity: 1; }
-  100% { left: 64%; opacity: 1; }
+/* After slide: JS sets --rect-foveated-left, rect transitions there */
+.hero-title.phase-rect-hold .title-rect {
+  opacity: 1;
+  left: var(--rect-foveated-left, 25%);
+  transition: left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
-/* Rainbow text layer — always present but hidden by default via color */
+@keyframes rectSlideRight {
+  0% { left: -30%; }
+  100% { left: 72%; }
+}
+
+/* Dimming: text outside rectangle is dimmed */
+.hero-title.phase-rect-hold .title-word {
+  opacity: 0.45;
+  transition: opacity 0.5s ease;
+}
+
+.hero-title.phase-rect-hold .title-foveated {
+  opacity: 1;
+}
+
+/* Rainbow text layer */
 .hero-title .title-rainbow-layer {
   position: absolute;
   top: 0;
@@ -267,7 +282,6 @@ body.dark-mode .icon-moon { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
   background: var(--rainbow);
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -281,9 +295,8 @@ body.dark-mode .icon-moon { display: none; }
   font-weight: inherit;
   letter-spacing: inherit;
   line-height: inherit;
-  /* Mask: reveals only where the rectangle is */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 36%, transparent 36%);
-  mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 36%, transparent 36%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
 }
 
 .hero-title.phase-slide .title-rainbow-layer {
@@ -293,12 +306,12 @@ body.dark-mode .icon-moon { display: none; }
 
 @keyframes rainbowMaskSlide {
   0% {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 36%, transparent 36%);
-    mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 36%, transparent 36%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
   }
   100% {
-    -webkit-mask-image: linear-gradient(90deg, transparent 64%, black 64%, black 100%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 64%, black 64%, black 100%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 72%, black 72%, black 100%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 72%, black 72%, black 100%, transparent 100%);
   }
 }
 
@@ -341,7 +354,11 @@ body.dark-mode .icon-moon { display: none; }
 /* Reset: when no phase class, title-foveated returns to normal */
 .title-foveated {
   -webkit-text-fill-color: var(--color-text);
-  transition: -webkit-text-fill-color 0.5s ease;
+  transition: opacity 0.5s ease, -webkit-text-fill-color 0.5s ease;
+}
+
+.title-word {
+  transition: opacity 0.5s ease;
 }
 
 /* ===== Hero Authors & Affiliation ===== */
@@ -540,7 +557,7 @@ body.dark-mode .icon-moon { display: none; }
   }
 
   .hero-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     white-space: normal;
   }
 

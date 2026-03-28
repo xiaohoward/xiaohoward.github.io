@@ -21,6 +21,7 @@
   --section-padding: clamp(80px, 10vh, 120px) clamp(20px, 5vw, 40px);
   --transition-reveal: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.3s ease;
+  --rainbow: linear-gradient(90deg, #ff0000, #ff8800, #ffdd00, #00cc44, #0088ff, #8800ff, #ff0088);
 }
 
 /* ===== Dark Mode ===== */
@@ -188,6 +189,7 @@ body.dark-mode .icon-moon { display: none; }
   padding: 120px 20px 80px;
   background: var(--color-bg);
   text-align: center;
+  position: relative;
 }
 
 .hero-inner {
@@ -201,15 +203,145 @@ body.dark-mode .icon-moon { display: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===== Title — base ===== */
 .hero-title {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
   margin-bottom: 28px;
   color: var(--color-text);
+  white-space: nowrap;
+  position: relative;
+  display: inline-block;
 }
 
+.title-word {
+  display: inline;
+  transition: color 0.6s ease;
+}
+
+/* ===== Title Animation — Phase 1: Rainbow rectangle slide ===== */
+
+/* The sliding rectangle box */
+.hero-title::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 18%;
+  border: 2px solid rgba(128, 128, 128, 0.3);
+  border-radius: 6px;
+  background: rgba(128, 128, 128, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  left: -20%;
+}
+
+.hero-title.phase-slide::before {
+  animation: rectSlide 2s ease-in-out forwards;
+}
+
+@keyframes rectSlide {
+  0% { left: -20%; opacity: 1; }
+  85% { left: 100%; opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Rainbow text layer — always present but hidden by default via color */
+.hero-title .title-rainbow-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  white-space: nowrap;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  /* Mask: reveals only where the rectangle is */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 0%, black 0%, black 18%, transparent 18%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 0%, black 0%, black 18%, transparent 18%, transparent 100%);
+}
+
+.hero-title.phase-slide .title-rainbow-layer {
+  opacity: 1;
+  animation: rainbowMaskSlide 2s ease-in-out forwards, rainbowShimmer 1s linear infinite;
+}
+
+@keyframes rainbowMaskSlide {
+  0% {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 18%, transparent 18%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 18%, transparent 18%);
+  }
+  85% {
+    -webkit-mask-image: linear-gradient(90deg, transparent 82%, black 82%, black 100%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 82%, black 82%, black 100%, transparent 100%);
+  }
+  100% {
+    -webkit-mask-image: linear-gradient(90deg, transparent 100%, black 100%, black 100%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 100%, black 100%, black 100%, transparent 100%);
+    opacity: 0;
+  }
+}
+
+@keyframes rainbowShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ===== Title Animation — Phase 2: Blur (low-res) ===== */
+.hero-title.phase-blur {
+  filter: blur(4px);
+  transition: filter 0.8s ease-in;
+}
+
+/* ===== Title Animation — Phase 3: Sharpen + Foveated rainbow ===== */
+.hero-title.phase-sharpen {
+  filter: blur(0px);
+  transition: filter 1.2s ease-out;
+}
+
+.hero-title.phase-sharpen .title-foveated {
+  background: var(--rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowShimmer 1.5s linear infinite;
+}
+
+/* ===== Title Animation — Phase 4: Foveated hold (keep rainbow) ===== */
+.hero-title.phase-foveated-hold .title-foveated {
+  background: var(--rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowShimmer 1.5s linear infinite;
+}
+
+/* Reset: when no phase class, title-foveated returns to normal */
+.title-foveated {
+  -webkit-text-fill-color: var(--color-text);
+  transition: -webkit-text-fill-color 0.5s ease;
+}
+
+/* ===== Hero Authors & Affiliation ===== */
 .hero-authors {
   font-size: 18px;
   color: var(--color-text-secondary);
@@ -280,6 +412,7 @@ body.dark-mode .icon-moon { display: none; }
 .content-section {
   padding: var(--section-padding);
   background: var(--color-bg);
+  position: relative;
 }
 
 .content-section:nth-child(even) {
@@ -334,6 +467,32 @@ body.dark-mode .icon-moon { display: none; }
   margin-top: 16px;
 }
 
+/* ===== Scroll Down Arrow ===== */
+.scroll-arrow {
+  display: block;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  text-decoration: none;
+  cursor: pointer;
+  animation: bounceArrow 2s ease-in-out infinite;
+  z-index: 10;
+  padding: 10px;
+}
+
+.scroll-arrow:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+@keyframes bounceArrow {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+  50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
+}
+
 /* ===== Footer ===== */
 .site-footer {
   text-align: center;
@@ -378,7 +537,8 @@ body.dark-mode .icon-moon { display: none; }
   }
 
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
+    white-space: normal;
   }
 
   .hero-authors {
@@ -404,5 +564,9 @@ body.dark-mode .icon-moon { display: none; }
 
   .placeholder-block {
     padding: 40px 20px;
+  }
+
+  .scroll-arrow {
+    bottom: 16px;
   }
 }

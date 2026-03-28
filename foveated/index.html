@@ -29,7 +29,10 @@
   <!-- ===== Hero: Title, Authors, Buttons ===== -->
   <section class="hero">
     <div class="hero-inner">
-      <h1 class="hero-title">Policy-based Foveated Imaging and Perception</h1>
+      <h1 class="hero-title" id="hero-title">
+        <span class="title-word">Policy-based</span> <span class="title-word title-foveated">Foveated</span> <span class="title-word">Imaging</span> <span class="title-word">and</span> <span class="title-word">Perception</span>
+        <span class="title-rainbow-layer" aria-hidden="true">Policy-based Foveated Imaging and Perception</span>
+      </h1>
       <div class="hero-authors">
         <strong>Howard Xiao</strong>,
         <a href="https://janackermann.info">Jan Ackermann</a>,
@@ -62,6 +65,9 @@
         </a>
       </div>
     </div>
+    <a href="#abstract" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </section>
 
   <!-- ===== Abstract ===== -->
@@ -72,6 +78,9 @@
         <div class="placeholder-block">Abstract coming soon.</div>
       </div>
     </div>
+    <a href="#method" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </section>
 
   <!-- ===== Method ===== -->
@@ -82,6 +91,9 @@
         <div class="placeholder-block">Method overview coming soon.</div>
       </div>
     </div>
+    <a href="#results" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </section>
 
   <!-- ===== Results ===== -->
@@ -92,6 +104,9 @@
         <div class="placeholder-block">Results coming soon.</div>
       </div>
     </div>
+    <a href="#bibtex" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </section>
 
   <!-- ===== BibTeX ===== -->
@@ -132,8 +147,45 @@
         }
       });
     }, { threshold: 0.15 });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Title animation loop
+    const title = document.getElementById('hero-title');
+    const CYCLE = 8000; // total cycle duration in ms
+
+    function runTitleAnimation() {
+      // Phase 1: Rectangle slide with rainbow (0ms – 2500ms)
+      title.classList.add('phase-slide');
+
+      // Phase 2: Blur (2500ms)
+      setTimeout(() => {
+        title.classList.remove('phase-slide');
+        title.classList.add('phase-blur');
+      }, 2500);
+
+      // Phase 3: Sharpen + Foveated rainbow (3500ms)
+      setTimeout(() => {
+        title.classList.remove('phase-blur');
+        title.classList.add('phase-sharpen');
+      }, 3500);
+
+      // Phase 4: Hold foveated rainbow (5000ms)
+      setTimeout(() => {
+        title.classList.remove('phase-sharpen');
+        title.classList.add('phase-foveated-hold');
+      }, 5000);
+
+      // Phase 5: Fade back to normal (6500ms)
+      setTimeout(() => {
+        title.classList.remove('phase-foveated-hold');
+      }, 6500);
+    }
+
+    // Initial delay then loop
+    setTimeout(() => {
+      runTitleAnimation();
+      setInterval(runTitleAnimation, CYCLE);
+    }, 1500);
   </script>
 
 </body>

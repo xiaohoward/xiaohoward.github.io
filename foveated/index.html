@@ -153,13 +153,16 @@
     // Title animation loop
     const title = document.getElementById('hero-title');
     const foveatedSpan = title.querySelector('.title-foveated');
+    const rainbowLayer = title.querySelector('.title-rainbow-layer');
+    const rectEl = document.getElementById('title-rect');
     const CYCLE = 9000;
+    let slideSyncId = null;
 
     // Compute rect size and position to fit snugly over "Foveated"
     function updateRectMetrics() {
       const titleBox = title.getBoundingClientRect();
       const fovBox = foveatedSpan.getBoundingClientRect();
-      const padding = fovBox.width * 0.15; // slightly wider than the word
+      const padding = fovBox.width * 0.15;
       const rectW = fovBox.width + padding * 2;
       const rectWPct = (rectW / titleBox.width) * 100;
       const fovCenter = fovBox.left + fovBox.width / 2 - titleBox.left;
@@ -168,16 +171,36 @@
       title.style.setProperty('--rect-foveated-left', Math.max(0, leftPct) + '%');
     }
 
+    // Sync rainbow clip-path to rect's actual position each frame
+    function syncRainbowToRect() {
+      const titleBox = title.getBoundingClientRect();
+      const rectBox = rectEl.getBoundingClientRect();
+      const leftPct = ((rectBox.left - titleBox.left) / titleBox.width) * 100;
+      const rightPct = 100 - ((rectBox.right - titleBox.left) / titleBox.width) * 100;
+      rainbowLayer.style.clipPath = `inset(0 ${Math.max(0, rightPct)}% 0 ${Math.max(0, leftPct)}%)`;
+      slideSyncId = requestAnimationFrame(syncRainbowToRect);
+    }
+
+    function stopRainbowSync() {
+      if (slideSyncId) {
+        cancelAnimationFrame(slideSyncId);
+        slideSyncId = null;
+      }
+      rainbowLayer.style.clipPath = '';
+    }
+
     window.addEventListener('resize', updateRectMetrics);
 
     function runTitleAnimation() {
       updateRectMetrics();
 
-      // Phase 1: Rectangle slides L→R (0–2s)
+      // Phase 1: Rectangle slides L→R, rainbow synced via rAF (0–2s)
       title.classList.add('phase-slide');
+      slideSyncId = requestAnimationFrame(syncRainbowToRect);
 
       // Phase 2: Rect slides back to "Foveated", blur starts (2.5s)
       setTimeout(() => {
+        stopRainbowSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
         title.classList.add('phase-blur');

@@ -303,17 +303,10 @@ body.dark-mode .title-rect {
   clip-path: inset(0 100% 0 0);
 }
 
+/* During slide, rainbow is visible — clip-path driven by JS */
 .hero-title.phase-slide .title-rainbow-layer {
   opacity: 1;
-  animation: rainbowClipSlide 2s ease-in-out forwards, rainbowShimmer 1s linear infinite;
-}
-
-/* clip-path: inset(top right bottom left) — slide a 20%-wide window across */
-@keyframes rainbowClipSlide {
-  0%   { clip-path: inset(0 100% 0 0); }
-  5%   { clip-path: inset(0 80% 0 0); }
-  95%  { clip-path: inset(0 0 0 80%); }
-  100% { clip-path: inset(0 0 0 100%); }
+  animation: rainbowShimmer 1s linear infinite;
 }
 
 @keyframes rainbowShimmer {

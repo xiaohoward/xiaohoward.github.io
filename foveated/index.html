@@ -158,7 +158,7 @@
     const rainbowLayer = title.querySelector('.title-rainbow-layer');
     const rectEl = document.getElementById('title-rect');
     const titleWords = title.querySelectorAll('.title-word');
-    const CYCLE = 8500;
+    const CYCLE = 9500;
     let syncId = null;
 
     // Compute rect size and position to fit snugly over "Foveated"
@@ -218,34 +218,38 @@
       title.classList.add('phase-slide');
       startSync();
 
-      // Phase 2: Slide rect back to "Foveated" + blur simultaneously (2.5s)
+      // Phase 2: Slide rect back to "Foveated" (2.5s)
       setTimeout(() => {
         stopSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
-        title.classList.add('phase-blur');
         rectEl.style.transition = 'left 1s ease-in-out, opacity 0.4s ease';
         rectEl.style.left = title.style.getPropertyValue('--rect-foveated-left');
       }, 2500);
 
-      // Phase 3: Sharpen + Foveated rainbow (3.5s)
+      // Phase 3: Blur (3.8s — just after slide-back settles)
+      setTimeout(() => {
+        title.classList.add('phase-blur');
+      }, 3800);
+
+      // Phase 4: Sharpen + Foveated rainbow (4.8s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
-      }, 3500);
+      }, 4800);
 
-      // Phase 4: Hold foveated rainbow (5s)
+      // Phase 5: Hold foveated rainbow (6.3s)
       setTimeout(() => {
         title.classList.remove('phase-sharpen');
         title.classList.add('phase-foveated-hold');
-      }, 5000);
+      }, 6300);
 
-      // Phase 5: Fade back to normal (7s)
+      // Phase 6: Fade back to normal (8s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
         rectEl.style.opacity = '0';
-      }, 7000);
+      }, 8000);
     }
 
     // Initial delay then loop

@@ -367,9 +367,10 @@ body.dark-mode .title-rect {
 
 .hero-venue {
   font-size: clamp(16px, 1.8vw, 22px);
-  font-weight: 700;
+  font-weight: 400;
   color: var(--color-text);
-  margin-bottom: 28px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 /* ===== Publication Link Buttons ===== */

@@ -278,8 +278,9 @@ body.dark-mode .title-rect {
   clip-path: inset(0 100% 0 0);
 }
 
-/* During slide, rainbow is visible — clip-path driven by JS */
-.hero-title.phase-slide .title-rainbow-layer {
+/* Rainbow visible during both slide and slide-back — clip-path driven by JS */
+.hero-title.phase-slide .title-rainbow-layer,
+.hero-title.phase-rect-hold .title-rainbow-layer {
   opacity: 1;
   animation: rainbowShimmer 1s linear infinite;
 }

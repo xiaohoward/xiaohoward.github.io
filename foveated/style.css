@@ -262,7 +262,7 @@ body.dark-mode .title-rect {
   100% { left: 80%; }
 }
 
-/* Dimming: text outside rectangle is dimmed */
+/* Dimming: text outside rectangle is dimmed during rect-hold */
 .hero-title.phase-rect-hold .title-word {
   opacity: 0.45;
   transition: opacity 0.5s ease;
@@ -270,6 +270,14 @@ body.dark-mode .title-rect {
 
 .hero-title.phase-rect-hold .title-foveated {
   opacity: 1;
+}
+
+/* Sharpen / foveated-hold: non-foveated words back to full color */
+.hero-title.phase-sharpen .title-word,
+.hero-title.phase-foveated-hold .title-word {
+  opacity: 1;
+  -webkit-text-fill-color: var(--color-text);
+  transition: opacity 0.5s ease, -webkit-text-fill-color 0.5s ease;
 }
 
 /* Rainbow text layer — clip-path animated to follow rectangle */

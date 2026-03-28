@@ -186,7 +186,7 @@ body.dark-mode .icon-moon { display: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 20px 80px;
+  padding: 60px 20px 60px;
   background: var(--color-bg);
   text-align: center;
   position: relative;
@@ -502,6 +502,20 @@ body.dark-mode .title-rect {
   animation: bounceArrow 2s ease-in-out infinite;
   z-index: 10;
   padding: 10px;
+}
+
+/* Hero scroll arrow: in-flow, right below buttons */
+.hero-scroll-arrow {
+  position: static;
+  transform: none;
+  margin-top: 28px;
+  display: inline-block;
+  animation: bounceArrowInline 2s ease-in-out infinite;
+}
+
+@keyframes bounceArrowInline {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(10px); opacity: 1; }
 }
 
 .scroll-arrow:hover {

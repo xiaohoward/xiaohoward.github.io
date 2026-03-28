@@ -368,18 +368,8 @@ body.dark-mode .title-rect {
 .hero-venue {
   font-size: clamp(16px, 1.8vw, 22px);
   font-weight: 700;
-  color: #ffffff;
-  background: var(--color-text);
-  display: inline-block;
-  padding: 6px 24px;
-  border-radius: 980px;
+  color: var(--color-text);
   margin-bottom: 28px;
-  letter-spacing: 0.04em;
-}
-
-body.dark-mode .hero-venue {
-  background: #ffffff;
-  color: #000000;
 }
 
 /* ===== Publication Link Buttons ===== */

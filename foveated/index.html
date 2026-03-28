@@ -68,6 +68,7 @@
       <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
         <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
+      <p class="scroll-hint">Scroll to view more</p>
     </div>
   </section>
 
@@ -156,7 +157,7 @@
     const rainbowLayer = title.querySelector('.title-rainbow-layer');
     const rectEl = document.getElementById('title-rect');
     const titleWords = title.querySelectorAll('.title-word');
-    const CYCLE = 11000;
+    const CYCLE = 10000;
     let syncId = null;
 
     // Compute rect size and position to fit snugly over "Foveated"
@@ -216,38 +217,38 @@
       title.classList.add('phase-slide');
       startSync();
 
-      // Phase 2: Slide rect back to "Foveated" — same 2s speed (2.5s)
+      // Phase 2: Slide rect back to "Foveated" — 1s (2x faster), no rainbow (2.5s)
       setTimeout(() => {
+        stopSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
-        rectEl.style.transition = 'left 2s ease-in-out, opacity 0.4s ease';
+        rectEl.style.transition = 'left 1s ease-in-out, opacity 0.4s ease';
         rectEl.style.left = title.style.getPropertyValue('--rect-foveated-left');
       }, 2500);
 
-      // Phase 3: Rect settled, stop sync, blur (5s)
+      // Phase 3: Rect settled, blur (4s)
       setTimeout(() => {
-        stopSync();
         title.classList.add('phase-blur');
-      }, 5000);
+      }, 4000);
 
-      // Phase 4: Sharpen + Foveated rainbow (6s)
+      // Phase 4: Sharpen + Foveated rainbow (5s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
-      }, 6000);
+      }, 5000);
 
-      // Phase 5: Hold foveated rainbow (7.5s)
+      // Phase 5: Hold foveated rainbow (6.5s)
       setTimeout(() => {
         title.classList.remove('phase-sharpen');
         title.classList.add('phase-foveated-hold');
-      }, 7500);
+      }, 6500);
 
-      // Phase 6: Fade back to normal (9.5s)
+      // Phase 6: Fade back to normal (8.5s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
         rectEl.style.opacity = '0';
-      }, 9500);
+      }, 8500);
     }
 
     // Initial delay then loop

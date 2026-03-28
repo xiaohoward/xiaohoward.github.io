@@ -278,9 +278,8 @@ body.dark-mode .title-rect {
   clip-path: inset(0 100% 0 0);
 }
 
-/* Rainbow visible during both slide and slide-back — clip-path driven by JS */
-.hero-title.phase-slide .title-rainbow-layer,
-.hero-title.phase-rect-hold .title-rainbow-layer {
+/* Rainbow visible only during slide right — clip-path driven by JS */
+.hero-title.phase-slide .title-rainbow-layer {
   opacity: 1;
   animation: rainbowShimmer 1s linear infinite;
 }
@@ -490,6 +489,14 @@ body.dark-mode .title-rect {
 .scroll-arrow:hover {
   opacity: 1;
   color: var(--color-accent);
+}
+
+.scroll-hint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
 }
 
 @keyframes bounceArrow {

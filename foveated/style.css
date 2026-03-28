@@ -209,7 +209,7 @@ body.dark-mode .icon-moon { display: none; }
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  margin-bottom: 28px;
+  margin-bottom: 60px;
   color: var(--color-text);
   white-space: nowrap;
   position: relative;
@@ -227,7 +227,7 @@ body.dark-mode .icon-moon { display: none; }
 .title-rect {
   position: absolute;
   width: var(--rect-width, 20%);
-  aspect-ratio: 21 / 9;
+  aspect-ratio: 16 / 9;
   top: 50%;
   transform: translateY(-50%);
   border: 2px solid rgba(128, 128, 128, 0.4);

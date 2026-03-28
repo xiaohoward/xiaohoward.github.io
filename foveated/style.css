@@ -369,8 +369,8 @@ body.dark-mode .title-rect {
   font-size: clamp(16px, 1.8vw, 22px);
   font-weight: 400;
   color: var(--color-text);
-  margin-top: 16px;
-  margin-bottom: 32px;
+  margin-top: 20px;
+  margin-bottom: 48px;
 }
 
 /* ===== Publication Link Buttons ===== */

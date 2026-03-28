@@ -17,7 +17,7 @@
   --color-border-light: #f0f0f0;
   --color-card-bg: #f5f5f7;
   --font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Lato', 'Helvetica Neue', sans-serif;
-  --max-width: 1200px;
+  --max-width: 1600px;
   --section-padding: clamp(80px, 10vh, 120px) clamp(20px, 5vw, 40px);
   --transition-reveal: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.3s ease;
@@ -205,7 +205,7 @@ body.dark-mode .icon-moon { display: none; }
 
 /* ===== Title — base ===== */
 .hero-title {
-  font-size: clamp(1.8rem, 4.5vw, 3.4rem);
+  font-size: clamp(1.8rem, 5.5vw, 4.5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -226,7 +226,7 @@ body.dark-mode .icon-moon { display: none; }
 /* The sliding rectangle box (16:9 aspect ratio) */
 .title-rect {
   position: absolute;
-  width: 28%;
+  width: var(--rect-width, 20%);
   aspect-ratio: 16 / 9;
   top: 50%;
   transform: translateY(-50%);
@@ -258,8 +258,8 @@ body.dark-mode .title-rect {
 }
 
 @keyframes rectSlideRight {
-  0% { left: -30%; }
-  100% { left: 72%; }
+  0% { left: -25%; }
+  100% { left: 80%; }
 }
 
 /* Dimming: text outside rectangle is dimmed */
@@ -295,8 +295,8 @@ body.dark-mode .title-rect {
   font-weight: inherit;
   letter-spacing: inherit;
   line-height: inherit;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
-  mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 20%, transparent 20%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 20%, transparent 20%);
 }
 
 .hero-title.phase-slide .title-rainbow-layer {
@@ -306,12 +306,12 @@ body.dark-mode .title-rect {
 
 @keyframes rainbowMaskSlide {
   0% {
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
-    mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 28%, transparent 28%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 20%, transparent 20%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 0%, black 20%, transparent 20%);
   }
   100% {
-    -webkit-mask-image: linear-gradient(90deg, transparent 72%, black 72%, black 100%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 72%, black 72%, black 100%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 80%, black 80%, black 100%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 80%, black 80%, black 100%, transparent 100%);
   }
 }
 

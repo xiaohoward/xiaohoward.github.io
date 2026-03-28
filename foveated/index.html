@@ -155,19 +155,23 @@
     const foveatedSpan = title.querySelector('.title-foveated');
     const CYCLE = 9000;
 
-    // Compute where to center the rect over "Foveated"
-    function getFoveatedLeft() {
-      const titleRect = title.getBoundingClientRect();
-      const fovRect = foveatedSpan.getBoundingClientRect();
-      const fovCenter = fovRect.left + fovRect.width / 2 - titleRect.left;
-      const rectWidth = titleRect.width * 0.28;
-      const left = ((fovCenter - rectWidth / 2) / titleRect.width) * 100;
-      return Math.max(0, Math.min(left, 72)) + '%';
+    // Compute rect size and position to fit snugly over "Foveated"
+    function updateRectMetrics() {
+      const titleBox = title.getBoundingClientRect();
+      const fovBox = foveatedSpan.getBoundingClientRect();
+      const padding = fovBox.width * 0.15; // slightly wider than the word
+      const rectW = fovBox.width + padding * 2;
+      const rectWPct = (rectW / titleBox.width) * 100;
+      const fovCenter = fovBox.left + fovBox.width / 2 - titleBox.left;
+      const leftPct = ((fovCenter - rectW / 2) / titleBox.width) * 100;
+      title.style.setProperty('--rect-width', rectWPct + '%');
+      title.style.setProperty('--rect-foveated-left', Math.max(0, leftPct) + '%');
     }
 
+    window.addEventListener('resize', updateRectMetrics);
+
     function runTitleAnimation() {
-      // Precompute rect position over "Foveated"
-      title.style.setProperty('--rect-foveated-left', getFoveatedLeft());
+      updateRectMetrics();
 
       // Phase 1: Rectangle slides L→R (0–2s)
       title.classList.add('phase-slide');

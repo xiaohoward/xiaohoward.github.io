@@ -1,10 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📷+👁️ Policy-based Foveated Imaging and Perception</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>📷+👁️ Policy-based Foveated Imaging and Perception</title>
+  <meta name="description" content="Policy-based Foveated Imaging and Perception">
+  <link rel="stylesheet" href="style.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark-mode-pending')</script>
+  <style>.dark-mode-pending body{background:#000;color:#f5f5f7}</style>
 </head>
 <body>
+
+  <!-- ===== Top Navigation ===== -->
+  <nav class="nav-top">
+    <div class="nav-inner">
+      <a href="../" class="nav-link">Home</a>
+      <a href="#abstract" class="nav-link">Abstract</a>
+      <a href="#method" class="nav-link">Method</a>
+      <a href="#results" class="nav-link">Results</a>
+      <a href="#bibtex" class="nav-link">BibTeX</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== Hero: Title, Authors, Buttons ===== -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">Policy-based Foveated Imaging and Perception</h1>
+      <div class="hero-authors">
+        <strong>Howard Xiao</strong>,
+        <a href="https://janackermann.info">Jan Ackermann</a>,
+        <a href="https://boyangdeng.com/">Boyang Deng</a>,
+        <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
+      </div>
+      <div class="hero-affiliation">
+        <a href="https://www.stanford.edu/">Stanford University</a>
+      </div>
+      <div class="pub-links">
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Paper
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Supplementary
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Code
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          Video
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Abstract ===== -->
+  <section id="abstract" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Abstract</h2>
+      <div class="section-body reveal">
+        <div class="placeholder-block">Abstract coming soon.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Method ===== -->
+  <section id="method" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Method</h2>
+      <div class="section-body reveal">
+        <div class="placeholder-block">Method overview coming soon.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Results ===== -->
+  <section id="results" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Results</h2>
+      <div class="section-body reveal">
+        <div class="placeholder-block">Results coming soon.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BibTeX ===== -->
+  <section id="bibtex" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">BibTeX</h2>
+      <div class="reveal">
+        <pre class="bibtex-block"><code>@article{xiao2025foveated,
+  author    = {Xiao, Howard and Ackermann, Jan and Deng, Boyang and Wetzstein, Gordon},
+  title     = {Policy-based Foveated Imaging and Perception},
+  year      = {2025},
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <p><a href="../">Howard Xiao</a> | Template inspired by <a href="https://nerfies.github.io">Nerfies</a></p>
+  </footer>
+
+  <script>
+    // Dark mode toggle (synced with main site via localStorage)
+    const toggle = document.getElementById('theme-toggle');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
 </body>
 </html>

@@ -245,17 +245,7 @@ body.dark-mode .title-rect {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* Dimming: text outside rectangle is dimmed during slide and rect-hold */
-.hero-title.phase-slide .title-word,
-.hero-title.phase-rect-hold .title-word {
-  opacity: 0.45;
-  transition: opacity 0.5s ease;
-}
-
-.hero-title.phase-slide .title-foveated,
-.hero-title.phase-rect-hold .title-foveated {
-  opacity: 1;
-}
+/* Word dimming during slide phases is driven by JS per-frame */
 
 /* Sharpen / foveated-hold: non-foveated words back to full color */
 .hero-title.phase-sharpen .title-word,

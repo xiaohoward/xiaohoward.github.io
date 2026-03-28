@@ -155,8 +155,9 @@
     const foveatedSpan = title.querySelector('.title-foveated');
     const rainbowLayer = title.querySelector('.title-rainbow-layer');
     const rectEl = document.getElementById('title-rect');
-    const CYCLE = 10000;
-    let slideSyncId = null;
+    const titleWords = title.querySelectorAll('.title-word');
+    const CYCLE = 11000;
+    let syncId = null;
 
     // Compute rect size and position to fit snugly over "Foveated"
     function updateRectMetrics() {
@@ -171,22 +172,38 @@
       title.style.setProperty('--rect-foveated-left', Math.max(0, leftPct) + '%');
     }
 
-    // Sync rainbow clip-path to rect's actual position each frame
-    function syncRainbowToRect() {
-      const titleBox = title.getBoundingClientRect();
+    // Each frame: sync rainbow clip + dim words outside box
+    function syncFrame() {
       const rectBox = rectEl.getBoundingClientRect();
+      const titleBox = title.getBoundingClientRect();
+
+      // Rainbow clip
       const leftPct = ((rectBox.left - titleBox.left) / titleBox.width) * 100;
       const rightPct = 100 - ((rectBox.right - titleBox.left) / titleBox.width) * 100;
       rainbowLayer.style.clipPath = `inset(0 ${Math.max(0, rightPct)}% 0 ${Math.max(0, leftPct)}%)`;
-      slideSyncId = requestAnimationFrame(syncRainbowToRect);
+
+      // Per-word dimming: bright if overlapping rect, dim otherwise
+      titleWords.forEach(word => {
+        const wb = word.getBoundingClientRect();
+        const overlap = Math.min(wb.right, rectBox.right) - Math.max(wb.left, rectBox.left);
+        const ratio = Math.max(0, overlap / wb.width);
+        word.style.opacity = 0.35 + ratio * 0.65;
+      });
+
+      syncId = requestAnimationFrame(syncFrame);
     }
 
-    function stopRainbowSync() {
-      if (slideSyncId) {
-        cancelAnimationFrame(slideSyncId);
-        slideSyncId = null;
+    function startSync() {
+      syncId = requestAnimationFrame(syncFrame);
+    }
+
+    function stopSync() {
+      if (syncId) {
+        cancelAnimationFrame(syncId);
+        syncId = null;
       }
       rainbowLayer.style.clipPath = '';
+      titleWords.forEach(word => { word.style.opacity = ''; });
     }
 
     window.addEventListener('resize', updateRectMetrics);
@@ -198,49 +215,47 @@
       rectEl.style.transition = 'none';
       rectEl.style.left = '-30%';
       rectEl.style.opacity = '0';
-
-      // Force reflow so the reset takes effect
       void rectEl.offsetWidth;
 
-      // Phase 1: Slide rect L→R (0–2s)
+      // Phase 1: Slide rect L→R (0–2.5s)
       rectEl.style.transition = 'left 2s ease-in-out, opacity 0.4s ease';
       rectEl.style.opacity = '1';
       rectEl.style.left = '80%';
       title.classList.add('phase-slide');
-      slideSyncId = requestAnimationFrame(syncRainbowToRect);
+      startSync();
 
-      // Phase 2: Slide rect back to "Foveated" (2.5s)
+      // Phase 2: Slide rect back to "Foveated" — same 2s speed (2.5s)
       setTimeout(() => {
-        stopRainbowSync();
         title.classList.remove('phase-slide');
         title.classList.add('phase-rect-hold');
-        rectEl.style.transition = 'left 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease';
+        rectEl.style.transition = 'left 2s ease-in-out, opacity 0.4s ease';
         rectEl.style.left = title.style.getPropertyValue('--rect-foveated-left');
       }, 2500);
 
-      // Phase 3: Blur (4s — after rect has settled on Foveated)
+      // Phase 3: Rect settled, stop sync, blur (5s)
       setTimeout(() => {
+        stopSync();
         title.classList.add('phase-blur');
-      }, 4000);
+      }, 5000);
 
-      // Phase 4: Sharpen + Foveated rainbow (5s)
+      // Phase 4: Sharpen + Foveated rainbow (6s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
-      }, 5000);
+      }, 6000);
 
-      // Phase 5: Hold foveated rainbow (6.5s)
+      // Phase 5: Hold foveated rainbow (7.5s)
       setTimeout(() => {
         title.classList.remove('phase-sharpen');
         title.classList.add('phase-foveated-hold');
-      }, 6500);
+      }, 7500);
 
-      // Phase 6: Fade back to normal (8.5s)
+      // Phase 6: Fade back to normal (9.5s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
         rectEl.style.opacity = '0';
-      }, 8500);
+      }, 9500);
     }
 
     // Initial delay then loop

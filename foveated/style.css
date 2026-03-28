@@ -370,7 +370,7 @@ body.dark-mode .title-rect {
   font-weight: 400;
   color: var(--color-text);
   margin-top: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 }
 
 /* ===== Publication Link Buttons ===== */

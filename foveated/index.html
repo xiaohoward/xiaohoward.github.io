@@ -154,12 +154,13 @@
     const CYCLE = 8000; // total cycle duration in ms
 
     function runTitleAnimation() {
-      // Phase 1: Rectangle slide with rainbow (0ms – 2500ms)
+      // Phase 1: Rectangle slides L→R with rainbow (0ms – 2000ms)
       title.classList.add('phase-slide');
 
-      // Phase 2: Blur (2500ms)
+      // Phase 2: Slide done — hold rectangle at far right, start blur (2500ms)
       setTimeout(() => {
         title.classList.remove('phase-slide');
+        title.classList.add('phase-rect-hold');
         title.classList.add('phase-blur');
       }, 2500);
 
@@ -175,9 +176,10 @@
         title.classList.add('phase-foveated-hold');
       }, 5000);
 
-      // Phase 5: Fade back to normal (6500ms)
+      // Phase 5: Fade back to normal, remove rectangle (6500ms)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
+        title.classList.remove('phase-rect-hold');
       }, 6500);
     }
 

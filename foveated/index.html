@@ -82,7 +82,7 @@
         <div class="demo-images">
           <div class="demo-col">
             <div class="demo-img-wrapper" id="demo-ffov">
-              <img src="images/ffov_025x.jpg" id="ffov-img" draggable="false" alt="Full field-of-view">
+              <img src="images/ffov_017x.jpg" id="ffov-img" draggable="false" alt="Full field-of-view">
               <div class="demo-roi" id="demo-roi">
                 <div class="demo-roi-dot"></div>
               </div>
@@ -285,9 +285,9 @@
     (function() {
       const FULL_H = 4592, FULL_W = 8160;
       const CROP_H = FULL_H / 4, CROP_W = FULL_W / 4; // 1148 x 2040
-      const SCALE_035 = 0.35;
-      const IMG_035_H = Math.round(FULL_H * SCALE_035); // 1607
-      const IMG_035_W = Math.round(FULL_W * SCALE_035); // 2856
+      const SCALE_NAIVE = 0.25;
+      const IMG_NAIVE_H = Math.floor(FULL_H * SCALE_NAIVE); // 1148
+      const IMG_NAIVE_W = Math.floor(FULL_W * SCALE_NAIVE); // 2040
       const TILE_SIZE = 512;
       const TILE_ROWS = Math.ceil(FULL_H / TILE_SIZE);
       const TILE_COLS = Math.ceil(FULL_W / TILE_SIZE);
@@ -312,7 +312,7 @@
       const naiveImg = new Image();
       let naiveReady = false;
       naiveImg.onload = () => { naiveReady = true; updateDemo(0.5, 0.5); };
-      naiveImg.src = 'images/naive_035x.jpg';
+      naiveImg.src = 'images/naive_025x.jpg';
 
       // Tile cache
       const tileCache = new Map();
@@ -344,12 +344,12 @@
         roiEl.style.left = ((cx - halfW) * 100) + '%';
         roiEl.style.top = ((cy - halfH) * 100) + '%';
 
-        // Middle panel: crop from 0.35x image
+        // Middle panel: crop from 0.25x image (small crop → canvas = bilinear upsample)
         if (naiveReady) {
-          const srcX = (cx - halfW) * IMG_035_W;
-          const srcY = (cy - halfH) * IMG_035_H;
-          const srcW = 0.25 * IMG_035_W;
-          const srcH = 0.25 * IMG_035_H;
+          const srcX = (cx - halfW) * IMG_NAIVE_W;
+          const srcY = (cy - halfH) * IMG_NAIVE_H;
+          const srcW = 0.25 * IMG_NAIVE_W;
+          const srcH = 0.25 * IMG_NAIVE_H;
           naiveCtx.drawImage(naiveImg, srcX, srcY, srcW, srcH, 0, 0, CANVAS_W, CANVAS_H);
         }
 

@@ -100,10 +100,13 @@
             <div class="demo-label">Foveated Region-of-Interest (ROI)</div>
           </div>
         </div>
+        <p class="demo-caption">Emerging sensors, such as our prototype based on Samsung's ISOCELL platform, provide hundreds of megapixels of resolution. The massive amount of raw pixel data, however, is extremely challenging to read out at high frame rates or process efficiently with downstream perception networks. Our policy-based foveated imaging framework operates in real time and decides where and when to sample full-resolution regions of interest (right) in a task-specific manner based on low-resolution full-field-of-view context frames (left, center) as well as past observations.</p>
       </div>
 
       <div class="section-body reveal">
-        <div class="placeholder-block">Abstract coming soon.</div>
+        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed.</p>
+        <p>In this work, we introduce a real-time, predictive, and task-aware foveated imaging system that operates directly at image acquisition time. Leveraging emerging dual-stream sensor architectures, our method dynamically allocates limited pixel bandwidth to task-relevant regions of interest while maintaining a low-resolution global context. We formulate foveated acquisition as a sensor attention policy-learning problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
+        <p>Through extensive simulation across multiple perception tasks, we demonstrate that our approach achieves high task performance under strict pixel budgets and significantly outperforms relevant baselines operating at the same bandwidth. We further validate our system on a 200-megapixel dual-stream sensor, capturing real-world videos under realistic bandwidth and latency constraints, demonstrating the practical feasibility of task-driven, acquisition-time foveated imaging.</p>
       </div>
     </div>
     <a href="#method" class="scroll-arrow">

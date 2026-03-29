@@ -543,6 +543,17 @@ body.dark-mode .title-rect {
   font-weight: 500;
 }
 
+.demo-caption {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.65;
+  margin-top: 16px;
+  text-align: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ===== Hero Tagline (typewriter) ===== */
 .hero-tagline-wrapper {
   margin-top: 48px;

@@ -533,6 +533,7 @@ body.dark-mode .title-rect {
 
 .hero-tagline-line {
   font-size: clamp(16px, 1.6vw, 20px);
+  font-style: italic;
   color: var(--color-text);
   line-height: 1.6;
   min-height: 1.6em;

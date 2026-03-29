@@ -435,26 +435,27 @@
         tick();
       }
 
-      function runTagline() {
-        el1.textContent = '';
-        el2.textContent = '';
-        el1.className = 'hero-tagline-line';
-        el2.className = 'hero-tagline-line';
+      function goldFlashLoop() {
+        el1.classList.remove('gold-fade');
+        el2.classList.remove('gold-fade');
+        el1.classList.add('gold-flash');
+        el2.classList.add('gold-flash');
+        setTimeout(() => {
+          el1.classList.remove('gold-flash');
+          el1.classList.add('gold-fade');
+          el2.classList.remove('gold-flash');
+          el2.classList.add('gold-fade');
+        }, 1200);
+      }
 
+      function runTagline() {
         typeText(el1, LINE1, () => {
           setTimeout(() => {
             typeText(el2, LINE2, () => {
-              // Gold flash
+              // First gold flash, then start recurring
               setTimeout(() => {
-                el1.classList.add('gold-flash');
-                el2.classList.add('gold-flash');
-                // Fade back
-                setTimeout(() => {
-                  el1.classList.remove('gold-flash');
-                  el1.classList.add('gold-fade');
-                  el2.classList.remove('gold-flash');
-                  el2.classList.add('gold-fade');
-                }, 1200);
+                goldFlashLoop();
+                setInterval(goldFlashLoop, 5000);
               }, 500);
             });
           }, 300);

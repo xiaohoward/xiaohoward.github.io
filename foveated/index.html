@@ -177,19 +177,22 @@
     let onHero = true;
     let isScrolling = false;
 
+    // Start locked on hero (desktop only)
+    if (!isMobile) document.documentElement.classList.add('hero-locked');
+
     function unlockScroll() {
       onHero = false;
-      document.documentElement.style.overflow = 'auto';
-      document.documentElement.style.scrollBehavior = 'smooth';
+      document.documentElement.classList.remove('hero-locked');
       nav.classList.add('scrolled');
     }
 
     function lockToHero() {
       onHero = true;
-      document.documentElement.style.overflow = 'hidden';
-      document.documentElement.style.scrollBehavior = '';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      nav.classList.remove('scrolled');
+      setTimeout(() => {
+        document.documentElement.classList.add('hero-locked');
+        nav.classList.remove('scrolled');
+      }, 800);
     }
 
     // Track scroll position to detect if user scrolled back to hero

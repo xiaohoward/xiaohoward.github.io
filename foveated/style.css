@@ -77,14 +77,10 @@ body.dark-mode .bibtex-block {
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  html {
-    overflow: auto;
-    scroll-behavior: smooth;
-  }
+html.hero-locked {
+  overflow: hidden;
 }
 
 body {

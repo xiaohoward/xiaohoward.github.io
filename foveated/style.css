@@ -532,13 +532,12 @@ body.dark-mode .title-rect {
 }
 
 .hero-tagline-line {
-  font-size: clamp(14px, 1.3vw, 17px);
-  font-style: italic;
-  color: var(--color-text-secondary);
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--color-text);
   line-height: 1.6;
   min-height: 1.6em;
   margin: 0;
-  display: inline;
+  display: block;
 }
 
 .hero-tagline-line.typing {
@@ -556,7 +555,7 @@ body.dark-mode .title-rect {
 }
 
 .hero-tagline-line.gold-fade {
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   transition: color 1.2s ease-out;
 }
 

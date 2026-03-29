@@ -17,7 +17,7 @@
   --color-border-light: #f0f0f0;
   --color-card-bg: #f5f5f7;
   --font-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Lato', 'Helvetica Neue', sans-serif;
-  --max-width: 1600px;
+  --max-width: 1280px;
   --section-padding: clamp(80px, 10vh, 120px) clamp(20px, 5vw, 40px);
   --transition-reveal: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: 0.3s ease;
@@ -205,11 +205,11 @@ body.dark-mode .icon-moon { display: none; }
 
 /* ===== Title — base ===== */
 .hero-title {
-  font-size: clamp(1.8rem, 5.5vw, 4.5rem);
+  font-size: clamp(1.6rem, 4.2vw, 3.5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   color: var(--color-text);
   white-space: nowrap;
   position: relative;
@@ -289,14 +289,21 @@ body.dark-mode .title-rect {
   100% { background-position: 200% 50%; }
 }
 
-/* ===== Title Animation — Phase 2: Blur (low-res) ===== */
-.hero-title.phase-blur {
+/* ===== Title Animation — Phase 2: Blur (low-res) — Foveated stays sharp ===== */
+.hero-title.phase-blur .title-word {
+  filter: blur(4px);
+  transition: filter 0.8s ease-in;
+}
+.hero-title.phase-blur .title-foveated {
+  filter: none;
+}
+.hero-title.phase-blur .title-rect {
   filter: blur(4px);
   transition: filter 0.8s ease-in;
 }
 
 /* ===== Title Animation — Phase 3: Sharpen + Foveated rainbow ===== */
-.hero-title.phase-sharpen {
+.hero-title.phase-sharpen .title-word {
   filter: blur(0px);
   transition: filter 1.2s ease-out;
 }
@@ -332,7 +339,7 @@ body.dark-mode .title-rect {
 
 /* ===== Hero Authors & Affiliation ===== */
 .hero-authors {
-  font-size: clamp(18px, 2vw, 24px);
+  font-size: clamp(16px, 1.6vw, 20px);
   color: var(--color-text-secondary);
   line-height: 1.8;
   margin-bottom: 12px;
@@ -352,9 +359,9 @@ body.dark-mode .title-rect {
 }
 
 .hero-affiliation {
-  font-size: clamp(16px, 1.8vw, 22px);
+  font-size: clamp(14px, 1.4vw, 18px);
   color: var(--color-text-secondary);
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .hero-affiliation a {
@@ -365,13 +372,6 @@ body.dark-mode .title-rect {
   color: var(--color-accent);
 }
 
-.hero-venue {
-  font-size: clamp(16px, 1.8vw, 22px);
-  font-weight: 400;
-  color: var(--color-text);
-  margin-top: 20px;
-  margin-bottom: 48px;
-}
 
 /* ===== Publication Link Buttons ===== */
 .pub-links {
@@ -382,10 +382,10 @@ body.dark-mode .title-rect {
 }
 
 .pub-links a {
-  font-size: clamp(15px, 1.5vw, 18px);
+  font-size: clamp(14px, 1.3vw, 16px);
   font-weight: 500;
   color: var(--color-accent);
-  padding: 12px 28px;
+  padding: 10px 22px;
   border-radius: 980px;
   border: 1px solid var(--color-accent);
   transition: all var(--transition-fast);
@@ -556,8 +556,9 @@ body.dark-mode .title-rect {
   }
 
   .hero-title {
-    font-size: 1.5rem;
-    white-space: normal;
+    font-size: clamp(0.85rem, 4.5vw, 1.4rem);
+    white-space: nowrap;
+    margin-bottom: 40px;
   }
 
   .hero-authors {

@@ -257,10 +257,11 @@
         title.classList.add('phase-blur');
       }, 3800);
 
-      // Phase 4: Sharpen + Foveated rainbow (4.8s)
+      // Phase 4: Sharpen + Foveated rainbow + tagline gold (4.8s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
+        if (typeof taglineGoldFlash === 'function') taglineGoldFlash();
       }, 4800);
 
       // Phase 5: Hold foveated rainbow (6.3s)
@@ -269,11 +270,12 @@
         title.classList.add('phase-foveated-hold');
       }, 6300);
 
-      // Phase 6: Fade back to normal (8s)
+      // Phase 6: Fade back to normal + tagline fade back (8s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
         rectEl.style.opacity = '0';
+        if (typeof taglineGoldFade === 'function') taglineGoldFade();
       }, 8000);
     }
 
@@ -435,29 +437,25 @@
         tick();
       }
 
-      function goldFlashLoop() {
+      // Exposed globally so title animation can trigger them
+      window.taglineGoldFlash = function() {
         el1.classList.remove('gold-fade');
         el2.classList.remove('gold-fade');
         el1.classList.add('gold-flash');
         el2.classList.add('gold-flash');
-        setTimeout(() => {
-          el1.classList.remove('gold-flash');
-          el1.classList.add('gold-fade');
-          el2.classList.remove('gold-flash');
-          el2.classList.add('gold-fade');
-        }, 1200);
-      }
+      };
+
+      window.taglineGoldFade = function() {
+        el1.classList.remove('gold-flash');
+        el1.classList.add('gold-fade');
+        el2.classList.remove('gold-flash');
+        el2.classList.add('gold-fade');
+      };
 
       function runTagline() {
         typeText(el1, LINE1, () => {
           setTimeout(() => {
-            typeText(el2, LINE2, () => {
-              // First gold flash, then start recurring
-              setTimeout(() => {
-                goldFlashLoop();
-                setInterval(goldFlashLoop, 5000);
-              }, 500);
-            });
+            typeText(el2, LINE2, () => {});
           }, 300);
         });
       }

@@ -76,6 +76,30 @@
   <section id="abstract" class="content-section">
     <div class="section-inner">
       <h2 class="section-heading reveal">Abstract</h2>
+
+      <!-- Interactive foveated demo -->
+      <div class="demo-panel reveal">
+        <div class="demo-images">
+          <div class="demo-col">
+            <div class="demo-img-wrapper" id="demo-ffov">
+              <img src="images/ffov_025x.jpg" id="ffov-img" draggable="false" alt="Full field-of-view">
+              <div class="demo-roi" id="demo-roi">
+                <div class="demo-roi-dot"></div>
+              </div>
+            </div>
+            <div class="demo-label">Full Field-of-View (FFoV)</div>
+          </div>
+          <div class="demo-col">
+            <canvas id="demo-naive-canvas"></canvas>
+            <div class="demo-label">Naive Downsampling</div>
+          </div>
+          <div class="demo-col">
+            <canvas id="demo-foveated-canvas"></canvas>
+            <div class="demo-label">Foveated Region-of-Interest (ROI)</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-body reveal">
         <div class="placeholder-block">Abstract coming soon.</div>
       </div>
@@ -256,6 +280,152 @@
       runTitleAnimation();
       setInterval(runTitleAnimation, CYCLE);
     }, 1500);
+
+    // ===== Interactive Foveated Demo =====
+    (function() {
+      const FULL_H = 4592, FULL_W = 8160;
+      const CROP_H = FULL_H / 4, CROP_W = FULL_W / 4; // 1148 x 2040
+      const SCALE_035 = 0.35;
+      const IMG_035_H = Math.round(FULL_H * SCALE_035); // 1607
+      const IMG_035_W = Math.round(FULL_W * SCALE_035); // 2856
+      const TILE_SIZE = 512;
+      const TILE_ROWS = Math.ceil(FULL_H / TILE_SIZE);
+      const TILE_COLS = Math.ceil(FULL_W / TILE_SIZE);
+
+      const ffovImg = document.getElementById('ffov-img');
+      const ffovWrapper = document.getElementById('demo-ffov');
+      const roiEl = document.getElementById('demo-roi');
+      const naiveCanvas = document.getElementById('demo-naive-canvas');
+      const fovCanvas = document.getElementById('demo-foveated-canvas');
+      const naiveCtx = naiveCanvas.getContext('2d');
+      const fovCtx = fovCanvas.getContext('2d');
+
+      // Canvas internal resolution (matches crop aspect ratio)
+      const CANVAS_W = 800;
+      const CANVAS_H = Math.round(CANVAS_W * (CROP_H / CROP_W));
+      naiveCanvas.width = CANVAS_W;
+      naiveCanvas.height = CANVAS_H;
+      fovCanvas.width = CANVAS_W;
+      fovCanvas.height = CANVAS_H;
+
+      // Load 0.35x image
+      const naiveImg = new Image();
+      let naiveReady = false;
+      naiveImg.onload = () => { naiveReady = true; updateDemo(0.5, 0.5); };
+      naiveImg.src = 'images/naive_035x.jpg';
+
+      // Tile cache
+      const tileCache = new Map();
+      function loadTile(r, c) {
+        const key = `${r}_${c}`;
+        if (tileCache.has(key)) return Promise.resolve(tileCache.get(key));
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => { tileCache.set(key, img); resolve(img); };
+          img.onerror = reject;
+          img.src = `images/tiles/tile_${r}_${c}.jpg`;
+        });
+      }
+
+      // Current ROI center as fraction [0,1]
+      let roiFx = 0.5, roiFy = 0.5;
+      let rafPending = false;
+
+      function updateDemo(fx, fy) {
+        roiFx = fx;
+        roiFy = fy;
+
+        // Clamp ROI so it stays within bounds (ROI is 25% of image)
+        const halfW = 0.125, halfH = 0.125;
+        const cx = Math.max(halfW, Math.min(1 - halfW, fx));
+        const cy = Math.max(halfH, Math.min(1 - halfH, fy));
+
+        // Update ROI rectangle position
+        roiEl.style.left = ((cx - halfW) * 100) + '%';
+        roiEl.style.top = ((cy - halfH) * 100) + '%';
+
+        // Middle panel: crop from 0.35x image
+        if (naiveReady) {
+          const srcX = (cx - halfW) * IMG_035_W;
+          const srcY = (cy - halfH) * IMG_035_H;
+          const srcW = 0.25 * IMG_035_W;
+          const srcH = 0.25 * IMG_035_H;
+          naiveCtx.drawImage(naiveImg, srcX, srcY, srcW, srcH, 0, 0, CANVAS_W, CANVAS_H);
+        }
+
+        // Right panel: crop from full-res tiles
+        drawFoveatedCrop(cx, cy);
+      }
+
+      async function drawFoveatedCrop(cx, cy) {
+        const x0 = Math.round((cx - 0.125) * FULL_W);
+        const y0 = Math.round((cy - 0.125) * FULL_H);
+
+        const startRow = Math.floor(y0 / TILE_SIZE);
+        const endRow = Math.min(Math.floor((y0 + CROP_H - 1) / TILE_SIZE), TILE_ROWS - 1);
+        const startCol = Math.floor(x0 / TILE_SIZE);
+        const endCol = Math.min(Math.floor((x0 + CROP_W - 1) / TILE_SIZE), TILE_COLS - 1);
+
+        const promises = [];
+        for (let r = startRow; r <= endRow; r++)
+          for (let c = startCol; c <= endCol; c++)
+            promises.push(loadTile(r, c));
+
+        try {
+          const tiles = await Promise.all(promises);
+          // Use offscreen canvas for stitching
+          const off = document.createElement('canvas');
+          off.width = CROP_W;
+          off.height = CROP_H;
+          const offCtx = off.getContext('2d');
+
+          let idx = 0;
+          for (let r = startRow; r <= endRow; r++) {
+            for (let c = startCol; c <= endCol; c++) {
+              const tileX = c * TILE_SIZE - x0;
+              const tileY = r * TILE_SIZE - y0;
+              offCtx.drawImage(tiles[idx++], tileX, tileY);
+            }
+          }
+          fovCtx.drawImage(off, 0, 0, CANVAS_W, CANVAS_H);
+        } catch(e) {
+          // Tiles may not be loaded yet on first render
+        }
+      }
+
+      // Mouse interaction on FFoV image
+      function handlePointer(e) {
+        const rect = ffovWrapper.getBoundingClientRect();
+        const fx = (e.clientX - rect.left) / rect.width;
+        const fy = (e.clientY - rect.top) / rect.height;
+        if (!rafPending) {
+          rafPending = true;
+          requestAnimationFrame(() => {
+            updateDemo(fx, fy);
+            rafPending = false;
+          });
+        }
+      }
+
+      let isDragging = false;
+      ffovWrapper.addEventListener('mousedown', (e) => { isDragging = true; handlePointer(e); });
+      window.addEventListener('mousemove', (e) => { if (isDragging) handlePointer(e); });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      // Touch support
+      ffovWrapper.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handlePointer(e.touches[0]);
+      }, { passive: false });
+      ffovWrapper.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        handlePointer(e.touches[0]);
+      }, { passive: false });
+
+      // Initial render at center after FFoV image loads
+      ffovImg.addEventListener('load', () => updateDemo(0.5, 0.5));
+      if (ffovImg.complete) updateDemo(0.5, 0.5);
+    })();
   </script>
 
 </body>

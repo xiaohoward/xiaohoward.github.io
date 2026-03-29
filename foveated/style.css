@@ -464,6 +464,77 @@ body.dark-mode .title-rect {
   margin-top: 16px;
 }
 
+/* ===== Interactive Demo Panel ===== */
+.demo-panel {
+  margin-bottom: 40px;
+}
+
+.demo-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.demo-col {
+  text-align: center;
+}
+
+.demo-img-wrapper {
+  position: relative;
+  cursor: crosshair;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--color-card-bg);
+  line-height: 0;
+}
+
+.demo-img-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.demo-roi {
+  position: absolute;
+  border: 2px solid #ff3b30;
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 2;
+  /* Size set by JS: 25% x 25% of the image */
+  width: 25%;
+  height: 25%;
+  top: 37.5%;
+  left: 37.5%;
+}
+
+.demo-roi-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: #ff3b30;
+  border-radius: 50%;
+}
+
+.demo-col canvas {
+  width: 100%;
+  border-radius: 8px;
+  background: var(--color-card-bg);
+  display: block;
+}
+
+.demo-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
 /* ===== Scroll Down Arrow ===== */
 .scroll-arrow {
   display: block;
@@ -588,5 +659,14 @@ body.dark-mode .title-rect {
 
   .scroll-arrow {
     bottom: 16px;
+  }
+
+  .demo-images {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .demo-label {
+    font-size: 11px;
   }
 }

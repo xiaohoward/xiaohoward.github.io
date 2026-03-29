@@ -65,6 +65,10 @@
           Demo
         </a>
       </div>
+      <div class="hero-tagline-wrapper">
+        <p class="hero-tagline-line" id="tagline-1"></p>
+        <p class="hero-tagline-line" id="tagline-2"></p>
+      </div>
       <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
         <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
@@ -405,6 +409,63 @@
       // Initial render at center after FFoV image loads
       ffovImg.addEventListener('load', () => updateDemo(0.5, 0.5));
       if (ffovImg.complete) updateDemo(0.5, 0.5);
+    })();
+
+    // ===== Typewriter Tagline =====
+    (function() {
+      const LINE1 = "Intelligent sensing transcends passive capture.";
+      const LINE2 = "Ultra-high-resolution sensors selectively acquire, perceiving the blooming present and awakening the vivid past.";
+      const CHAR_DELAY = 35;
+      const CYCLE = 14000;
+      const el1 = document.getElementById('tagline-1');
+      const el2 = document.getElementById('tagline-2');
+
+      function typeText(el, text, onDone) {
+        el.textContent = '';
+        el.classList.add('typing');
+        let i = 0;
+        function tick() {
+          if (i < text.length) {
+            el.textContent += text[i++];
+            setTimeout(tick, CHAR_DELAY);
+          } else {
+            el.classList.remove('typing');
+            if (onDone) onDone();
+          }
+        }
+        tick();
+      }
+
+      function runTagline() {
+        el1.textContent = '';
+        el2.textContent = '';
+        el1.className = 'hero-tagline-line';
+        el2.className = 'hero-tagline-line';
+
+        typeText(el1, LINE1, () => {
+          setTimeout(() => {
+            typeText(el2, LINE2, () => {
+              // Gold flash
+              setTimeout(() => {
+                el1.classList.add('gold-flash');
+                el2.classList.add('gold-flash');
+                // Fade back
+                setTimeout(() => {
+                  el1.classList.remove('gold-flash');
+                  el1.classList.add('gold-fade');
+                  el2.classList.remove('gold-flash');
+                  el2.classList.add('gold-fade');
+                }, 1200);
+              }, 500);
+            });
+          }, 300);
+        });
+      }
+
+      setTimeout(() => {
+        runTagline();
+        setInterval(runTagline, CYCLE);
+      }, 2000);
     })();
   </script>
 

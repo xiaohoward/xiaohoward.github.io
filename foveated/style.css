@@ -524,6 +524,42 @@ body.dark-mode .title-rect {
   font-weight: 500;
 }
 
+/* ===== Hero Tagline (typewriter) ===== */
+.hero-tagline-wrapper {
+  margin-top: 40px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.hero-tagline-line {
+  font-size: clamp(14px, 1.3vw, 17px);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  min-height: 1.6em;
+  margin: 0;
+  display: inline;
+}
+
+.hero-tagline-line.typing {
+  border-right: 2px solid var(--color-text);
+  animation: blink-cursor 0.7s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  50% { border-color: transparent; }
+}
+
+.hero-tagline-line.gold-flash {
+  color: #d4a017;
+  transition: color 0.6s ease-in;
+}
+
+.hero-tagline-line.gold-fade {
+  color: var(--color-text-secondary);
+  transition: color 1.2s ease-out;
+}
+
 /* ===== Scroll Down Arrow ===== */
 .scroll-arrow {
   display: block;

@@ -2,3 +2,6 @@
 foveated/nerfies.github.io/
 foveated/preprocess.py
 foveated/CVPR2026_Foveated/
+foveated/preprocess_videos.py
+foveated/videos/prototype/*/global_video.mp4
+foveated/videos/prototype/*/roi_video.mp4

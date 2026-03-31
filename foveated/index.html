@@ -35,7 +35,7 @@
         <div class="title-rect" id="title-rect"></div>
       </h1>
       <div class="hero-authors">
-        <a href="https://howardxiao.ca"><strong>Howard Xiao</strong></a>,
+        <a href="https://howardxiao.ca">Howard Xiao</a>,
         <a href="https://janackermann.info">Jan Ackermann</a>,
         <a href="https://boyangdeng.com/">Boyang Deng</a>,
         <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
@@ -69,10 +69,17 @@
         <p class="hero-tagline-line" id="tagline-1"></p>
         <p class="hero-tagline-line" id="tagline-2"></p>
       </div>
-      <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
-        <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <p class="scroll-hint">Scroll to view more</p>
+      <!-- Hero Video Carousel -->
+      <div class="video-carousel hero-carousel" id="hero-carousel"
+           data-videos='["text_outdoor1","text_indoor1","person_pursuit1","car_pursuit1"]'>
+      </div>
+
+      <div class="hero-scroll-row">
+        <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
+          <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <span class="scroll-hint">Scroll to view more</span>
+      </div>
     </div>
   </section>
 
@@ -81,31 +88,36 @@
     <div class="section-inner">
       <h2 class="section-heading reveal">Abstract</h2>
 
+      <div class="section-body reveal">
+        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed.</p>
+        <p>In this work, we introduce a real-time, predictive, and task-aware foveated imaging system that operates directly at image acquisition time. Leveraging emerging dual-stream sensor architectures, our method dynamically allocates limited pixel bandwidth to task-relevant regions of interest while maintaining a low-resolution global context. We formulate foveated acquisition as a sensor attention policy-learning problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
+      </div>
+
       <!-- Interactive foveated demo -->
       <div class="demo-panel reveal">
         <div class="demo-images">
           <div class="demo-col">
             <div class="demo-img-wrapper" id="demo-ffov">
               <img src="images/ffov.jpg" id="ffov-img" draggable="false" alt="Full field-of-view">
-              <div class="demo-roi" id="demo-roi"></div>
+              <div class="demo-roi" id="demo-roi">
+                <span class="demo-roi-hint" id="demo-roi-hint">Hover<br>to move</span>
+              </div>
             </div>
             <div class="demo-label">Full Field-of-View (FFoV)</div>
           </div>
           <div class="demo-col">
             <canvas id="demo-naive-canvas"></canvas>
-            <div class="demo-label">FFoV Crop</div>
+            <div class="demo-label">Zoomed-in FFoV Crop</div>
           </div>
           <div class="demo-col">
             <canvas id="demo-foveated-canvas"></canvas>
             <div class="demo-label">Foveated Region-of-Interest (ROI)</div>
           </div>
         </div>
-        <p class="demo-caption">Emerging sensors, such as our prototype based on Samsung's ISOCELL platform, provide hundreds of megapixels of resolution. The massive amount of raw pixel data, however, is extremely challenging to read out at high frame rates or process efficiently with downstream perception networks. Our policy-based foveated imaging framework operates in real time and decides where and when to sample full-resolution regions of interest (right) in a task-specific manner based on low-resolution full-field-of-view context frames (left, center) as well as past observations.</p>
+        <p class="demo-caption">Our policy-based foveated imaging framework operates in real time and decides where and when to sample full-resolution regions of interest (right) in a task-specific manner based on low-resolution full-field-of-view context frames (left, center) as well as past observations.</p>
       </div>
 
       <div class="section-body reveal">
-        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed.</p>
-        <p>In this work, we introduce a real-time, predictive, and task-aware foveated imaging system that operates directly at image acquisition time. Leveraging emerging dual-stream sensor architectures, our method dynamically allocates limited pixel bandwidth to task-relevant regions of interest while maintaining a low-resolution global context. We formulate foveated acquisition as a sensor attention policy-learning problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
         <p>Through extensive simulation across multiple perception tasks, we demonstrate that our approach achieves high task performance under strict pixel budgets and significantly outperforms relevant baselines operating at the same bandwidth. We further validate our system on a 200-megapixel dual-stream sensor, capturing real-world videos under realistic bandwidth and latency constraints, demonstrating the practical feasibility of task-driven, acquisition-time foveated imaging.</p>
       </div>
     </div>
@@ -131,8 +143,27 @@
   <section id="results" class="content-section">
     <div class="section-inner">
       <h2 class="section-heading reveal">Results</h2>
-      <div class="section-body reveal">
-        <div class="placeholder-block">Results coming soon.</div>
+
+      <h3 class="results-subtitle">200 MP Foveated Imaging Prototype</h3>
+
+      <div class="tab-nav" id="results-tabs">
+        <button class="tab-btn active" data-tab="text_outdoor">Text Saccade (Outdoor)</button>
+        <button class="tab-btn" data-tab="text_indoor">Text Saccade (Indoor)</button>
+        <button class="tab-btn" data-tab="person_pursuit">Person Pursuit</button>
+        <button class="tab-btn" data-tab="car_pursuit">Car Pursuit</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-text_outdoor">
+        <div class="video-carousel results-carousel" data-videos='["text_outdoor1","text_outdoor2","text_outdoor3","text_outdoor4"]'></div>
+      </div>
+      <div class="tab-panel" id="tab-text_indoor">
+        <div class="video-carousel results-carousel" data-videos='["text_indoor1","text_indoor2"]'></div>
+      </div>
+      <div class="tab-panel" id="tab-person_pursuit">
+        <div class="video-carousel results-carousel" data-videos='["person_pursuit1","person_pursuit2","person_pursuit3"]'></div>
+      </div>
+      <div class="tab-panel" id="tab-car_pursuit">
+        <div class="video-carousel results-carousel" data-videos='["car_pursuit1","car_pursuit2","car_pursuit3","car_pursuit4"]'></div>
       </div>
     </div>
     <a href="#bibtex" class="scroll-arrow">
@@ -148,7 +179,7 @@
         <pre class="bibtex-block"><code>@article{xiao2025foveated,
   author    = {Xiao, Howard and Ackermann, Jan and Deng, Boyang and Wetzstein, Gordon},
   title     = {Policy-based Foveated Imaging and Perception},
-  year      = {2025},
+  year      = {2026},
 }</code></pre>
       </div>
     </div>
@@ -184,6 +215,8 @@
       onHero = false;
       document.documentElement.classList.remove('hero-locked');
       nav.classList.add('scrolled');
+      // Trigger reveals for all sections now that scrolling is unlocked
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
     }
 
     function lockToHero() {
@@ -473,8 +506,8 @@
       }, { passive: false });
 
       // Initial render at center after FFoV image loads
-      ffovImg.addEventListener('load', () => updateDemo(0.5, 0.5));
-      if (ffovImg.complete) updateDemo(0.5, 0.5);
+      ffovImg.addEventListener('load', () => updateDemo(0.125, 0.125));
+      if (ffovImg.complete) updateDemo(0.125, 0.125);
     })();
 
     // ===== Typewriter Tagline =====
@@ -526,6 +559,227 @@
 
       setTimeout(runTagline, 2000);
     })();
+
+    // ===== Video Carousel =====
+    class VideoCarousel {
+      constructor(el) {
+        this.container = el;
+        this.videos = JSON.parse(el.dataset.videos);
+        this.currentIndex = 0;
+        this.frameManifests = {};
+        this.init();
+      }
+
+      init() {
+        const id = this.container.id || 'carousel-' + Math.random().toString(36).slice(2);
+        this.container.innerHTML = `
+          <div class="video-3panel">
+            <div class="panel panel-global">
+              <video muted autoplay loop playsinline></video>
+              <div class="demo-label">Global View + ROI</div>
+            </div>
+            <div class="panel panel-roi">
+              <video muted autoplay loop playsinline></video>
+              <div class="demo-label">Foveated ROI</div>
+            </div>
+            <div class="panel panel-frames">
+              <div class="frame-slideshow">
+                <img class="slideshow-img" alt="ROI Frame">
+              </div>
+              <div class="frame-controls">
+                <button class="frame-arrow frame-prev" aria-label="Previous frame">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                </button>
+                <div class="frame-dots"></div>
+                <button class="frame-arrow frame-next" aria-label="Next frame">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                </button>
+              </div>
+              <div class="demo-label">ROI Highlights</div>
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-arrow carousel-prev" aria-label="Previous">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+            </button>
+            <div class="carousel-dots">
+              ${this.videos.map((_, i) => `<button class="carousel-dot${i === 0 ? ' active' : ''}" data-index="${i}"></button>`).join('')}
+            </div>
+            <button class="carousel-arrow carousel-next" aria-label="Next">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+            </button>
+          </div>
+        `;
+
+        this.globalVideo = this.container.querySelector('.panel-global video');
+        this.roiVideo = this.container.querySelector('.panel-roi video');
+        this.slideshowImg = this.container.querySelector('.slideshow-img');
+        this.dots = this.container.querySelectorAll('.carousel-dot');
+        this.frameDots = this.container.querySelector('.frame-dots');
+        this.frameIdx = 0;
+        this.frameTimer = null;
+
+        this.container.querySelector('.carousel-prev').addEventListener('click', () => this.prev());
+        this.container.querySelector('.carousel-next').addEventListener('click', () => this.next());
+        this.dots.forEach(dot => {
+          dot.addEventListener('click', () => this.loadVideo(parseInt(dot.dataset.index)));
+        });
+
+        // Frame slideshow arrows
+        this.container.querySelector('.frame-prev').addEventListener('click', () => this.prevFrame());
+        this.container.querySelector('.frame-next').addEventListener('click', () => this.nextFrame());
+
+        this.loadVideo(0);
+      }
+
+      async loadVideo(index) {
+        this.currentIndex = index;
+        const name = this.videos[index];
+        const base = `videos/prototype/${name}`;
+
+        this.globalVideo.src = `${base}/processed_global.mp4`;
+        this.roiVideo.src = `${base}/processed_roi.mp4`;
+        this.globalVideo.play().catch(() => {});
+        this.roiVideo.play().catch(() => {});
+
+        if (!this.frameManifests[name]) {
+          try {
+            const resp = await fetch(`${base}/frame_manifest.json`);
+            this.frameManifests[name] = await resp.json();
+          } catch(e) {
+            this.frameManifests[name] = { duration_seconds: 10, frames: [] };
+          }
+        }
+
+        const manifest = this.frameManifests[name];
+
+        // Build frame dots
+        this.frameDots.innerHTML = manifest.frames.map((_, i) =>
+          `<button class="frame-dot${i === 0 ? ' active' : ''}" data-frame="${i}"></button>`
+        ).join('');
+        this.frameDots.querySelectorAll('.frame-dot').forEach(dot => {
+          dot.addEventListener('click', () => this.goToFrame(parseInt(dot.dataset.frame)));
+        });
+
+        // Show first frame and start auto-advance
+        this.frameIdx = 0;
+        this.showFrame(name, 0);
+        this.startFrameTimer(name);
+
+        this.updateDots();
+      }
+
+      showFrame(name, idx) {
+        const manifest = this.frameManifests[name];
+        if (!manifest || manifest.frames.length === 0) return;
+        const base = `videos/prototype/${name}/frames`;
+        this.slideshowImg.style.opacity = '0';
+        setTimeout(() => {
+          this.slideshowImg.src = `${base}/${manifest.frames[idx]}`;
+          this.slideshowImg.style.opacity = '1';
+        }, 200);
+        this.frameDots.querySelectorAll('.frame-dot').forEach((dot, i) => {
+          dot.classList.toggle('active', i === idx);
+        });
+      }
+
+      startFrameTimer(name) {
+        clearInterval(this.frameTimer);
+        const manifest = this.frameManifests[name];
+        if (!manifest || manifest.frames.length === 0) return;
+        const interval = 2000; // 2 seconds per frame
+        this.frameTimer = setInterval(() => {
+          this.frameIdx = (this.frameIdx + 1) % manifest.frames.length;
+          this.showFrame(name, this.frameIdx);
+        }, interval);
+      }
+
+      goToFrame(idx) {
+        const name = this.videos[this.currentIndex];
+        this.frameIdx = idx;
+        this.showFrame(name, idx);
+        this.startFrameTimer(name);
+      }
+
+      prevFrame() {
+        const name = this.videos[this.currentIndex];
+        const manifest = this.frameManifests[name];
+        if (!manifest || manifest.frames.length === 0) return;
+        this.frameIdx = (this.frameIdx - 1 + manifest.frames.length) % manifest.frames.length;
+        this.showFrame(name, this.frameIdx);
+        this.startFrameTimer(name);
+      }
+
+      nextFrame() {
+        const name = this.videos[this.currentIndex];
+        const manifest = this.frameManifests[name];
+        if (!manifest || manifest.frames.length === 0) return;
+        this.frameIdx = (this.frameIdx + 1) % manifest.frames.length;
+        this.showFrame(name, this.frameIdx);
+        this.startFrameTimer(name);
+      }
+
+      next() {
+        this.loadVideo((this.currentIndex + 1) % this.videos.length);
+      }
+
+      prev() {
+        this.loadVideo((this.currentIndex - 1 + this.videos.length) % this.videos.length);
+      }
+
+      updateDots() {
+        this.dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === this.currentIndex);
+        });
+      }
+
+      pause() {
+        this.globalVideo.pause();
+        this.roiVideo.pause();
+        clearInterval(this.frameTimer);
+      }
+
+      play() {
+        this.globalVideo.play().catch(() => {});
+        this.roiVideo.play().catch(() => {});
+        this.startFrameTimer(this.videos[this.currentIndex]);
+      }
+    }
+
+    // Initialize hero carousel
+    const heroCarouselEl = document.getElementById('hero-carousel');
+    if (heroCarouselEl) {
+      new VideoCarousel(heroCarouselEl);
+    }
+
+    // Tab switching + lazy carousel init for Results
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => {
+          p.classList.remove('active');
+          const c = p.querySelector('.video-carousel');
+          if (c && c._carousel) c._carousel.pause();
+        });
+
+        btn.classList.add('active');
+        const panel = document.getElementById('tab-' + btn.dataset.tab);
+        panel.classList.add('active');
+
+        const carouselEl = panel.querySelector('.video-carousel');
+        if (!carouselEl._carousel) {
+          carouselEl._carousel = new VideoCarousel(carouselEl);
+        } else {
+          carouselEl._carousel.play();
+        }
+      });
+    });
+
+    // Auto-init first visible results tab carousel
+    const firstActiveTab = document.querySelector('.tab-panel.active .video-carousel');
+    if (firstActiveTab) {
+      firstActiveTab._carousel = new VideoCarousel(firstActiveTab);
+    }
   </script>
 
 </body>

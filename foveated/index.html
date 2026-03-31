@@ -575,16 +575,23 @@
         this.container.innerHTML = `
           <div class="video-3panel">
             <div class="panel panel-global">
-              <video muted autoplay loop playsinline></video>
+              <div class="panel-loading-wrap">
+                <video muted autoplay loop playsinline></video>
+                <div class="panel-loader"><span class="loader-pct">0%</span></div>
+              </div>
               <div class="demo-label">Global View + ROI</div>
             </div>
             <div class="panel panel-roi">
-              <video muted autoplay loop playsinline></video>
+              <div class="panel-loading-wrap">
+                <video muted autoplay loop playsinline></video>
+                <div class="panel-loader"><span class="loader-pct">0%</span></div>
+              </div>
               <div class="demo-label">Foveated ROI</div>
             </div>
             <div class="panel panel-frames">
               <div class="frame-slideshow">
                 <img class="slideshow-img" alt="ROI Frame">
+                <div class="panel-loader frame-loader"><span class="loader-pct">Loading...</span></div>
               </div>
               <div class="frame-controls">
                 <button class="frame-arrow frame-prev" aria-label="Previous frame">
@@ -614,10 +621,23 @@
         this.globalVideo = this.container.querySelector('.panel-global video');
         this.roiVideo = this.container.querySelector('.panel-roi video');
         this.slideshowImg = this.container.querySelector('.slideshow-img');
+        this.globalLoader = this.container.querySelector('.panel-global .loader-pct');
+        this.roiLoader = this.container.querySelector('.panel-roi .loader-pct');
+        this.frameLoader = this.container.querySelector('.frame-loader');
         this.dots = this.container.querySelectorAll('.carousel-dot');
         this.frameDots = this.container.querySelector('.frame-dots');
         this.frameIdx = 0;
         this.frameTimer = null;
+
+        // Loading progress tracking
+        this.globalVideo.addEventListener('progress', () => this.updateLoadPct(this.globalVideo, this.globalLoader));
+        this.roiVideo.addEventListener('progress', () => this.updateLoadPct(this.roiVideo, this.roiLoader));
+        this.globalVideo.addEventListener('canplaythrough', () => {
+          this.globalLoader.parentElement.style.display = 'none';
+        });
+        this.roiVideo.addEventListener('canplaythrough', () => {
+          this.roiLoader.parentElement.style.display = 'none';
+        });
 
         this.container.querySelector('.carousel-prev').addEventListener('click', () => this.prev());
         this.container.querySelector('.carousel-next').addEventListener('click', () => this.next());
@@ -632,10 +652,27 @@
         this.loadVideo(0);
       }
 
+      updateLoadPct(video, loaderEl) {
+        if (video.buffered.length > 0 && video.duration) {
+          const pct = Math.round((video.buffered.end(0) / video.duration) * 100);
+          loaderEl.textContent = pct + '%';
+        }
+      }
+
       async loadVideo(index) {
         this.currentIndex = index;
         const name = this.videos[index];
         const base = `videos/prototype/${name}`;
+
+        // Show loaders
+        this.globalLoader.parentElement.style.display = '';
+        this.globalLoader.textContent = '0%';
+        this.roiLoader.parentElement.style.display = '';
+        this.roiLoader.textContent = '0%';
+        this.frameLoader.style.display = '';
+
+        // Stop previous frame timer
+        clearInterval(this.frameTimer);
 
         this.globalVideo.src = `${base}/processed_global.mp4`;
         this.roiVideo.src = `${base}/processed_roi.mp4`;
@@ -661,15 +698,26 @@
           dot.addEventListener('click', () => this.goToFrame(parseInt(dot.dataset.frame)));
         });
 
-        // Show first frame and start auto-advance
+        // Preload first frame, then hide loader and start auto-advance
         this.frameIdx = 0;
-        this.showFrame(name, 0);
-        this.startFrameTimer(name);
+        if (manifest.frames.length > 0) {
+          const firstImg = new Image();
+          firstImg.onload = () => {
+            this.frameLoader.style.display = 'none';
+            this.slideshowImg.src = firstImg.src;
+            this.slideshowImg.style.opacity = '1';
+            this.startFrameTimer();
+          };
+          firstImg.src = `${base}/frames/${manifest.frames[0]}`;
+        } else {
+          this.frameLoader.style.display = 'none';
+        }
 
         this.updateDots();
       }
 
-      showFrame(name, idx) {
+      showFrame(idx) {
+        const name = this.videos[this.currentIndex];
         const manifest = this.frameManifests[name];
         if (!manifest || manifest.frames.length === 0) return;
         const base = `videos/prototype/${name}/frames`;
@@ -683,22 +731,24 @@
         });
       }
 
-      startFrameTimer(name) {
+      startFrameTimer() {
         clearInterval(this.frameTimer);
+        const name = this.videos[this.currentIndex];
         const manifest = this.frameManifests[name];
         if (!manifest || manifest.frames.length === 0) return;
-        const interval = 2000; // 2 seconds per frame
         this.frameTimer = setInterval(() => {
-          this.frameIdx = (this.frameIdx + 1) % manifest.frames.length;
-          this.showFrame(name, this.frameIdx);
-        }, interval);
+          const curName = this.videos[this.currentIndex];
+          const curManifest = this.frameManifests[curName];
+          if (!curManifest || curManifest.frames.length === 0) return;
+          this.frameIdx = (this.frameIdx + 1) % curManifest.frames.length;
+          this.showFrame(this.frameIdx);
+        }, 2000);
       }
 
       goToFrame(idx) {
-        const name = this.videos[this.currentIndex];
         this.frameIdx = idx;
-        this.showFrame(name, idx);
-        this.startFrameTimer(name);
+        this.showFrame(idx);
+        this.startFrameTimer();
       }
 
       prevFrame() {
@@ -706,8 +756,8 @@
         const manifest = this.frameManifests[name];
         if (!manifest || manifest.frames.length === 0) return;
         this.frameIdx = (this.frameIdx - 1 + manifest.frames.length) % manifest.frames.length;
-        this.showFrame(name, this.frameIdx);
-        this.startFrameTimer(name);
+        this.showFrame(this.frameIdx);
+        this.startFrameTimer();
       }
 
       nextFrame() {
@@ -715,8 +765,8 @@
         const manifest = this.frameManifests[name];
         if (!manifest || manifest.frames.length === 0) return;
         this.frameIdx = (this.frameIdx + 1) % manifest.frames.length;
-        this.showFrame(name, this.frameIdx);
-        this.startFrameTimer(name);
+        this.showFrame(this.frameIdx);
+        this.startFrameTimer();
       }
 
       next() {
@@ -742,7 +792,7 @@
       play() {
         this.globalVideo.play().catch(() => {});
         this.roiVideo.play().catch(() => {});
-        this.startFrameTimer(this.videos[this.currentIndex]);
+        this.startFrameTimer();
       }
     }
 

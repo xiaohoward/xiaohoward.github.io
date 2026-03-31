@@ -655,7 +655,7 @@
       updateLoadPct(video, loaderEl) {
         if (video.buffered.length > 0 && video.duration) {
           const pct = Math.round((video.buffered.end(0) / video.duration) * 100);
-          loaderEl.textContent = pct + '%';
+          loaderEl.textContent = 'Loading ' + pct + '%';
         }
       }
 
@@ -666,10 +666,11 @@
 
         // Show loaders
         this.globalLoader.parentElement.style.display = '';
-        this.globalLoader.textContent = '0%';
+        this.globalLoader.textContent = 'Loading 0%';
         this.roiLoader.parentElement.style.display = '';
-        this.roiLoader.textContent = '0%';
+        this.roiLoader.textContent = 'Loading 0%';
         this.frameLoader.style.display = '';
+        this.frameLoader.querySelector('.loader-pct').textContent = 'Loading 0%';
 
         // Stop previous frame timer
         clearInterval(this.frameTimer);
@@ -698,17 +699,33 @@
           dot.addEventListener('click', () => this.goToFrame(parseInt(dot.dataset.frame)));
         });
 
-        // Preload first frame, then hide loader and start auto-advance
+        // Preload ALL frames with progress, then start slideshow
         this.frameIdx = 0;
+        const loaderPct = this.frameLoader.querySelector('.loader-pct');
         if (manifest.frames.length > 0) {
-          const firstImg = new Image();
-          firstImg.onload = () => {
+          let loaded = 0;
+          const total = manifest.frames.length;
+          const preloaded = [];
+          const onAllLoaded = () => {
             this.frameLoader.style.display = 'none';
-            this.slideshowImg.src = firstImg.src;
+            this.slideshowImg.src = preloaded[0].src;
             this.slideshowImg.style.opacity = '1';
             this.startFrameTimer();
           };
-          firstImg.src = `${base}/frames/${manifest.frames[0]}`;
+          manifest.frames.forEach((fname, i) => {
+            const img = new Image();
+            img.onload = () => {
+              loaded++;
+              loaderPct.textContent = `Loading ${Math.round((loaded / total) * 100)}%`;
+              if (loaded === total) onAllLoaded();
+            };
+            img.onerror = () => {
+              loaded++;
+              if (loaded === total) onAllLoaded();
+            };
+            img.src = `${base}/frames/${fname}`;
+            preloaded[i] = img;
+          });
         } else {
           this.frameLoader.style.display = 'none';
         }

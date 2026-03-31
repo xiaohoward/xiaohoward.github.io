@@ -103,20 +103,23 @@
         <div class="video-3panel bandwidth-panel">
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-ref-video" muted autoplay loop playsinline src="videos/bandwidth/text/ref.mp4"></video>
+              <video id="bw-ref-video" muted loop playsinline src="videos/bandwidth/text/ref.mp4"></video>
+              <div class="panel-loader" id="bw-ref-loader"><span class="loader-pct">Loading 0%</span></div>
             </div>
             <div class="demo-label">Full Resolution Reference</div>
           </div>
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-spatial-video" muted autoplay loop playsinline src="videos/bandwidth/text/spatial_16.mp4"></video>
+              <video id="bw-spatial-video" muted loop playsinline src="videos/bandwidth/text/spatial_16.mp4"></video>
+              <div class="panel-loader" id="bw-spatial-loader"><span class="loader-pct">Loading 0%</span></div>
               <div class="bw-overlay-label" id="bw-spatial-label">1/16 x Full Bandwidth</div>
             </div>
             <div class="demo-label">Naive Spatial Downsampling</div>
           </div>
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-temporal-video" muted autoplay loop playsinline src="videos/bandwidth/text/temporal_16.mp4"></video>
+              <video id="bw-temporal-video" muted loop playsinline src="videos/bandwidth/text/temporal_16.mp4"></video>
+              <div class="panel-loader" id="bw-temporal-loader"><span class="loader-pct">Loading 0%</span></div>
               <div class="bw-overlay-label" id="bw-temporal-label">1/16 x Full Bandwidth</div>
             </div>
             <div class="demo-label">Naive Temporal Downsampling</div>
@@ -725,16 +728,11 @@
         this.frameTimer = null;
         this.videoEnded = false;
         this.framesShownOnce = false;
+        this._loadId = 0;
 
         // Loading progress tracking
         this.globalVideo.addEventListener('progress', () => this.updateLoadPct(this.globalVideo, this.globalLoader));
         this.roiVideo.addEventListener('progress', () => this.updateLoadPct(this.roiVideo, this.roiLoader));
-        this.globalVideo.addEventListener('canplaythrough', () => {
-          this.globalLoader.parentElement.style.display = 'none';
-        });
-        this.roiVideo.addEventListener('canplaythrough', () => {
-          this.roiLoader.parentElement.style.display = 'none';
-        });
 
         // Auto-advance: when video ends, loop it but mark as ended for auto-advance
         this.globalVideo.addEventListener('ended', () => {
@@ -795,21 +793,54 @@
         if (this.categoryLabel) this.categoryLabel.textContent = meta.label;
         this.captionEl.textContent = meta.caption;
 
-        // Show loaders
+        // Show loaders, hide slideshow image
         this.globalLoader.parentElement.style.display = '';
         this.globalLoader.textContent = 'Loading 0%';
         this.roiLoader.parentElement.style.display = '';
         this.roiLoader.textContent = 'Loading 0%';
         this.frameLoader.style.display = '';
         this.frameLoader.querySelector('.loader-pct').textContent = 'Loading 0%';
+        this.slideshowImg.style.opacity = '0';
 
         // Stop previous frame timer
         clearInterval(this.frameTimer);
 
+        // Track loading of both videos — only play when both are ready
+        this.globalReady = false;
+        this.roiReady = false;
+        const loadId = ++this._loadId;
+        const self = this;
+
+        function onGlobalReady() {
+          if (loadId !== self._loadId) return;
+          self.globalReady = true;
+          self.globalLoader.parentElement.style.display = 'none';
+          self.globalVideo.removeEventListener('canplay', onGlobalReady);
+          if (self.globalReady && self.roiReady) {
+            self.globalVideo.currentTime = 0;
+            self.roiVideo.currentTime = 0;
+            self.globalVideo.play().catch(() => {});
+            self.roiVideo.play().catch(() => {});
+          }
+        }
+        function onRoiReady() {
+          if (loadId !== self._loadId) return;
+          self.roiReady = true;
+          self.roiLoader.parentElement.style.display = 'none';
+          self.roiVideo.removeEventListener('canplay', onRoiReady);
+          if (self.globalReady && self.roiReady) {
+            self.globalVideo.currentTime = 0;
+            self.roiVideo.currentTime = 0;
+            self.globalVideo.play().catch(() => {});
+            self.roiVideo.play().catch(() => {});
+          }
+        }
+
+        this.globalVideo.addEventListener('canplay', onGlobalReady);
+        this.roiVideo.addEventListener('canplay', onRoiReady);
+
         this.globalVideo.src = `${base}/processed_global.mp4`;
         this.roiVideo.src = `${base}/processed_roi.mp4`;
-        this.globalVideo.play().catch(() => {});
-        this.roiVideo.play().catch(() => {});
 
         if (!this.frameManifests[name]) {
           try {
@@ -1005,7 +1036,61 @@
       const bwSpatialVideo = document.getElementById('bw-spatial-video');
       const bwTemporalVideo = document.getElementById('bw-temporal-video');
       const temporalLabel = document.getElementById('bw-temporal-label');
+      const bwRefLoader = document.getElementById('bw-ref-loader');
+      const bwSpatialLoader = document.getElementById('bw-spatial-loader');
+      const bwTemporalLoader = document.getElementById('bw-temporal-loader');
       let currentBwCategory = 'text';
+
+      // Progress tracking for bandwidth videos
+      function bwUpdatePct(video, loader) {
+        if (video.buffered.length > 0 && video.duration) {
+          const pct = Math.round((video.buffered.end(0) / video.duration) * 100);
+          loader.querySelector('.loader-pct').textContent = 'Loading ' + pct + '%';
+        }
+      }
+      bwRefVideo.addEventListener('progress', () => bwUpdatePct(bwRefVideo, bwRefLoader));
+      bwSpatialVideo.addEventListener('progress', () => bwUpdatePct(bwSpatialVideo, bwSpatialLoader));
+      bwTemporalVideo.addEventListener('progress', () => bwUpdatePct(bwTemporalVideo, bwTemporalLoader));
+
+      function bwSyncPlay() {
+        // Only play when all 3 are ready
+        if (bwRefVideo._ready && bwSpatialVideo._ready && bwTemporalVideo._ready) {
+          bwRefVideo.currentTime = 0;
+          bwSpatialVideo.currentTime = 0;
+          bwTemporalVideo.currentTime = 0;
+          bwRefVideo.play().catch(() => {});
+          bwSpatialVideo.play().catch(() => {});
+          bwTemporalVideo.play().catch(() => {});
+        }
+      }
+
+      let bwLoadId = 0;
+      function bwSetupLoading() {
+        const loadId = ++bwLoadId;
+        bwRefVideo._ready = false;
+        bwSpatialVideo._ready = false;
+        bwTemporalVideo._ready = false;
+        bwRefLoader.style.display = '';
+        bwSpatialLoader.style.display = '';
+        bwTemporalLoader.style.display = '';
+
+        function onReady(video, loader) {
+          return function handler() {
+            if (loadId !== bwLoadId) return;
+            video._ready = true;
+            loader.style.display = 'none';
+            video.removeEventListener('canplay', handler);
+            bwSyncPlay();
+          };
+        }
+
+        bwRefVideo.addEventListener('canplay', onReady(bwRefVideo, bwRefLoader));
+        bwSpatialVideo.addEventListener('canplay', onReady(bwSpatialVideo, bwSpatialLoader));
+        bwTemporalVideo.addEventListener('canplay', onReady(bwTemporalVideo, bwTemporalLoader));
+      }
+
+      // Initial load
+      bwSetupLoading();
 
       function updateBwVideos(val) {
         const key = BW_KEYS[val];
@@ -1013,12 +1098,10 @@
         spatialLabel.textContent = labelText;
         temporalLabel.textContent = labelText;
         const base = `videos/bandwidth/${currentBwCategory}`;
+        bwSetupLoading();
+        bwRefVideo.src = `${base}/ref.mp4`;
         bwSpatialVideo.src = `${base}/spatial_${key}.mp4`;
         bwTemporalVideo.src = `${base}/temporal_${key}.mp4`;
-        bwRefVideo.currentTime = 0;
-        bwRefVideo.play().catch(() => {});
-        bwSpatialVideo.play().catch(() => {});
-        bwTemporalVideo.play().catch(() => {});
       }
 
       if (bwSlider) {
@@ -1032,9 +1115,6 @@
           document.querySelectorAll('.bandwidth-tabs .tab-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentBwCategory = BW_TAB_MAP[btn.dataset.bwTab] || 'text';
-          const base = `videos/bandwidth/${currentBwCategory}`;
-          bwRefVideo.src = `${base}/ref.mp4`;
-          bwRefVideo.play().catch(() => {});
           updateBwVideos(parseInt(bwSlider.value));
         });
       });

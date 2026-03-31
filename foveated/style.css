@@ -738,6 +738,29 @@ body.dark-mode .title-rect {
   border-radius: 8px;
 }
 
+.video-category-label {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 4px;
+  z-index: 3;
+  letter-spacing: 0.02em;
+}
+
+.video-caption {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  text-align: justify;
+  margin-top: 12px;
+  min-height: 2.4em;
+}
+
 .panel video {
   width: 100%;
   border-radius: 8px;

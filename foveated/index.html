@@ -561,12 +561,29 @@
     })();
 
     // ===== Video Carousel =====
+    const VIDEO_META = {
+      text_outdoor1: { label: 'Text Saccade (Outdoor)', caption: 'Our foveated policy detects and saccades to text regions in an outdoor scene, dynamically allocating full-resolution readout to signage while maintaining a low-resolution global context.' },
+      text_outdoor2: { label: 'Text Saccade (Outdoor)', caption: 'The system tracks multiple text targets across the scene, reallocating the high-resolution ROI as new regions of interest emerge.' },
+      text_outdoor3: { label: 'Text Saccade (Outdoor)', caption: 'Rapid saccadic movements between distant text regions demonstrate the policy\'s ability to prioritize task-relevant content under strict bandwidth constraints.' },
+      text_outdoor4: { label: 'Text Saccade (Outdoor)', caption: 'The foveated sensor captures fine text details at full resolution while the peripheral field of view remains at low resolution for contextual awareness.' },
+      text_indoor1: { label: 'Text Saccade (Indoor)', caption: 'Indoor text saccade with the 200 MP prototype sensor. The policy learns to foveate on readable text regions, resolving fine characters that are lost in the low-resolution global stream.' },
+      text_indoor2: { label: 'Text Saccade (Indoor)', caption: 'The system smoothly transitions between text targets in an indoor environment, demonstrating real-time foveated acquisition under realistic lighting conditions.' },
+      person_pursuit1: { label: 'Person Pursuit', caption: 'The foveated policy tracks a person moving through the scene, keeping the subject within the high-resolution ROI while the background streams at low resolution.' },
+      person_pursuit2: { label: 'Person Pursuit', caption: 'Continuous person pursuit across the full field of view. The policy predicts the subject\'s trajectory to maintain foveation with minimal latency.' },
+      person_pursuit3: { label: 'Person Pursuit', caption: 'Real-time person tracking with the 200 MP sensor prototype, demonstrating the closed-loop perception-acquisition pipeline under natural motion.' },
+      car_pursuit1: { label: 'Car Pursuit', caption: 'The system tracks a moving vehicle, dynamically repositioning the high-resolution ROI to capture fine details such as license plates and vehicle features.' },
+      car_pursuit2: { label: 'Car Pursuit', caption: 'Fast car pursuit demonstrates the policy\'s ability to handle rapid motion, maintaining the target within the foveated region despite significant displacement between frames.' },
+      car_pursuit3: { label: 'Car Pursuit', caption: 'Multi-frame car tracking with predictive foveation. The sensor allocates bandwidth to the vehicle of interest while monitoring the surrounding traffic at low resolution.' },
+      car_pursuit4: { label: 'Car Pursuit', caption: 'The foveated imaging system captures a vehicle in motion, showcasing the bandwidth savings of selective high-resolution acquisition over full-sensor readout.' },
+    };
+
     class VideoCarousel {
       constructor(el) {
         this.container = el;
         this.videos = JSON.parse(el.dataset.videos);
         this.currentIndex = 0;
         this.frameManifests = {};
+        this.autoAdvance = true;
         this.init();
       }
 
@@ -576,14 +593,15 @@
           <div class="video-3panel">
             <div class="panel panel-global">
               <div class="panel-loading-wrap">
-                <video muted autoplay loop playsinline></video>
+                <video muted autoplay playsinline></video>
                 <div class="panel-loader"><span class="loader-pct">0%</span></div>
+                <div class="video-category-label"></div>
               </div>
               <div class="demo-label">Global View + ROI</div>
             </div>
             <div class="panel panel-roi">
               <div class="panel-loading-wrap">
-                <video muted autoplay loop playsinline></video>
+                <video muted autoplay playsinline></video>
                 <div class="panel-loader"><span class="loader-pct">0%</span></div>
               </div>
               <div class="demo-label">Foveated ROI</div>
@@ -616,6 +634,7 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
             </button>
           </div>
+          <p class="video-caption"></p>
         `;
 
         this.globalVideo = this.container.querySelector('.panel-global video');
@@ -624,10 +643,14 @@
         this.globalLoader = this.container.querySelector('.panel-global .loader-pct');
         this.roiLoader = this.container.querySelector('.panel-roi .loader-pct');
         this.frameLoader = this.container.querySelector('.frame-loader');
+        this.categoryLabel = this.container.querySelector('.video-category-label');
+        this.captionEl = this.container.querySelector('.video-caption');
         this.dots = this.container.querySelectorAll('.carousel-dot');
         this.frameDots = this.container.querySelector('.frame-dots');
         this.frameIdx = 0;
         this.frameTimer = null;
+        this.videoEnded = false;
+        this.framesShownOnce = false;
 
         // Loading progress tracking
         this.globalVideo.addEventListener('progress', () => this.updateLoadPct(this.globalVideo, this.globalLoader));
@@ -637,6 +660,12 @@
         });
         this.roiVideo.addEventListener('canplaythrough', () => {
           this.roiLoader.parentElement.style.display = 'none';
+        });
+
+        // Auto-advance: when video ends, check if frames also done
+        this.globalVideo.addEventListener('ended', () => {
+          this.videoEnded = true;
+          this.tryAutoAdvance();
         });
 
         this.container.querySelector('.carousel-prev').addEventListener('click', () => this.prev());
@@ -659,10 +688,25 @@
         }
       }
 
+      tryAutoAdvance() {
+        if (this.autoAdvance && this.videoEnded && this.framesShownOnce) {
+          this.next();
+        }
+      }
+
       async loadVideo(index) {
         this.currentIndex = index;
         const name = this.videos[index];
         const base = `videos/prototype/${name}`;
+
+        // Reset auto-advance flags
+        this.videoEnded = false;
+        this.framesShownOnce = false;
+
+        // Update category label and caption
+        const meta = VIDEO_META[name] || { label: '', caption: '' };
+        this.categoryLabel.textContent = meta.label;
+        this.captionEl.textContent = meta.caption;
 
         // Show loaders
         this.globalLoader.parentElement.style.display = '';
@@ -752,13 +796,25 @@
         clearInterval(this.frameTimer);
         const name = this.videos[this.currentIndex];
         const manifest = this.frameManifests[name];
-        if (!manifest || manifest.frames.length === 0) return;
+        if (!manifest || manifest.frames.length === 0) {
+          this.framesShownOnce = true;
+          this.tryAutoAdvance();
+          return;
+        }
+        this.framesShownOnce = false;
+        let shownCount = 0;
+        const totalFrames = manifest.frames.length;
         this.frameTimer = setInterval(() => {
           const curName = this.videos[this.currentIndex];
           const curManifest = this.frameManifests[curName];
           if (!curManifest || curManifest.frames.length === 0) return;
           this.frameIdx = (this.frameIdx + 1) % curManifest.frames.length;
           this.showFrame(this.frameIdx);
+          shownCount++;
+          if (shownCount >= totalFrames && !this.framesShownOnce) {
+            this.framesShownOnce = true;
+            this.tryAutoAdvance();
+          }
         }, 2000);
       }
 

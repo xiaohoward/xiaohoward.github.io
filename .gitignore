@@ -6,3 +6,17 @@ foveated/preprocess_videos.py
 foveated/videos/prototype/*/global_video.mp4
 foveated/videos/prototype/*/roi_video.mp4
 foveated/videos/prototype/*/overlay_video.mp4
+# Bandwidth: only ship mp4s, not source frames
+foveated/videos/bandwidth/*/groundtruth*.txt
+foveated/videos/bandwidth/*/yolo*.txt
+foveated/videos/bandwidth/*/*.jpg
+# Simulated results: ignore all subdirs except frames/, and all files except processed + manifest
+foveated/videos/simulated_results/*/ROI/
+foveated/videos/simulated_results/*/global_yolo/
+foveated/videos/simulated_results/*/hungarian/
+foveated/videos/simulated_results/*/kf/
+foveated/videos/simulated_results/*/*.jpg
+foveated/videos/simulated_results/*/*.txt
+foveated/videos/simulated_results/*/*.png
+.DS_Store
+**/.DS_Store

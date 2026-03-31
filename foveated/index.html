@@ -89,7 +89,52 @@
       <h2 class="section-heading reveal">Abstract</h2>
 
       <div class="section-body reveal">
-        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed.</p>
+        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed. This results in degraded performance across multiple perception tasks, including object tracking, text recognition, and robotic manipulation.</p>
+      </div>
+
+      <!-- Bandwidth comparison demo -->
+      <div class="bandwidth-demo reveal">
+        <div class="tab-nav bandwidth-tabs">
+          <button class="tab-btn active" data-bw-tab="tracking">Object Tracking</button>
+          <button class="tab-btn" data-bw-tab="text">Text Recognition</button>
+          <button class="tab-btn" data-bw-tab="robotics">Robotic Manipulation</button>
+        </div>
+
+        <div class="video-3panel bandwidth-panel">
+          <div class="panel">
+            <div class="panel-loading-wrap">
+              <video id="bw-ref-video" muted autoplay loop playsinline src="videos/bandwidth/text/ref.mp4"></video>
+            </div>
+            <div class="demo-label">Full Resolution Reference</div>
+          </div>
+          <div class="panel">
+            <div class="panel-loading-wrap">
+              <video id="bw-spatial-video" muted autoplay loop playsinline src="videos/bandwidth/text/spatial_16.mp4"></video>
+              <div class="bw-overlay-label" id="bw-spatial-label">1/16 x Full Bandwidth</div>
+            </div>
+            <div class="demo-label">Naive Spatial Downsampling</div>
+          </div>
+          <div class="panel">
+            <div class="panel-loading-wrap">
+              <video id="bw-temporal-video" muted autoplay loop playsinline src="videos/bandwidth/text/temporal_16.mp4"></video>
+              <div class="bw-overlay-label" id="bw-temporal-label">1/16 x Full Bandwidth</div>
+            </div>
+            <div class="demo-label">Naive Temporal Downsampling</div>
+          </div>
+        </div>
+        <div class="bw-slider-row">
+          <div class="bw-slider-spacer"></div>
+          <div class="bw-slider-wrap">
+            <input type="range" class="bw-slider" id="bw-slider" min="0" max="4" step="1" value="0">
+            <div class="bw-slider-ticks">
+              <span>1/16</span><span>1/8</span><span>1/4</span><span>1/2</span><span>1</span>
+            </div>
+            <label class="bw-slider-label">Bandwidth Budget</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-body reveal">
         <p>In this work, we introduce a real-time, predictive, and task-aware foveated imaging system that operates directly at image acquisition time. Leveraging emerging dual-stream sensor architectures, our method dynamically allocates limited pixel bandwidth to task-relevant regions of interest while maintaining a low-resolution global context. We formulate foveated acquisition as a sensor attention policy-learning problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
       </div>
 
@@ -114,11 +159,11 @@
             <div class="demo-label">Foveated Region-of-Interest (ROI)</div>
           </div>
         </div>
-        <p class="demo-caption">Our policy-based foveated imaging framework operates in real time and decides where and when to sample full-resolution regions of interest (right) in a task-specific manner based on low-resolution full-field-of-view context frames (left, center) as well as past observations.</p>
       </div>
 
       <div class="section-body reveal">
         <p>Through extensive simulation across multiple perception tasks, we demonstrate that our approach achieves high task performance under strict pixel budgets and significantly outperforms relevant baselines operating at the same bandwidth. We further validate our system on a 200-megapixel dual-stream sensor, capturing real-world videos under realistic bandwidth and latency constraints, demonstrating the practical feasibility of task-driven, acquisition-time foveated imaging.</p>
+        <p><a href="#results" class="scroll-link">See more of our results here.</a></p>
       </div>
     </div>
     <a href="#method" class="scroll-arrow">
@@ -164,6 +209,25 @@
       </div>
       <div class="tab-panel" id="tab-car_pursuit">
         <div class="video-carousel results-carousel" data-videos='["car_pursuit1","car_pursuit2","car_pursuit3","car_pursuit4"]'></div>
+      </div>
+
+      <!-- Simulation Results -->
+      <h3 class="results-subtitle" style="margin-top: 48px;">Simulation Results for Multiple Perception Tasks</h3>
+
+      <div class="tab-nav" id="sim-tabs">
+        <button class="tab-btn active" data-sim-tab="sim_tracking">Object Tracking</button>
+        <button class="tab-btn" data-sim-tab="sim_text">Text Recognition</button>
+        <button class="tab-btn" data-sim-tab="sim_robotics">Robotics</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-sim_tracking">
+        <div class="placeholder-block">Object tracking results coming soon.</div>
+      </div>
+      <div class="tab-panel" id="tab-sim_text">
+        <div class="video-carousel sim-carousel" data-videos='["text1","text2","text3","text4"]' data-basepath="videos/simulated_results"></div>
+      </div>
+      <div class="tab-panel" id="tab-sim_robotics">
+        <div class="placeholder-block">Robotics results coming soon.</div>
       </div>
     </div>
     <a href="#bibtex" class="scroll-arrow">
@@ -228,10 +292,14 @@
       }, 800);
     }
 
-    // Track scroll position to detect if user scrolled back to hero
+    // Track scroll position — lock back to hero when at top
     window.addEventListener('scroll', () => {
       if (!onHero) {
-        nav.classList.toggle('scrolled', window.scrollY > 100);
+        if (window.scrollY <= 0 && !isMobile) {
+          lockToHero();
+        } else {
+          nav.classList.toggle('scrolled', window.scrollY > 100);
+        }
       }
     });
 
@@ -264,11 +332,11 @@
       });
     });
 
-    // Scroll arrow clicks
-    document.querySelectorAll('.scroll-arrow').forEach(arrow => {
-      arrow.addEventListener('click', (e) => {
+    // Scroll arrow + link clicks
+    document.querySelectorAll('.scroll-arrow, .scroll-link').forEach(el => {
+      el.addEventListener('click', (e) => {
         e.preventDefault();
-        const target = arrow.getAttribute('href').replace('#', '');
+        const target = el.getAttribute('href').replace('#', '');
         if (onHero) unlockScroll();
         document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
       });
@@ -575,15 +643,21 @@
       car_pursuit2: { label: 'Car Pursuit', caption: 'Fast car pursuit demonstrates the policy\'s ability to handle rapid motion, maintaining the target within the foveated region despite significant displacement between frames.' },
       car_pursuit3: { label: 'Car Pursuit', caption: 'Multi-frame car tracking with predictive foveation. The sensor allocates bandwidth to the vehicle of interest while monitoring the surrounding traffic at low resolution.' },
       car_pursuit4: { label: 'Car Pursuit', caption: 'The foveated imaging system captures a vehicle in motion, showcasing the bandwidth savings of selective high-resolution acquisition over full-sensor readout.' },
+      text1: { label: 'Text Recognition', caption: 'Simulated foveated text recognition: the policy directs the high-resolution ROI to text regions, enabling accurate character recognition under constrained pixel budgets.' },
+      text2: { label: 'Text Recognition', caption: 'The foveated attention policy saccades between text targets, demonstrating adaptive bandwidth allocation for multi-region text detection.' },
+      text3: { label: 'Text Recognition', caption: 'Sequential text foveation across the scene, with the policy learning to prioritize unread text regions for maximum recognition coverage.' },
+      text4: { label: 'Text Recognition', caption: 'Simulation of foveated acquisition for dense text scenes, showing the trade-off between spatial coverage and character-level resolution.' },
     };
 
     class VideoCarousel {
       constructor(el) {
         this.container = el;
         this.videos = JSON.parse(el.dataset.videos);
+        this.basepath = el.dataset.basepath || 'videos/prototype';
         this.currentIndex = 0;
         this.frameManifests = {};
         this.autoAdvance = true;
+        this.isHero = el.classList.contains('hero-carousel');
         this.init();
       }
 
@@ -595,7 +669,7 @@
               <div class="panel-loading-wrap">
                 <video muted autoplay playsinline></video>
                 <div class="panel-loader"><span class="loader-pct">0%</span></div>
-                <div class="video-category-label"></div>
+                ${this.isHero ? '<div class="video-category-label"></div>' : ''}
               </div>
               <div class="demo-label">Global View + ROI</div>
             </div>
@@ -662,10 +736,23 @@
           this.roiLoader.parentElement.style.display = 'none';
         });
 
-        // Auto-advance: when video ends, check if frames also done
+        // Auto-advance: when video ends, loop it but mark as ended for auto-advance
         this.globalVideo.addEventListener('ended', () => {
           this.videoEnded = true;
-          this.tryAutoAdvance();
+          if (!this.framesShownOnce) {
+            this.globalVideo.currentTime = 0;
+            this.globalVideo.play().catch(() => {});
+            this.roiVideo.currentTime = 0;
+            this.roiVideo.play().catch(() => {});
+          } else {
+            this.tryAutoAdvance();
+          }
+        });
+        this.roiVideo.addEventListener('ended', () => {
+          if (!this.videoEnded) {
+            this.roiVideo.currentTime = 0;
+            this.roiVideo.play().catch(() => {});
+          }
         });
 
         this.container.querySelector('.carousel-prev').addEventListener('click', () => this.prev());
@@ -690,22 +777,22 @@
 
       tryAutoAdvance() {
         if (this.autoAdvance && this.videoEnded && this.framesShownOnce) {
-          this.next();
+          setTimeout(() => this.next(), 500);
         }
       }
 
       async loadVideo(index) {
         this.currentIndex = index;
         const name = this.videos[index];
-        const base = `videos/prototype/${name}`;
+        const base = `${this.basepath}/${name}`;
 
         // Reset auto-advance flags
         this.videoEnded = false;
         this.framesShownOnce = false;
 
-        // Update category label and caption
+        // Update category label (hero only) and caption
         const meta = VIDEO_META[name] || { label: '', caption: '' };
-        this.categoryLabel.textContent = meta.label;
+        if (this.categoryLabel) this.categoryLabel.textContent = meta.label;
         this.captionEl.textContent = meta.caption;
 
         // Show loaders
@@ -781,7 +868,7 @@
         const name = this.videos[this.currentIndex];
         const manifest = this.frameManifests[name];
         if (!manifest || manifest.frames.length === 0) return;
-        const base = `videos/prototype/${name}/frames`;
+        const base = `${this.basepath}/${name}/frames`;
         this.slideshowImg.style.opacity = '0';
         setTimeout(() => {
           this.slideshowImg.src = `${base}/${manifest.frames[idx]}`;
@@ -875,14 +962,17 @@
       new VideoCarousel(heroCarouselEl);
     }
 
-    // Tab switching + lazy carousel init for Results
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    // Tab switching + lazy carousel init for Results (scoped to #results-tabs only)
+    document.querySelectorAll('#results-tabs .tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => {
-          p.classList.remove('active');
-          const c = p.querySelector('.video-carousel');
-          if (c && c._carousel) c._carousel.pause();
+        document.querySelectorAll('#results-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        ['tab-text_outdoor','tab-text_indoor','tab-person_pursuit','tab-car_pursuit'].forEach(id => {
+          const p = document.getElementById(id);
+          if (p) {
+            p.classList.remove('active');
+            const c = p.querySelector('.video-carousel');
+            if (c && c._carousel) c._carousel.pause();
+          }
         });
 
         btn.classList.add('active');
@@ -903,6 +993,73 @@
     if (firstActiveTab) {
       firstActiveTab._carousel = new VideoCarousel(firstActiveTab);
     }
+
+    // ===== Bandwidth Comparison Demo =====
+    (function() {
+      const BW_LEVELS = ['1/16', '1/8', '1/4', '1/2', '1'];
+
+      const BW_KEYS = ['16', '8', '4', '2', '1'];
+      const bwSlider = document.getElementById('bw-slider');
+      const spatialLabel = document.getElementById('bw-spatial-label');
+      const bwRefVideo = document.getElementById('bw-ref-video');
+      const bwSpatialVideo = document.getElementById('bw-spatial-video');
+      const bwTemporalVideo = document.getElementById('bw-temporal-video');
+      const temporalLabel = document.getElementById('bw-temporal-label');
+      let currentBwCategory = 'text';
+
+      function updateBwVideos(val) {
+        const key = BW_KEYS[val];
+        const labelText = BW_LEVELS[val] + ' x Full Bandwidth';
+        spatialLabel.textContent = labelText;
+        temporalLabel.textContent = labelText;
+        const base = `videos/bandwidth/${currentBwCategory}`;
+        bwSpatialVideo.src = `${base}/spatial_${key}.mp4`;
+        bwTemporalVideo.src = `${base}/temporal_${key}.mp4`;
+        bwRefVideo.currentTime = 0;
+        bwRefVideo.play().catch(() => {});
+        bwSpatialVideo.play().catch(() => {});
+        bwTemporalVideo.play().catch(() => {});
+      }
+
+      if (bwSlider) {
+        bwSlider.addEventListener('input', () => updateBwVideos(parseInt(bwSlider.value)));
+      }
+
+      // Bandwidth tabs (abstract section)
+      const BW_TAB_MAP = { tracking: 'object', text: 'text', robotics: 'robotics' };
+      document.querySelectorAll('.bandwidth-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.bandwidth-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentBwCategory = BW_TAB_MAP[btn.dataset.bwTab] || 'text';
+          const base = `videos/bandwidth/${currentBwCategory}`;
+          bwRefVideo.src = `${base}/ref.mp4`;
+          bwRefVideo.play().catch(() => {});
+          updateBwVideos(parseInt(bwSlider.value));
+        });
+      });
+
+      // Simulation tabs (results section)
+      document.querySelectorAll('#sim-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#sim-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('[id^="tab-sim_"]').forEach(p => {
+            p.classList.remove('active');
+            const c = p.querySelector('.video-carousel');
+            if (c && c._carousel) c._carousel.pause();
+          });
+          btn.classList.add('active');
+          const panel = document.getElementById('tab-' + btn.dataset.simTab);
+          panel.classList.add('active');
+          const carouselEl = panel.querySelector('.video-carousel');
+          if (carouselEl && !carouselEl._carousel) {
+            carouselEl._carousel = new VideoCarousel(carouselEl);
+          } else if (carouselEl && carouselEl._carousel) {
+            carouselEl._carousel.play();
+          }
+        });
+      });
+    })();
   </script>
 
 </body>

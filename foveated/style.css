@@ -848,6 +848,8 @@ body.dark-mode .title-rect {
 
 .panel video {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
   border-radius: 8px;
   display: block;
   background: var(--color-card-bg);

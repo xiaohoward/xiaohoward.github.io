@@ -179,7 +179,7 @@
     <div class="section-inner">
       <h2 class="section-heading reveal">Method</h2>
       <div class="reveal">
-        <video class="method-video" muted autoplay loop playsinline>
+        <video class="method-video" id="method-video" muted autoplay playsinline>
           <source src="videos/method.mp4" type="video/mp4">
         </video>
       </div>
@@ -1130,6 +1130,15 @@
           updateBwVideos(parseInt(bwSlider.value));
         });
       });
+
+      // Method video: play once, freeze on last frame; click section to replay
+      const methodVideo = document.getElementById('method-video');
+      if (methodVideo) {
+        document.getElementById('method').addEventListener('click', () => {
+          methodVideo.currentTime = 0;
+          methodVideo.play();
+        });
+      }
 
       // Auto-init first active sim tab carousel
       const firstSimCarousel = document.querySelector('[id^="tab-sim_"].active .video-carousel');

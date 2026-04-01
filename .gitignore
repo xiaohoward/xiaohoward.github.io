@@ -10,6 +10,10 @@ foveated/videos/prototype/*/overlay_video.mp4
 foveated/videos/bandwidth/*/groundtruth*.txt
 foveated/videos/bandwidth/*/yolo*.txt
 foveated/videos/bandwidth/*/*.jpg
+foveated/videos/bandwidth/*/*.txt
+foveated/videos/bandwidth/*/*.ini
+foveated/videos/bandwidth/*/gt/
+foveated/videos/bandwidth/*/det/
 # Simulated results: ignore all subdirs except frames/, and all files except processed + manifest
 foveated/videos/simulated_results/*/ROI/
 foveated/videos/simulated_results/*/global_yolo/

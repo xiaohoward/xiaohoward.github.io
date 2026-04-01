@@ -1131,6 +1131,12 @@
         });
       });
 
+      // Auto-init first active sim tab carousel
+      const firstSimCarousel = document.querySelector('[id^="tab-sim_"].active .video-carousel');
+      if (firstSimCarousel) {
+        firstSimCarousel._carousel = new VideoCarousel(firstSimCarousel);
+      }
+
       // Simulation tabs (results section)
       document.querySelectorAll('#sim-tabs .tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {

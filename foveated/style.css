@@ -1071,6 +1071,8 @@ body.dark-mode .tab-nav {
 /* ===== Method Video ===== */
 .method-video {
   width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
   border-radius: 12px;
   display: block;
 }

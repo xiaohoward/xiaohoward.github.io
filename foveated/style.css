@@ -1068,6 +1068,21 @@ body.dark-mode .tab-nav {
   border-bottom-color: var(--color-border);
 }
 
+/* ===== Method Video ===== */
+.method-video {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+.pub-links a.btn-disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-secondary);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .nav-inner {

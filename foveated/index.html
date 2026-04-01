@@ -734,16 +734,17 @@
         this.globalVideo.addEventListener('progress', () => this.updateLoadPct(this.globalVideo, this.globalLoader));
         this.roiVideo.addEventListener('progress', () => this.updateLoadPct(this.roiVideo, this.roiLoader));
 
-        // Auto-advance: when video ends, loop it but mark as ended for auto-advance
+        // Video ended: loop always, auto-advance only for hero
         this.globalVideo.addEventListener('ended', () => {
           this.videoEnded = true;
-          if (!this.framesShownOnce) {
+          if (this.autoAdvance && this.framesShownOnce) {
+            this.tryAutoAdvance();
+          } else {
+            // Loop both videos
             this.globalVideo.currentTime = 0;
             this.globalVideo.play().catch(() => {});
             this.roiVideo.currentTime = 0;
             this.roiVideo.play().catch(() => {});
-          } else {
-            this.tryAutoAdvance();
           }
         });
         this.roiVideo.addEventListener('ended', () => {
@@ -841,6 +842,12 @@
 
         this.globalVideo.src = `${base}/processed_global.mp4`;
         this.roiVideo.src = `${base}/processed_roi.mp4`;
+
+        // Fallback: if canplay already fired (cached video), check after a tick
+        setTimeout(() => {
+          if (!self.globalReady && self.globalVideo.readyState >= 3) onGlobalReady();
+          if (!self.roiReady && self.roiVideo.readyState >= 3) onRoiReady();
+        }, 100);
 
         if (!this.frameManifests[name]) {
           try {

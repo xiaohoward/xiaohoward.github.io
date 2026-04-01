@@ -103,14 +103,14 @@
         <div class="video-3panel bandwidth-panel">
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-ref-video" muted loop playsinline src="videos/bandwidth/text/ref.mp4"></video>
+              <video id="bw-ref-video" muted loop playsinline src="videos/bandwidth/object/ref.mp4"></video>
               <div class="panel-loader" id="bw-ref-loader"><span class="loader-pct">Loading 0%</span></div>
             </div>
             <div class="demo-label">Full Resolution Reference</div>
           </div>
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-spatial-video" muted loop playsinline src="videos/bandwidth/text/spatial_16.mp4"></video>
+              <video id="bw-spatial-video" muted loop playsinline src="videos/bandwidth/object/spatial_16.mp4"></video>
               <div class="panel-loader" id="bw-spatial-loader"><span class="loader-pct">Loading 0%</span></div>
               <div class="bw-overlay-label" id="bw-spatial-label">1/16 x Full Bandwidth</div>
             </div>
@@ -118,7 +118,7 @@
           </div>
           <div class="panel">
             <div class="panel-loading-wrap">
-              <video id="bw-temporal-video" muted loop playsinline src="videos/bandwidth/text/temporal_16.mp4"></video>
+              <video id="bw-temporal-video" muted loop playsinline src="videos/bandwidth/object/temporal_16.mp4"></video>
               <div class="panel-loader" id="bw-temporal-loader"><span class="loader-pct">Loading 0%</span></div>
               <div class="bw-overlay-label" id="bw-temporal-label">1/16 x Full Bandwidth</div>
             </div>
@@ -254,7 +254,7 @@
 
   <!-- ===== Footer ===== -->
   <footer class="site-footer">
-    <p><a href="../">Howard Xiao</a> | Template inspired by <a href="https://nerfies.github.io">Nerfies</a></p>
+    <p><a href="../">Howard Xiao</a> | Website made with Claude.</a></p>
   </footer>
 
   <script>
@@ -659,8 +659,8 @@
         this.basepath = el.dataset.basepath || 'videos/prototype';
         this.currentIndex = 0;
         this.frameManifests = {};
-        this.autoAdvance = true;
         this.isHero = el.classList.contains('hero-carousel');
+        this.autoAdvance = this.isHero;
         this.init();
       }
 
@@ -1039,7 +1039,7 @@
       const bwRefLoader = document.getElementById('bw-ref-loader');
       const bwSpatialLoader = document.getElementById('bw-spatial-loader');
       const bwTemporalLoader = document.getElementById('bw-temporal-loader');
-      let currentBwCategory = 'text';
+      let currentBwCategory = 'object';
 
       // Progress tracking for bandwidth videos
       function bwUpdatePct(video, loader) {

@@ -201,9 +201,9 @@ body.dark-mode .icon-moon { display: none; }
   max-height: 100vh;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 110px 20px 20px;
+  padding: 100px 20px 20px;
   background: var(--color-bg);
   text-align: center;
   position: relative;
@@ -226,7 +226,8 @@ body.dark-mode .icon-moon { display: none; }
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  margin-bottom: 36px;
+  padding: 22px 0;
+  margin-bottom: 14px;
   color: var(--color-text);
   white-space: nowrap;
   position: relative;
@@ -236,6 +237,17 @@ body.dark-mode .icon-moon { display: none; }
 .title-word {
   display: inline;
   transition: color 0.6s ease;
+}
+
+.title-emoji {
+  margin-right: 0.45em;
+}
+
+/* Emojis are color glyphs — hide them inside the rainbow layer so they don't
+   render over the title's real emojis when the rect slides past. The element
+   still occupies its width so character alignment with the title text holds. */
+.title-rainbow-layer .title-emoji {
+  visibility: hidden;
 }
 
 /* ===== Title Animation — Rectangle (positioned by JS via CSS custom props) ===== */
@@ -279,6 +291,8 @@ body.dark-mode .title-rect {
   left: 0;
   right: 0;
   bottom: 0;
+  padding: 22px 0;
+  box-sizing: border-box;
   background: var(--rainbow);
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -389,6 +403,23 @@ body.dark-mode .title-rect {
   color: var(--color-accent);
 }
 
+.hero-venue {
+  font-size: clamp(13px, 1.15vw, 16px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.hero-venue a {
+  color: #c5960c;
+  transition: color var(--transition-fast);
+}
+
+.hero-venue a:hover {
+  color: #e0ab1a;
+}
+
 
 /* ===== Publication Link Buttons ===== */
 .pub-links {
@@ -484,6 +515,15 @@ body.dark-mode .title-rect {
 /* ===== Interactive Demo Panel ===== */
 .demo-panel {
   margin-bottom: 6px;
+}
+
+.demo-title {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  margin: 0 0 16px;
+  letter-spacing: 0.01em;
 }
 
 .demo-images {
@@ -588,15 +628,11 @@ body.dark-mode .title-rect {
 
 /* ===== Hero Tagline (typewriter) ===== */
 .hero-tagline-wrapper {
-  margin-top: 14px;
-  margin-bottom: 6px;
   text-align: center;
 }
 
 .hero-tagline-line {
-  font-family: 'Georgia', 'Times New Roman', serif;
   font-size: clamp(12px, 1.1vw, 15px);
-  font-style: italic;
   font-weight: 400;
   color: var(--color-text);
   line-height: 1.8;
@@ -604,28 +640,6 @@ body.dark-mode .title-rect {
   min-height: 1.8em;
   margin: 0;
   display: block;
-  opacity: 0.85;
-}
-
-.hero-tagline-line.typing {
-  border-right: 2px solid var(--color-text);
-  animation: blink-cursor 0.7s step-end infinite;
-}
-
-@keyframes blink-cursor {
-  50% { border-color: transparent; }
-}
-
-.hero-tagline-line.gold-flash {
-  color: #c5960c;
-  opacity: 1;
-  transition: color 0.6s ease-in, opacity 0.6s ease-in;
-}
-
-.hero-tagline-line.gold-fade {
-  color: var(--color-text);
-  opacity: 0.85;
-  transition: color 1.2s ease-out, opacity 1.2s ease-out;
 }
 
 /* ===== Scroll Down Arrow ===== */
@@ -665,10 +679,16 @@ body.dark-mode .title-rect {
 
 .hero-scroll-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  gap: 8px;
   margin-top: 8px;
+}
+
+.hero-scroll-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .scroll-hint {
@@ -988,6 +1008,109 @@ body.dark-mode .title-rect {
 .hero-carousel {
   margin-top: 16px;
   margin-bottom: 4px;
+}
+
+/* ===== Hero Teaser (3-panel: sensor | global+ROI | foveated crop) ===== */
+.hero-teaser-wrap {
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
+
+.hero-teaser {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.teaser-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex-grow: var(--panel-aspect);
+  flex-shrink: 1;
+  flex-basis: 0;
+}
+
+.teaser-isocell { --panel-aspect: 0.822; }   /* 1569 / 1909 */
+.teaser-global  { --panel-aspect: 3.127; }   /* 4000 / 1279 */
+.teaser-crop    { --panel-aspect: 1.778; }   /* 16  / 9    */
+
+.teaser-img-wrap {
+  position: relative;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.dark-mode .teaser-img-wrap {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Sensor photo has transparent background — let it sit cleanly on any page bg. */
+.teaser-isocell .teaser-img-wrap {
+  background: transparent;
+}
+
+.teaser-isocell .teaser-img-wrap { aspect-ratio: 1569 / 1909; }
+.teaser-global  .teaser-img-wrap { aspect-ratio: 4000 / 1279; }
+.teaser-crop    .teaser-img-wrap {
+  aspect-ratio: 16 / 9;
+  box-sizing: border-box;
+  border: 2px solid #e51a1a;
+  box-shadow: 0 0 12px rgba(229, 26, 26, 0.45);
+}
+
+.teaser-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.teaser-roi {
+  position: absolute;
+  border: 2px solid #e51a1a;
+  pointer-events: none;
+  box-shadow: 0 0 12px rgba(229, 26, 26, 0.45);
+  transition: left 0.6s ease, top 0.6s ease, width 0.6s ease, height 0.6s ease;
+}
+
+.teaser-label {
+  font-size: clamp(10px, 0.85vw, 12px);
+  color: var(--color-text-secondary);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.hero-teaser-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.teaser-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(128, 128, 128, 0.4);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.teaser-dot:hover {
+  background: rgba(128, 128, 128, 0.7);
+}
+
+.teaser-dot.active {
+  background: #c5960c;
+  transform: scale(1.2);
 }
 
 /* ===== Panel Labels ===== */

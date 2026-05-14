@@ -30,8 +30,8 @@
   <section id="hero" class="hero snap-section">
     <div class="hero-inner">
       <h1 class="hero-title" id="hero-title">
-        <span class="title-word">Policy-based</span> <span class="title-word title-foveated">Foveated</span> <span class="title-word">Imaging</span> <span class="title-word">and</span> <span class="title-word">Perception</span>
-        <span class="title-rainbow-layer" aria-hidden="true">Policy-based Foveated Imaging and Perception</span>
+        <span class="title-emoji" aria-hidden="true">📷+👁️</span><span class="title-word">Policy-based</span> <span class="title-word title-foveated">Foveated</span> <span class="title-word">Imaging</span> <span class="title-word">and</span> <span class="title-word">Perception</span>
+        <span class="title-rainbow-layer" aria-hidden="true"><span class="title-emoji">📷+👁️</span>Policy-based Foveated Imaging and Perception</span>
         <div class="title-rect" id="title-rect"></div>
       </h1>
       <div class="hero-authors">
@@ -43,42 +43,64 @@
       <div class="hero-affiliation">
         <a href="https://www.stanford.edu/">Stanford University</a>
       </div>
+      <div class="hero-venue">
+        <a href="https://s2026.siggraph.org/">SIGGRAPH 2026</a>
+      </div>
       <div class="pub-links">
-        <a href="#">
+        <a href="paper/main.pdf">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Paper
+          Paper (full-res)
         </a>
-        <a href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <a href="paper/main_lowres.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Paper (low-res)
+        </a>
+        <a href="paper/supplement.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Supplementary
         </a>
         <a href="#">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
           Video
         </a>
-        <a href="javascript:void(0)" class="btn-disabled">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-          Code: Coming Soon
-        </a>
-        <a href="javascript:void(0)" class="btn-disabled">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Demo: Coming Soon
-        </a>
       </div>
-      <div class="hero-tagline-wrapper">
-        <p class="hero-tagline-line" id="tagline-1"></p>
-        <p class="hero-tagline-line" id="tagline-2"></p>
-      </div>
-      <!-- Hero Video Carousel -->
-      <div class="video-carousel hero-carousel" id="hero-carousel"
-           data-videos='["text_outdoor1","text_indoor1","person_pursuit1","car_pursuit1"]'>
+      <!-- Hero Teaser: ISOCELL prototype | low-res global view + ROI | foveated full-res crop -->
+      <div class="hero-teaser-wrap">
+        <div class="hero-teaser" id="hero-teaser">
+          <div class="teaser-panel teaser-isocell">
+            <div class="teaser-img-wrap">
+              <img src="images/isocell.png" alt="200 MP ISOCELL prototype sensor">
+            </div>
+            <div class="teaser-label">200 MP Prototype Sensor</div>
+          </div>
+          <div class="teaser-panel teaser-global">
+            <div class="teaser-img-wrap">
+              <img src="images/downsampled_global.jpeg" alt="Low-resolution global field-of-view (1.5 GP scene)">
+              <div class="teaser-roi" id="teaser-roi"></div>
+            </div>
+            <div class="teaser-label">Low-Resolution Global Context</div>
+          </div>
+          <div class="teaser-panel teaser-crop">
+            <div class="teaser-img-wrap">
+              <img id="teaser-crop-img" alt="Full-resolution foveated ROI">
+            </div>
+            <div class="teaser-label">Foveated Full-Resolution Region of Interest (ROI)</div>
+          </div>
+        </div>
+        <div class="hero-teaser-dots" id="hero-teaser-dots"></div>
       </div>
 
       <div class="hero-scroll-row">
-        <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
-          <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <span class="scroll-hint">Scroll to view more</span>
+        <div class="hero-tagline-wrapper">
+          <p class="hero-tagline-line" id="tagline-1"></p>
+          <p class="hero-tagline-line" id="tagline-2"></p>
+        </div>
+        <div class="hero-scroll-cta">
+          <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
+            <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <span class="scroll-hint">Scroll to view more</span>
+        </div>
       </div>
     </div>
   </section>
@@ -143,6 +165,7 @@
 
       <!-- Interactive foveated demo -->
       <div class="demo-panel reveal">
+        <h3 class="demo-title">Dual-Stream Capture with 200MP Foveated Imaging Prototype</h3>
         <div class="demo-images">
           <div class="demo-col">
             <div class="demo-img-wrapper" id="demo-ffov">
@@ -155,11 +178,11 @@
           </div>
           <div class="demo-col">
             <canvas id="demo-naive-canvas"></canvas>
-            <div class="demo-label">Zoomed-in FFoV Crop</div>
+            <div class="demo-label">Zoomed-In Low-Resolution FFoV Crop</div>
           </div>
           <div class="demo-col">
             <canvas id="demo-foveated-canvas"></canvas>
-            <div class="demo-label">Foveated Region-of-Interest (ROI)</div>
+            <div class="demo-label">Foveated Full-Resolution ROI</div>
           </div>
         </div>
       </div>
@@ -427,11 +450,10 @@
         title.classList.add('phase-blur');
       }, 3800);
 
-      // Phase 4: Sharpen + Foveated rainbow + tagline gold (4.8s)
+      // Phase 4: Sharpen + Foveated rainbow (4.8s)
       setTimeout(() => {
         title.classList.remove('phase-blur');
         title.classList.add('phase-sharpen');
-        if (typeof taglineGoldFlash === 'function') taglineGoldFlash();
       }, 4800);
 
       // Phase 5: Hold foveated rainbow (6.3s)
@@ -440,12 +462,11 @@
         title.classList.add('phase-foveated-hold');
       }, 6300);
 
-      // Phase 6: Fade back to normal + tagline fade back (8s)
+      // Phase 6: Fade back to normal (8s)
       setTimeout(() => {
         title.classList.remove('phase-foveated-hold');
         title.classList.remove('phase-rect-hold');
         rectEl.style.opacity = '0';
-        if (typeof taglineGoldFade === 'function') taglineGoldFade();
       }, 8000);
     }
 
@@ -583,55 +604,9 @@
       if (ffovImg.complete) updateDemo(0.125, 0.125);
     })();
 
-    // ===== Typewriter Tagline =====
-    (function() {
-      const LINE1 = "Intelligent sensing transcends passive capture.";
-      const LINE2 = "Ultra-high-resolution sensors selectively acquire, perceiving the blooming present and awakening the vivid past.";
-      const CHAR_DELAY = 50;
-      const el1 = document.getElementById('tagline-1');
-      const el2 = document.getElementById('tagline-2');
-
-      function typeText(el, text, onDone) {
-        el.textContent = '';
-        el.classList.add('typing');
-        let i = 0;
-        function tick() {
-          if (i < text.length) {
-            el.textContent += text[i++];
-            setTimeout(tick, CHAR_DELAY);
-          } else {
-            el.classList.remove('typing');
-            if (onDone) onDone();
-          }
-        }
-        tick();
-      }
-
-      // Exposed globally so title animation can trigger them
-      window.taglineGoldFlash = function() {
-        el1.classList.remove('gold-fade');
-        el2.classList.remove('gold-fade');
-        el1.classList.add('gold-flash');
-        el2.classList.add('gold-flash');
-      };
-
-      window.taglineGoldFade = function() {
-        el1.classList.remove('gold-flash');
-        el1.classList.add('gold-fade');
-        el2.classList.remove('gold-flash');
-        el2.classList.add('gold-fade');
-      };
-
-      function runTagline() {
-        typeText(el1, LINE1, () => {
-          setTimeout(() => {
-            typeText(el2, LINE2, () => {});
-          }, 300);
-        });
-      }
-
-      setTimeout(runTagline, 2000);
-    })();
+    // ===== Tagline =====
+    document.getElementById('tagline-1').textContent = "Intelligent sensing transcends passive capture.";
+    document.getElementById('tagline-2').textContent = "Ultra-high-resolution sensors selectively acquire, perceiving the blooming present and awakening the vivid past.";
 
     // ===== Video Carousel =====
     const VIDEO_META = {
@@ -999,11 +974,48 @@
       }
     }
 
-    // Initialize hero carousel
-    const heroCarouselEl = document.getElementById('hero-carousel');
-    if (heroCarouselEl) {
-      new VideoCarousel(heroCarouselEl);
-    }
+    // ===== Hero Teaser (ISOCELL | Global+ROI | Foveated Crop) =====
+    (async function() {
+      const teaser = document.getElementById('hero-teaser');
+      if (!teaser) return;
+      const roiEl = document.getElementById('teaser-roi');
+      const cropImg = document.getElementById('teaser-crop-img');
+      const dotsEl = document.getElementById('hero-teaser-dots');
+
+      const manifest = await (await fetch('images/crops/manifest.json')).json();
+      const crops = manifest.crops;
+
+      dotsEl.innerHTML = crops.map((_, i) =>
+        `<button class="teaser-dot${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Crop ${i+1}"></button>`
+      ).join('');
+      const dots = dotsEl.querySelectorAll('.teaser-dot');
+
+      let idx = 0;
+      function show(i) {
+        idx = i;
+        const c = crops[i];
+        const [x1, y1, x2, y2] = c.bbox_norm;
+        roiEl.style.left = (x1 * 100) + '%';
+        roiEl.style.top = (y1 * 100) + '%';
+        roiEl.style.width = ((x2 - x1) * 100) + '%';
+        roiEl.style.height = ((y2 - y1) * 100) + '%';
+        cropImg.src = `images/crops/${c.file}`;
+        dots.forEach((d, di) => d.classList.toggle('active', di === i));
+      }
+
+      let timer;
+      function restartTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => show((idx + 1) % crops.length), 3000);
+      }
+      dots.forEach(d => d.addEventListener('click', () => {
+        show(parseInt(d.dataset.i));
+        restartTimer();
+      }));
+
+      show(0);
+      restartTimer();
+    })();
 
     // Tab switching + lazy carousel init for Results (scoped to #results-tabs only)
     document.querySelectorAll('#results-tabs .tab-btn').forEach(btn => {

@@ -1,0 +1,7 @@
+{
+  "selection_accuracy": 1.0,
+  "cross_entropy_loss": 0.0007028261776512513,
+  "num_replans": 92,
+  "sequence": "Soccernet_Test_SNMOT-133",
+  "target_gt_id": 11
+}

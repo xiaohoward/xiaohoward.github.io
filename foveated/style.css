@@ -1093,6 +1093,15 @@ body.dark-mode .teaser-img-wrap {
   margin-top: 14px;
 }
 
+.hero-teaser-credit {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  opacity: 0.55;
+  text-align: center;
+  margin-top: 8px;
+  letter-spacing: 0.02em;
+}
+
 .teaser-dot {
   width: 8px;
   height: 8px;

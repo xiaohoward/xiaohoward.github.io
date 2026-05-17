@@ -130,6 +130,9 @@
     <div class="nav-inner">
       <a href="#hero" class="nav-link nav-home">Home</a>
       <a href="#abstract" class="nav-link">Abstract</a>
+      <a href="#method" class="nav-link">Method</a>
+      <a href="#results" class="nav-link">Results</a>
+      <a href="#bibtex" class="nav-link">BibTeX</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
         <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -183,6 +186,47 @@
         <p>Computational demands for visual generative models are increasing rapidly as image resolutions and video sequence lengths continue to grow. This trend reveals a fundamental scaling crisis: while scaling model and data sizes consistently yields better generation quality, the underlying cost of self-attention in Diffusion Transformers scales quadratically with the number of generated tokens.</p>
         <p>Diffusion models have been shown to implicitly generate visual content autoregressively in the frequency domain, where low-frequency components are generated earlier in the denoising process while high-frequency details emerge only in later timesteps. This structure offers a natural opportunity for efficient generation, as high-resolution computation on noise-dominated frequencies is largely redundant.</p>
         <p>We propose <strong>Spectral Progressive Diffusion</strong>, a general framework that progressively grows resolution along the denoising trajectory of pretrained diffusion models. To this end, we develop a <span class="ul" style="--i:0">spectral noise expansion</span> mechanism and derive an <span class="ul" style="--i:1">optimal resolution schedule</span> from the model&rsquo;s power spectrum. Our framework supports <span class="ul" style="--i:2">training-free acceleration</span> and a <span class="ul" style="--i:3">fine-tuning recipe</span> that further improves efficiency and quality, enabling <span class="ul" style="--i:4">significant speedups</span> on state-of-the-art pretrained image and video generation models while <span class="ul" style="--i:5">preserving visual quality</span>.</p>
+      </div>
+    </div>
+    <a href="#method" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== Method ===== -->
+  <section id="method" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Method</h2>
+      <div class="reveal">
+        <img class="method-video" src="images/method.jpeg" alt="Spectral Progressive Diffusion method overview">
+      </div>
+    </div>
+    <a href="#results" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== Results ===== -->
+  <section id="results" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Results</h2>
+      <div class="placeholder-block reveal">Coming soon.</div>
+    </div>
+    <a href="#bibtex" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== BibTeX ===== -->
+  <section id="bibtex" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">BibTeX</h2>
+      <div class="reveal">
+        <pre class="bibtex-block"><code>@article{xiao2026spectral,
+  author    = {Xiao, Howard and Chao, Brian and Yariv, Lior and Wetzstein, Gordon},
+  title     = {Spectral Progressive Diffusion for Efficient Image and Video Generation},
+  year      = {2026},
+}</code></pre>
       </div>
     </div>
   </section>

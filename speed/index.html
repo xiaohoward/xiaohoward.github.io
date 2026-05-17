@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Spectral Progressive Diffusion for Efficient Image and Video Generation</title>
+  <title>🌈 Spectral Progressive Diffusion</title>
   <meta name="description" content="Spectral Progressive Diffusion for Efficient Image and Video Generation">
   <link rel="stylesheet" href="style.css">
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark-mode-pending')</script>
@@ -101,6 +101,26 @@
       animation: rainbowShimmer 2.4s linear infinite;
       transition-delay: calc(var(--i) * .06s);
     }
+
+    /* ===== Abstract: repeating animated underline on key phrases ===== */
+    .section-body .ul {
+      background-image: linear-gradient(var(--color-accent), var(--color-accent));
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      background-size: 0% 2px;
+      padding-bottom: 2px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      animation: ulCycle 8.4s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 1.4s);
+    }
+    @keyframes ulCycle {
+      0%   { background-size: 0% 2px; }
+      6%   { background-size: 100% 2px; }   /* drawn left-to-right */
+      18%  { background-size: 100% 2px; }   /* held */
+      24%  { background-size: 0% 2px; }     /* erased */
+      100% { background-size: 0% 2px; }     /* idle until the next pass */
+    }
   </style>
 </head>
 <body>
@@ -109,6 +129,7 @@
   <nav class="nav-top">
     <div class="nav-inner">
       <a href="#hero" class="nav-link nav-home">Home</a>
+      <a href="#abstract" class="nav-link">Abstract</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
         <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -129,12 +150,46 @@
       <div class="hero-affiliation">
         <a href="https://www.stanford.edu/">Stanford University</a>
       </div>
+      <div class="pub-links">
+        <a href="paper/paper.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Paper
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          arXiv
+        </a>
+        <a href="#" class="btn-disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Code: coming soon
+        </a>
+      </div>
+      <div class="hero-scroll-row">
+        <div class="hero-scroll-cta">
+          <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
+            <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <span class="scroll-hint">Scroll to view more</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Abstract ===== -->
+  <section id="abstract" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Abstract</h2>
+      <div class="section-body reveal">
+        <p>Computational demands for visual generative models are increasing rapidly as image resolutions and video sequence lengths continue to grow. This trend reveals a fundamental scaling crisis: while scaling model and data sizes consistently yields better generation quality, the underlying cost of self-attention in Diffusion Transformers scales quadratically with the number of generated tokens.</p>
+        <p>Diffusion models have been shown to implicitly generate visual content autoregressively in the frequency domain, where low-frequency components are generated earlier in the denoising process while high-frequency details emerge only in later timesteps. This structure offers a natural opportunity for efficient generation, as high-resolution computation on noise-dominated frequencies is largely redundant.</p>
+        <p>We propose <strong>Spectral Progressive Diffusion</strong>, a general framework that progressively grows resolution along the denoising trajectory of pretrained diffusion models. To this end, we develop a <span class="ul" style="--i:0">spectral noise expansion</span> mechanism and derive an <span class="ul" style="--i:1">optimal resolution schedule</span> from the model&rsquo;s power spectrum. Our framework supports <span class="ul" style="--i:2">training-free acceleration</span> and a <span class="ul" style="--i:3">fine-tuning recipe</span> that further improves efficiency and quality, enabling <span class="ul" style="--i:4">significant speedups</span> on state-of-the-art pretrained image and video generation models while <span class="ul" style="--i:5">preserving visual quality</span>.</p>
+      </div>
     </div>
   </section>
 
   <!-- ===== Footer ===== -->
   <footer class="site-footer">
-    <p><a href="../">Howard Xiao</a> | Website made with Claude.</a></p>
+    <p>Website made with Claude.</p>
   </footer>
 
   <script>
@@ -146,6 +201,41 @@
     toggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+
+    // ===== Native scrolling: reveal-on-view + smooth anchor jumps =====
+    const nav = document.querySelector('.nav-top');
+
+    // Reveal .reveal elements as they scroll into view
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            en.target.classList.add('revealed');
+            io.unobserve(en.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('revealed'));
+    }
+
+    // Nav background once scrolled away from the very top
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 100);
+    });
+
+    // Smooth-scroll for nav links + scroll arrows
+    document.querySelectorAll('.nav-link, .scroll-arrow, .scroll-link').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const href = el.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        e.preventDefault();
+        const target = document.getElementById(href.slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
     });
 
     // ===== Title animation orchestration =====

@@ -231,6 +231,12 @@
       display: block;
       width: 100%;
       border-radius: 6px;
+      animation: fluxPop .5s cubic-bezier(.16, 1, .3, 1) both;
+      animation-delay: calc(var(--n, 0) * .15s);
+    }
+    @keyframes fluxPop {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .spd-video-col video {
       display: block;
@@ -569,12 +575,12 @@
       </div>
 
       <div class="tab-nav reveal" id="results-tabs">
-        <button class="tab-btn" data-tab="latent_img">Latent-space Image Generation</button>
+        <button class="tab-btn active" data-tab="latent_img">Latent-space Image Generation</button>
         <button class="tab-btn" data-tab="pixel_img">Pixel-space Image Generation</button>
-        <button class="tab-btn active" data-tab="latent_vid">Latent-space Video Generation</button>
+        <button class="tab-btn" data-tab="latent_vid">Latent-space Video Generation</button>
       </div>
 
-      <div class="tab-panel" id="tab-latent_img">
+      <div class="tab-panel active" id="tab-latent_img">
         <details class="spd-collapse" open>
           <summary class="spd-subhead">Qualitative Results</summary>
           <details class="spd-collapse" open>
@@ -726,7 +732,7 @@
         <p class="spd-tcap"><strong>Fine-tuning quantitative comparison on pixel-space image generation (PixelGen)</strong> at 512&sup2; resolution. Our fine-tuning recipe bridges pretraining and progressive-resolution inference, improving quality while preserving the efficiency gains. <strong>Bold</strong> = best. <strong>S</strong> denotes the number of resolution levels.</p>
         </details>
       </div>
-      <div class="tab-panel active" id="tab-latent_vid">
+      <div class="tab-panel" id="tab-latent_vid">
         <details class="spd-collapse" open>
           <summary class="spd-subhead">Qualitative Results</summary>
         <div class="spd-carousel">
@@ -1052,8 +1058,8 @@
       }
       function show(i) {
         idx = (i + slides.length) % slides.length;
-        grid.innerHTML = slides[idx].map(n =>
-          '<img src="' + BASE + n + '.png" alt="FLUX.1-dev qualitative comparison">'
+        grid.innerHTML = slides[idx].map((n, k) =>
+          '<img style="--n:' + k + '" src="' + BASE + n + '.png" alt="FLUX.1-dev qualitative comparison">'
         ).join('');
         dots.forEach((d, k) => d.classList.toggle('active', k === idx));
         preload(idx + 1);

@@ -374,9 +374,11 @@
     .hero-teaser video {
       display: block;
       width: 100%;
-      border-radius: 12px;
-      background: #000;
     }
+    /* Match the hero background to each teaser video's actual background
+       color so the video doesn't read as a box. */
+    body:not(.dark-mode) .hero { background: #fdfdfd; }
+    body.dark-mode .hero { background: #090d12; }
     .hero-teaser-tagline {
       margin: 14px 0 0;
       font-size: clamp(11px, 1vw, 13px);

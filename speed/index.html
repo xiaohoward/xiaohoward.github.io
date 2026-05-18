@@ -198,6 +198,8 @@
     .spd-video-col video {
       display: block;
       width: 100%;
+      aspect-ratio: 1248 / 720;   /* reserve space so swapping slides doesn't jump */
+      object-fit: contain;
       border-radius: 10px;
       background: #000;
     }
@@ -902,18 +904,42 @@
         syncLock = false;
       }
 
+      // Warm the browser cache for adjacent slides so navigating between
+      // videos doesn't jump/flash while the new file downloads.
+      const preloadCache = {};
+      function srcFor(c, slide) {
+        return VIDEO_BASE + '/' + METHODS[c].folder + '/' + VIDEO_FILES[slide];
+      }
+      function preloadSlide(slide) {
+        const s = (slide + VIDEO_FILES.length) % VIDEO_FILES.length;
+        METHODS.forEach((m, c) => {
+          const key = c + ':' + s;
+          if (preloadCache[key]) return;
+          const pv = document.createElement('video');
+          pv.preload = 'auto';
+          pv.muted = true;
+          pv.src = srcFor(c, s);
+          pv.load();
+          preloadCache[key] = pv;
+        });
+      }
+
       function show(i) {
         idx = (i + VIDEO_FILES.length) % VIDEO_FILES.length;
         syncLock = true;
         vids.forEach((v, c) => {
           v.pause();
-          v.src = VIDEO_BASE + '/' + METHODS[c].folder + '/' + VIDEO_FILES[idx];
+          v.src = srcFor(c, idx);
           v.load();
+          delete preloadCache[c + ':' + idx];
         });
         syncLock = false;
         vids.forEach(v => v.play().catch(() => {}));
         prompt.innerHTML = CAPTIONS[idx] ? '<strong>Prompt:</strong> ' + CAPTIONS[idx] : '';
         dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        // Preload the neighbours in the background
+        preloadSlide(idx + 1);
+        preloadSlide(idx - 1);
       }
 
       document.getElementById('spd-prev').addEventListener('click', () => show(idx - 1));

@@ -502,6 +502,9 @@
         <video class="method-video" autoplay muted loop playsinline src="videos/method.mp4"></video>
       </div>
       <h3 class="spd-subhead reveal">Optimal Noise Schedule</h3>
+      <div class="section-body reveal">
+        <p>Our optimal resolution schedule determines when to grow resolution by matching the frequencies that are beginning to emerge from noise with the spatial resolutions that can represent them. Using the model&rsquo;s measured power spectrum and each resolution&rsquo;s Nyquist limit, we estimate when high-frequency bands become informative rather than noise-dominated. This yields principled transition times from a single error tolerance parameter, reducing brittle hyperparameter tuning while avoiding unnecessary high-resolution computation early in denoising.</p>
+      </div>
       <div class="reveal">
         <video class="method-video schedule-video" autoplay muted loop playsinline
                data-light="videos/schedule_light.mp4"

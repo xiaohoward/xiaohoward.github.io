@@ -379,6 +379,15 @@
        color so the video doesn't read as a box. */
     body:not(.dark-mode) .hero { background: #fdfdfd; }
     body.dark-mode .hero { background: #090d12; }
+    .hero-teaser-prompt {
+      margin: 12px auto 0;
+      max-width: 820px;
+      font-size: clamp(11px, 1vw, 13px);
+      color: var(--color-text-secondary);
+      text-align: center;
+      line-height: 1.5;
+    }
+    .hero-teaser-prompt strong { color: var(--color-text-secondary); font-weight: 600; }
     .hero-teaser-tagline {
       margin: 14px 0 0;
       font-size: clamp(11px, 1vw, 13px);
@@ -438,6 +447,7 @@
       </div>
       <div class="hero-teaser">
         <video id="hero-teaser-video" autoplay muted loop playsinline></video>
+        <p class="hero-teaser-prompt"><strong>Prompt:</strong> Bald eagle in direct forward flight, wings fully extended filling the frame, dramatic aerial portrait, overcast silver light diffused evenly, Canon 600mm f/4, fine primary feather detail, intense yellow eye.</p>
       </div>
       <div class="hero-scroll-row">
         <div class="hero-scroll-cta">

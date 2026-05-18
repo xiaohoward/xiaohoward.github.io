@@ -366,6 +366,25 @@
     }
     details.spd-collapse[open] > summary::before { transform: rotate(90deg); }
     .tab-panel > details.spd-collapse:first-of-type > summary.spd-subhead { margin-top: 4px; }
+    /* ===== Hero teaser video + tagline ===== */
+    .hero-teaser {
+      width: 100%;
+      margin: 32px auto 0;
+    }
+    .hero-teaser video {
+      display: block;
+      width: 100%;
+      border-radius: 12px;
+      background: #000;
+    }
+    .hero-teaser-tagline {
+      margin: 14px 0 0;
+      font-size: clamp(11px, 1vw, 13px);
+      color: var(--color-text-secondary);
+      text-align: center;
+      font-style: italic;
+      line-height: 1.5;
+    }
     @media (max-width: 768px) {
       .spd-video-grid { flex-direction: column; }
     }
@@ -415,6 +434,9 @@
           Code: coming soon
         </a>
       </div>
+      <div class="hero-teaser">
+        <video id="hero-teaser-video" autoplay muted loop playsinline></video>
+      </div>
       <div class="hero-scroll-row">
         <div class="hero-scroll-cta">
           <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
@@ -423,6 +445,7 @@
           <span class="scroll-hint">Scroll to view more</span>
         </div>
       </div>
+      <p class="hero-teaser-tagline">Spectral Progressive Diffusion, efficient generation from form to flourish.</p>
     </div>
   </section>
 
@@ -680,9 +703,25 @@
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark-mode');
     }
+
+    // Hero teaser video: swap source for light/dark mode
+    const heroTeaserVideo = document.getElementById('hero-teaser-video');
+    function setHeroTeaserSrc() {
+      if (!heroTeaserVideo) return;
+      const file = document.body.classList.contains('dark-mode')
+        ? 'videos/teaser_dark.mp4'
+        : 'videos/teaser_white.mp4';
+      if (heroTeaserVideo.getAttribute('src') === file) return;
+      heroTeaserVideo.setAttribute('src', file);
+      heroTeaserVideo.load();
+      heroTeaserVideo.play().catch(() => {});
+    }
+    setHeroTeaserSrc();
+
     toggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+      setHeroTeaserSrc();
     });
 
     // ===== Native scrolling: reveal-on-view + smooth anchor jumps =====

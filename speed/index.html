@@ -383,6 +383,10 @@
        color so the video doesn't read as a box. */
     body:not(.dark-mode) .hero { background: #fdfdfd; }
     body.dark-mode .hero { background: #090d12; }
+    /* In dark mode, all content sections (incl. the alternating ones)
+       share the hero/title section background color. */
+    body.dark-mode .content-section,
+    body.dark-mode .content-section:nth-child(even) { background: #090d12; }
     .hero-teaser-prompt {
       margin: 12px 0 0;
       width: 100%;
@@ -492,6 +496,9 @@
         <img class="method-video" src="images/method.jpeg" alt="Spectral Progressive Diffusion method overview">
       </div>
       <h3 class="spd-subhead reveal">Spectral Noise Expansion</h3>
+      <div class="section-body reveal">
+        <p>Motivated by the spectral autoregression property of diffusion, we progressively increase image resolution by injecting higher-frequency components along the denoising trajectory using a spectral transformation. Our framework applies natively to existing pretrained image and video generation models, without additional custom modules or architectural modifications.</p>
+      </div>
       <div class="reveal">
         <video class="method-video" autoplay muted loop playsinline
                data-light="videos/spectral_noise_expansion_white.mp4"

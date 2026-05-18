@@ -402,6 +402,8 @@
     }
     @media (max-width: 768px) {
       .spd-video-grid { flex-direction: column; }
+      /* Let the long title wrap instead of overflowing/cutting off */
+      .hero-title { white-space: normal; line-height: 1.2; padding: 40px 0 22px; }
     }
   </style>
 </head>
@@ -450,7 +452,9 @@
         </a>
       </div>
       <div class="hero-teaser">
-        <video id="hero-teaser-video" autoplay muted loop playsinline></video>
+        <video id="hero-teaser-video" autoplay muted loop playsinline
+               data-light="videos/teaser_white.mp4"
+               data-dark="videos/teaser_dark.mp4"></video>
         <p class="hero-teaser-prompt"><strong>Prompt:</strong> Bald eagle in direct forward flight, wings fully extended filling the frame, dramatic aerial portrait, overcast silver light diffused evenly, Canon 600mm f/4, fine primary feather detail, intense yellow eye.</p>
       </div>
       <div class="hero-scroll-row">
@@ -486,6 +490,12 @@
       <h2 class="section-heading reveal">Method</h2>
       <div class="reveal">
         <img class="method-video" src="images/method.jpeg" alt="Spectral Progressive Diffusion method overview">
+      </div>
+      <h3 class="spd-subhead reveal">Spectral Noise Expansion</h3>
+      <div class="reveal">
+        <video class="method-video" autoplay muted loop playsinline
+               data-light="videos/spectral_noise_expansion_white.mp4"
+               data-dark="videos/spectral_noise_expansion_dark.mp4"></video>
       </div>
     </div>
     <a href="#results" class="scroll-arrow">
@@ -720,24 +730,24 @@
       document.body.classList.add('dark-mode');
     }
 
-    // Hero teaser video: swap source for light/dark mode
-    const heroTeaserVideo = document.getElementById('hero-teaser-video');
-    function setHeroTeaserSrc() {
-      if (!heroTeaserVideo) return;
-      const file = document.body.classList.contains('dark-mode')
-        ? 'videos/teaser_dark.mp4'
-        : 'videos/teaser_white.mp4';
-      if (heroTeaserVideo.getAttribute('src') === file) return;
-      heroTeaserVideo.setAttribute('src', file);
-      heroTeaserVideo.load();
-      heroTeaserVideo.play().catch(() => {});
+    // Theme-aware videos: swap source for light/dark mode
+    const themeVideos = Array.from(document.querySelectorAll('video[data-light][data-dark]'));
+    function setThemeVideoSrcs() {
+      const dark = document.body.classList.contains('dark-mode');
+      themeVideos.forEach(v => {
+        const file = dark ? v.dataset.dark : v.dataset.light;
+        if (v.getAttribute('src') === file) return;
+        v.setAttribute('src', file);
+        v.load();
+        v.play().catch(() => {});
+      });
     }
-    setHeroTeaserSrc();
+    setThemeVideoSrcs();
 
     toggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
       localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-      setHeroTeaserSrc();
+      setThemeVideoSrcs();
     });
 
     // ===== Native scrolling: reveal-on-view + smooth anchor jumps =====

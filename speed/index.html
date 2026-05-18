@@ -199,6 +199,39 @@
       max-width: 620px;
       margin: 0 auto;
     }
+    /* FLUX.1-dev qualitative image carousel (6-pane strips, 3 stacked) */
+    .spd-img-labels {
+      display: flex;
+      padding: 0 52px;          /* arrow (36) + stage gap (16): align over images */
+      margin-bottom: 8px;
+    }
+    .spd-img-labels > span {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      font-size: clamp(9px, 0.95vw, 13px);
+      font-weight: 600;
+      color: var(--color-text);
+      padding: 0 2px;
+    }
+    .spd-img-labels a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .spd-img-labels a:hover { color: var(--color-accent); }
+    .flux-img-grid {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .flux-img-grid img {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+    }
     .spd-video-col video {
       display: block;
       width: 100%;
@@ -546,7 +579,26 @@
           <summary class="spd-subhead">Qualitative Results</summary>
           <details class="spd-collapse" open>
             <summary class="spd-subsubhead">Training-free Latent Image Generation (<a href="https://github.com/black-forest-labs/flux" target="_blank" rel="noopener">FLUX.1-dev</a>)</summary>
-            <div class="placeholder-block">Qualitative results coming soon.</div>
+            <div class="spd-carousel">
+              <div class="spd-img-labels">
+                <span>FLUX (1&times;)</span>
+                <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (1.58&times;)</span>
+                <span>Ours (<strong>1.66&times;</strong>)</span>
+                <span>FLUX (4.84&times;)</span>
+                <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (4.98&times;)</span>
+                <span>Ours (<strong>5.77&times;</strong>)</span>
+              </div>
+              <div class="spd-stage">
+                <button class="spd-arrow" id="flux-img-prev" aria-label="Previous images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                </button>
+                <div class="flux-img-grid" id="flux-img-grid"></div>
+                <button class="spd-arrow" id="flux-img-next" aria-label="Next images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                </button>
+              </div>
+              <div class="spd-dots" id="flux-img-dots"></div>
+            </div>
           </details>
           <details class="spd-collapse" open>
             <summary class="spd-subsubhead">Finetuned Latent Image Generation (<a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a>)</summary>
@@ -958,6 +1010,58 @@
       document.getElementById('spd-prev').addEventListener('click', () => show(idx - 1));
       document.getElementById('spd-next').addEventListener('click', () => show(idx + 1));
 
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== FLUX.1-dev qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('flux-img-grid');
+      if (!grid) return;
+      const BASE = 'images/flux-1.dev/baseline_ranked_v2/';
+      const NAMES = ['00000','00001','00002','00003','00005','00007','00008','00016','00018','00022','00024','00025','00030','00039','00040','00043','00044','00045','00052','00057','00058','00060','00064','00072','00073','00079','00080','00083','00085','00088','00097','00099','00101','00105','00109','00110'];
+
+      // Randomly shuffle, then take 30, grouped 3-per-slide => 10 slides
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 30);
+      const PER = 3;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('flux-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = slides[idx].map(n =>
+          '<img src="' + BASE + n + '.png" alt="FLUX.1-dev qualitative comparison">'
+        ).join('');
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('flux-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('flux-img-next').addEventListener('click', () => show(idx + 1));
       show(0);
     })();
   </script>

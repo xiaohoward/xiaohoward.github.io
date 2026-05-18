@@ -231,6 +231,9 @@
       display: block;
       width: 100%;
       border-radius: 6px;
+      opacity: 0;   /* hidden until loaded, then .in triggers the pop-in */
+    }
+    .flux-img-grid img.in {
       animation: fluxPop .5s cubic-bezier(.16, 1, .3, 1) both;
       animation-delay: calc(var(--n, 0) * .15s);
     }
@@ -1058,9 +1061,17 @@
       }
       function show(i) {
         idx = (i + slides.length) % slides.length;
-        grid.innerHTML = slides[idx].map((n, k) =>
-          '<img style="--n:' + k + '" src="' + BASE + n + '.png" alt="FLUX.1-dev qualitative comparison">'
-        ).join('');
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'FLUX.1-dev qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();   // cached: load may not fire
+          grid.appendChild(img);
+        });
         dots.forEach((d, k) => d.classList.toggle('active', k === idx));
         preload(idx + 1);
         preload(idx - 1);

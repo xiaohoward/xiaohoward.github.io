@@ -611,7 +611,27 @@
           </details>
           <details class="spd-collapse" open>
             <summary class="spd-subsubhead">Finetuned Latent Image Generation (<a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a>)</summary>
-            <div class="placeholder-block">Qualitative results coming soon.</div>
+            <div class="spd-carousel">
+              <div class="spd-img-labels">
+                <span>Z-Image (1&times;)</span>
+                <span>Z-Image (1.56&times;)</span>
+                <span>Ours-TF (<strong>1.65&times;</strong>)</span>
+                <span>Z-Image (4.99&times;)</span>
+                <span>Ours-TF (<strong>5.04&times;</strong>)</span>
+                <span>Ours-LoRA (<strong>5.01&times;</strong>)</span>
+              </div>
+              <div class="spd-stage">
+                <button class="spd-arrow" id="zimg-img-prev" aria-label="Previous images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                </button>
+                <div class="flux-img-grid" id="zimg-img-grid"></div>
+                <button class="spd-arrow" id="zimg-img-next" aria-label="Next images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                </button>
+              </div>
+              <div class="spd-dots" id="zimg-img-dots"></div>
+            </div>
+            <p class="spd-tcap"><strong>TF</strong> denotes training-free and <strong>LoRA</strong> the finetuned version with Low-Rank Adaptation (LoRA).</p>
           </details>
         </details>
         <details class="spd-collapse" open>
@@ -1079,6 +1099,66 @@
       dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
       document.getElementById('flux-img-prev').addEventListener('click', () => show(idx - 1));
       document.getElementById('flux-img-next').addEventListener('click', () => show(idx + 1));
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== Z-Image qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('zimg-img-grid');
+      if (!grid) return;
+      const BASE = 'images/zimage_ranked/';
+      const NAMES = ['00004','00007','00008','00011','00014','00016','00018','00027','00040','00057','00058','00060','00061','00075','00079','00086','00094','00102','00103'];
+
+      // Randomly shuffle, take up to 20, grouped 2-per-slide
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 20);
+      const PER = 2;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('zimg-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'Z-Image qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();
+          grid.appendChild(img);
+        });
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('zimg-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('zimg-img-next').addEventListener('click', () => show(idx + 1));
       show(0);
     })();
   </script>

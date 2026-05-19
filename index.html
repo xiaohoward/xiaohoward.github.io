@@ -18,6 +18,7 @@
       <div class="nav-inner">
         <a href="#hero" class="nav-link nav-home">Home</a>
         <a href="#updates" class="nav-link">Recent Updates</a>
+        <a href="#genvision" class="nav-link nav-prism" aria-label="Spectral Progressive Diffusion"><img src="images/prism.png" alt="Spectral Progressive Diffusion" style="height:22px;width:auto;vertical-align:middle;display:block;"></a>
         <a href="#research" class="nav-link">Research</a>
         <a href="#teaching" class="nav-link">Teaching & Talks</a>
         <a href="#bio" class="nav-link">Bio</a>
@@ -64,6 +65,13 @@
         <div class="timeline-scroll-wrapper reveal">
           <div class="timeline-scroll" id="timeline-scroll">
             <div class="timeline-vertical">
+
+              <div class="timeline-item">
+                <div class="timeline-item-dot"></div>
+                <div class="timeline-item-date">May 2026</div>
+                <div class="timeline-item-title">New Paper: Spectral Progressive Diffusion</div>
+                <div class="timeline-item-desc">New paper released, see <a href="#genvision">below</a>.</div>
+              </div>
 
               <div class="timeline-item">
                 <div class="timeline-item-dot"></div>
@@ -141,7 +149,7 @@
             </p>
             <div class="research-subnav reveal">
               <a href="#imaging">Computational Imaging</a>
-              <a href="#genvision">Generative Vision</a>
+              <a href="#genvision">Generative AI</a>
               <a href="#math">Mathematics</a>
             </div>
           </div>
@@ -230,13 +238,38 @@
       </a>
     </section>
 
-    <!-- ===== Section 5: Generative Vision ===== -->
+    <!-- ===== Section 5: Generative AI ===== -->
     <section id="genvision" class="section-auto section-papers snap-section">
       <div class="section-inner">
-        <h3 class="papers-heading reveal">Generative Vision</h3>
+        <h3 class="papers-heading reveal">Generative AI</h3>
 
         <div class="papers-scroll-wrapper reveal">
           <div class="papers-scroll">
+            <article class="paper-card">
+              <div class="paper-media">
+                <video autoplay loop muted playsinline>
+                  <source src="video/papers/speed.mp4">
+                </video>
+              </div>
+              <div>
+                <div class="paper-title">
+                  <a href="https://howardxiao.ca/speed/">Spectral Progressive Diffusion for Efficient Image and Video Generation</a>
+                </div>
+                <div class="paper-authors">
+                  <strong>Howard Xiao</strong>,
+                  <a href="https://bchao1.github.io/">Brian Chao</a>,
+                  <a href="https://lioryariv.github.io/">Lior Yariv</a>,
+                  <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>.
+                </div>
+                <div class="paper-links">
+                  <a href="https://howardxiao.ca/speed/">Project website</a>
+                  <a href="https://arxiv.org/abs/2605.18736">Paper</a>
+                </div>
+                <p class="paper-desc">
+                  A spectral progressive diffusion framework that grows resolution along the denoising trajectory of pretrained models for efficient, high-quality image and video generation.
+                </p>
+              </div>
+            </article>
             <article class="paper-card">
               <div class="paper-media">
                 <video autoplay loop muted playsinline>

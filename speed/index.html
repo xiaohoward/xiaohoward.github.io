@@ -593,10 +593,10 @@
               <div class="spd-img-labels">
                 <span>FLUX (1&times;)</span>
                 <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (1.58&times;)</span>
-                <span>Ours (<strong>1.66&times;</strong>)</span>
+                <span><strong>Ours (1.66&times;)</strong></span>
                 <span>FLUX (4.84&times;)</span>
                 <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (4.98&times;)</span>
-                <span>Ours (<strong>5.77&times;</strong>)</span>
+                <span><strong>Ours (5.77&times;)</strong></span>
               </div>
               <div class="spd-stage">
                 <button class="spd-arrow" id="flux-img-prev" aria-label="Previous images">
@@ -616,10 +616,10 @@
               <div class="spd-img-labels">
                 <span>Z-Image (1&times;)</span>
                 <span>Z-Image (1.56&times;)</span>
-                <span>Ours-TF (<strong>1.65&times;</strong>)</span>
+                <span><strong>Ours-TF (1.65&times;)</strong></span>
                 <span>Z-Image (4.99&times;)</span>
-                <span>Ours-TF (<strong>5.04&times;</strong>)</span>
-                <span>Ours-LoRA (<strong>5.01&times;</strong>)</span>
+                <span><strong>Ours-TF (5.04&times;)</strong></span>
+                <span><strong>Ours-LoRA (5.01&times;)</strong></span>
               </div>
               <div class="spd-stage">
                 <button class="spd-arrow" id="zimg-img-prev" aria-label="Previous images">
@@ -727,8 +727,8 @@
             <div class="spd-img-labels">
               <span>PixelGen (1&times;)</span>
               <span>PixelGen (1.9&times;)</span>
-              <span>Ours-TF (<strong>1.6&times;</strong>)</span>
-              <span>Ours-LoRA (<strong>1.6&times;</strong>)</span>
+              <span><strong>Ours-TF (1.6&times;)</strong></span>
+              <span><strong>Ours-LoRA (1.6&times;)</strong></span>
             </div>
             <div class="spd-stage">
               <button class="spd-arrow" id="pix-img-prev" aria-label="Previous images">
@@ -938,6 +938,9 @@
         document.querySelectorAll('#results .tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'latent_vid' && window.spdVideoRestart) {
+          setTimeout(window.spdVideoRestart, 60);
+        }
       });
     });
   </script>
@@ -1057,6 +1060,10 @@
 
       document.getElementById('spd-prev').addEventListener('click', () => show(idx - 1));
       document.getElementById('spd-next').addEventListener('click', () => show(idx + 1));
+
+      // Restart from the first frame when the video tab becomes visible
+      // (it may have run to the end while initialized in a hidden panel).
+      window.spdVideoRestart = restartLoop;
 
       show(0);
     })();

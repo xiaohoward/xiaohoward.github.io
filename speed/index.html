@@ -723,7 +723,25 @@
       <div class="tab-panel" id="tab-pixel_img">
         <details class="spd-collapse" open>
           <summary class="spd-subhead">Qualitative Results</summary>
-        <div class="placeholder-block">Qualitative results coming soon.</div>
+          <div class="spd-carousel">
+            <div class="spd-img-labels">
+              <span>PixelGen (1&times;)</span>
+              <span>PixelGen (1.9&times;)</span>
+              <span>Ours-TF (<strong>1.6&times;</strong>)</span>
+              <span>Ours-LoRA (<strong>1.6&times;</strong>)</span>
+            </div>
+            <div class="spd-stage">
+              <button class="spd-arrow" id="pix-img-prev" aria-label="Previous images">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+              </button>
+              <div class="flux-img-grid" id="pix-img-grid"></div>
+              <button class="spd-arrow" id="pix-img-next" aria-label="Next images">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+              </button>
+            </div>
+            <div class="spd-dots" id="pix-img-dots"></div>
+          </div>
+          <p class="spd-tcap spd-tcap-center"><strong>TF</strong> denotes training-free and <strong>LoRA</strong> the finetuned version with Low-Rank Adaptation (LoRA).</p>
         </details>
         <details class="spd-collapse" open>
           <summary class="spd-subhead">Quantitative Results</summary>
@@ -1160,6 +1178,65 @@
       dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
       document.getElementById('zimg-img-prev').addEventListener('click', () => show(idx - 1));
       document.getElementById('zimg-img-next').addEventListener('click', () => show(idx + 1));
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== PixelGen qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('pix-img-grid');
+      if (!grid) return;
+      const BASE = 'images/pixelgen_ranked/';
+      const NAMES = ['00003','00004','00008','00009','00010','00011','00014','00018','00020','00021','00028','00030','00037','00039','00049','00051','00065','00079','00085','00113'];
+
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 20);
+      const PER = 2;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('pix-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'PixelGen qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();
+          grid.appendChild(img);
+        });
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('pix-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('pix-img-next').addEventListener('click', () => show(idx + 1));
       show(0);
     })();
   </script>

@@ -1118,7 +1118,7 @@
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      const chosen = arr.slice(0, 20);
+      const chosen = arr.slice(0, 16);
       const PER = 2;
       const slides = [];
       for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));

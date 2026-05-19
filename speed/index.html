@@ -900,6 +900,22 @@
       revealEls.forEach(el => el.classList.add('revealed'));
     }
 
+    // Mobile browsers won't autoplay offscreen videos; (re)play the
+    // method-section videos whenever they scroll into view.
+    const methodVids = document.querySelectorAll('video.method-video');
+    if ('IntersectionObserver' in window) {
+      const vio = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          const v = en.target;
+          if (en.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      }, { threshold: 0.2 });
+      methodVids.forEach(v => vio.observe(v));
+    } else {
+      methodVids.forEach(v => v.play().catch(() => {}));
+    }
+
     // Nav background once scrolled away from the very top
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 100);

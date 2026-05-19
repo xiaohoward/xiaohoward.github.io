@@ -117,15 +117,13 @@
       padding-bottom: 2px;
       -webkit-box-decoration-break: clone;
       box-decoration-break: clone;
-      animation: ulCycle 8.4s ease-in-out infinite;
-      animation-delay: calc(var(--i) * 1.4s);
+      /* draw once (2x slower than before), then stay underlined — no loop */
+      animation: ulDraw 1s ease-in-out forwards;
+      animation-delay: calc(var(--i) * 0.8s);
     }
-    @keyframes ulCycle {
-      0%   { background-size: 0% 2px; }
-      6%   { background-size: 100% 2px; }   /* drawn left-to-right */
-      18%  { background-size: 100% 2px; }   /* held */
-      24%  { background-size: 0% 2px; }     /* erased */
-      100% { background-size: 0% 2px; }     /* idle until the next pass */
+    @keyframes ulDraw {
+      from { background-size: 0% 2px; }
+      to   { background-size: 100% 2px; }
     }
 
     /* ===== Results: pill tab buttons (no underline bar) ===== */

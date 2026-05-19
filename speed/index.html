@@ -579,7 +579,7 @@
       <div class="section-body reveal">
         <p>Spectral Progressive Diffusion accelerates pretrained image generation models while preserving visual quality across both latent- and pixel-space settings. In training-free inference, our method improves the speed-quality tradeoff on <a href="https://github.com/black-forest-labs/flux" target="_blank" rel="noopener">FLUX.1-dev</a>, reaching up to 7.09&times; wall-clock speedup and 7.36&times; FLOPs reduction. With lightweight fine-tuning, the same framework further improves quality and efficiency on <a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a> and <a href="https://arxiv.org/abs/2602.02493" target="_blank" rel="noopener">PixelGen</a>, showing that spectral progressive generation can be used both as a plug-and-play acceleration method and as a fine-tunable recipe.</p>
         <p>The framework also extends naturally to video generation and image editing. On <a href="https://arxiv.org/abs/2503.20314" target="_blank" rel="noopener">WAN 2.1</a> latent-space video generation, Spectral Progressive Diffusion achieves more than 2&times; speedup while maintaining high-fidelity VBench performance.</p>
-        <p>Please refer to <a href="paper/paper.pdf" target="_blank" rel="noopener">our paper</a> for additional qualitative and quantitative results, including results on frequency-based editing.</p>
+        <p>Please refer to <a href="paper/paper.pdf" target="_blank" rel="noopener">our paper</a> for additional qualitative and quantitative results, including ablations and results on frequency-based editing.</p>
       </div>
 
       <div class="tab-nav reveal" id="results-tabs">
@@ -784,6 +784,7 @@
       <div class="tab-panel" id="tab-latent_vid">
         <details class="spd-collapse" open>
           <summary class="spd-subhead">Qualitative Results</summary>
+        <p class="section-body" style="margin:0 0 16px">Our DCT-based spectral progressive diffusion framework leverages the pretraining resolutions of 480P and 720P of WAN, achieving more than 2X speedup while maintaining high generation quality.</p>
         <div class="spd-carousel">
           <div class="spd-labels" id="spd-labels"></div>
           <div class="spd-stage">

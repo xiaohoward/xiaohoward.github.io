@@ -542,7 +542,7 @@
     <div class="section-inner">
       <h2 class="section-heading reveal">Method</h2>
       <div class="reveal">
-        <video class="method-video" autoplay muted loop playsinline src="videos/method.mp4"></video>
+        <video class="method-video freeze-loop" autoplay muted playsinline src="videos/method.mp4"></video>
       </div>
       <h3 class="spd-subhead reveal">Optimal Resolution Schedule</h3>
       <div class="section-body reveal">
@@ -558,7 +558,7 @@
         <p>Motivated by the spectral autoregression property of diffusion, we progressively increase image resolution by injecting higher-frequency components along the denoising trajectory using a spectral transformation. Our framework applies natively to existing pretrained image and video generation models, without additional custom modules or architectural modifications.</p>
       </div>
       <div class="reveal">
-        <video class="method-video" autoplay muted loop playsinline
+        <video class="method-video freeze-loop" autoplay muted playsinline
                data-light="videos/spectral_noise_expansion_white.mp4"
                data-dark="videos/spectral_noise_expansion_dark.mp4"></video>
       </div>
@@ -913,6 +913,15 @@
     } else {
       methodVids.forEach(v => v.play().catch(() => {}));
     }
+
+    // Method + Spectral Noise Expansion: hold the last frame for 5s,
+    // then restart (instead of an immediate native loop).
+    document.querySelectorAll('video.freeze-loop').forEach(v => {
+      v.loop = false;
+      v.addEventListener('ended', () => {
+        setTimeout(() => { v.currentTime = 0; v.play().catch(() => {}); }, 5000);
+      });
+    });
 
     // Nav background once scrolled away from the very top
     window.addEventListener('scroll', () => {

@@ -15,7 +15,10 @@
 
     /* ===== Title animation: slow "Spectral Progressive Diffusion",
        rainbow "SpeeD" letters, then a fast silver-bullet sweep ===== */
-    .title-p1, .title-p2 { display: inline-block; }
+    /* Two centered lines: "Spectral Progressive Diffusion" /
+       "for Efficient Image and Video Generation" */
+    .title-p1 { display: block; }
+    .title-p2 { display: inline-block; }
 
     /* Part 1 — slow left-to-right reveal */
     .title-p1 { clip-path: inset(0 100% 0 0); }
@@ -30,8 +33,8 @@
     /* Part 2 — very fast reveal with a silver bullet streak */
     .title-p2-wrap {
       position: relative;
-      display: inline-block;
-      margin-left: 0.28em;
+      display: block;
+      margin-top: 0.12em;
       overflow: visible;
     }
     .title-p2 { clip-path: inset(0 100% 0 0); }

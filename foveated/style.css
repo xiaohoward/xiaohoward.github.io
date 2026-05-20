@@ -79,10 +79,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-html.hero-locked {
-  overflow: hidden;
-}
-
 body {
   font-family: var(--font-primary);
   font-size: 17px;
@@ -198,20 +194,19 @@ body.dark-mode .icon-moon { display: none; }
 /* ===== Hero Section ===== */
 .hero {
   min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 100px 20px 20px;
+  padding: 48px clamp(20px, 5vw, 40px);   /* horizontal matches .content-section */
   background: var(--color-bg);
   text-align: center;
   position: relative;
 }
 
+/* Native, responsive. margin:auto centers it when it fits; on short windows
+   the auto margins collapse so content flows from the top and scrolls. */
 .hero-inner {
-  max-width: var(--max-width);
+  max-width: var(--max-width);   /* same as .section-inner (abstract) */
   width: 100%;
+  margin: auto;
   animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -226,7 +221,7 @@ body.dark-mode .icon-moon { display: none; }
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  padding: 22px 0;
+  padding: 46px 0;
   margin-bottom: 14px;
   color: var(--color-text);
   white-space: nowrap;
@@ -291,7 +286,7 @@ body.dark-mode .title-rect {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 22px 0;
+  padding: 46px 0;
   box-sizing: border-box;
   background: var(--rainbow);
   background-size: 200% 100%;
@@ -370,7 +365,7 @@ body.dark-mode .title-rect {
 
 /* ===== Hero Authors & Affiliation ===== */
 .hero-authors {
-  font-size: clamp(14px, 1.3vw, 18px);
+  font-size: clamp(15px, 1.55vw, 21px);
   color: var(--color-text-secondary);
   line-height: 1.8;
   margin-bottom: 10px;
@@ -390,7 +385,7 @@ body.dark-mode .title-rect {
 }
 
 .hero-affiliation {
-  font-size: clamp(12px, 1.1vw, 15px);
+  font-size: clamp(14px, 1.3vw, 18px);
   color: var(--color-text-secondary);
   margin-bottom: 14px;
 }
@@ -404,7 +399,7 @@ body.dark-mode .title-rect {
 }
 
 .hero-venue {
-  font-size: clamp(13px, 1.15vw, 16px);
+  font-size: clamp(15px, 1.35vw, 19px);
   font-weight: 600;
   letter-spacing: 0.04em;
   margin-top: 4px;
@@ -430,7 +425,7 @@ body.dark-mode .title-rect {
 }
 
 .pub-links a {
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(12px, 1.2vw, 16px);
   font-weight: 500;
   color: var(--color-accent);
   padding: 7px 16px;
@@ -628,6 +623,12 @@ body.dark-mode .title-rect {
 
 /* ===== Hero Tagline (typewriter) ===== */
 .hero-tagline-wrapper {
+  text-align: center;
+}
+
+.tagline-section {
+  padding: 56px 20px;
+  background: var(--color-bg);
   text-align: center;
 }
 
@@ -1010,16 +1011,99 @@ body.dark-mode .title-rect {
   margin-bottom: 4px;
 }
 
-/* ===== Hero Teaser (3-panel: sensor | global+ROI | foveated crop) ===== */
+/* ===== Sensor-resolution plot (inside the first teaser panel) ===== */
+.isocell-plot-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.plot-axis {
+  stroke: var(--color-text-secondary);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.plot-tick line {
+  stroke: var(--color-text-secondary);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.plot-tick text {
+  font-size: 10px;
+  fill: var(--color-text-secondary);
+}
+
+.plot-axis-label {
+  font-size: 11px;
+  fill: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.plot-line-solid {
+  stroke: #c5960c;
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: drawSolidLine 1.7s ease-out forwards;
+}
+
+@keyframes drawSolidLine {
+  to { stroke-dashoffset: 0; }
+}
+
+.plot-line-dashed {
+  stroke: #c5960c;
+  opacity: 0;
+  animation: fadeInLine 0.5s ease-out 1.7s forwards;
+}
+
+@keyframes fadeInLine {
+  to { opacity: 1; }
+}
+
+.plot-point {
+  opacity: 0;
+  animation: fadeInPoint 0.4s ease-out var(--d, 0s) forwards;
+}
+
+.plot-point circle {
+  fill: #c5960c;
+}
+
+.plot-point text {
+  font-size: 8px;
+  font-weight: 600;
+  fill: var(--color-text);
+}
+
+.plot-point-prototype circle {
+  fill: #c5960c;
+  stroke: var(--color-text);
+  stroke-width: 0.8;
+}
+
+.plot-point-prototype text { font-size: 9px; }
+
+.plot-callout {
+  stroke: #c5960c;
+  opacity: 0;
+  animation: fadeInLine 0.5s ease-out 1.85s forwards;
+}
+
+@keyframes fadeInPoint {
+  to { opacity: 1; }
+}
+
 .hero-teaser-wrap {
-  margin-top: 16px;
+  margin-top: 40px;
   margin-bottom: 4px;
 }
 
 .hero-teaser {
   display: flex;
   gap: 12px;
-  align-items: flex-end;
+  align-items: center;
   flex-wrap: nowrap;
   width: 100%;
 }
@@ -1034,9 +1118,56 @@ body.dark-mode .title-rect {
   flex-basis: 0;
 }
 
-.teaser-isocell { --panel-aspect: 0.822; }   /* 1569 / 1909 */
-.teaser-global  { --panel-aspect: 3.127; }   /* 4000 / 1279 */
+.teaser-isocell { --panel-aspect: 2.069; }   /* matches plot SVG viewBox 300/145 */
+.teaser-global  { --panel-aspect: 1.778; }   /* 16 / 9 — matches foveated crop panel */
 .teaser-crop    { --panel-aspect: 1.778; }   /* 16  / 9    */
+
+/* Titles row sits ABOVE the teaser, mirroring the panel flex-grow weights so
+   each subtitle lines up over its panel and the plot panel itself stays
+   vertically aligned with the global + foveated panels (no title offset). */
+/* Equation-style titles: phrases sized to content, operators centered exactly
+   between consecutive phrases (equal gap on both sides). Sequential reveal. */
+.hero-teaser-titles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.tt-cell {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-align: center;
+  color: #c5960c;
+  font-weight: 600;
+  font-size: clamp(15px, 1.35vw, 19px);   /* matches SIGGRAPH 2026 (.hero-venue) */
+  line-height: 1.3;
+}
+
+.tt-op {
+  flex: 0 0 auto;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 32px;
+}
+
+/* Sequential reveal: phrase1 → + → phrase2 → = → phrase3 */
+.hero-teaser-titles > * {
+  opacity: 0;
+  animation: ttFadeIn 0.5s ease-out forwards;
+}
+.hero-teaser-titles > *:nth-child(1) { animation-delay: 0.2s; }
+.hero-teaser-titles > *:nth-child(2) { animation-delay: 0.75s; }
+.hero-teaser-titles > *:nth-child(3) { animation-delay: 1.3s; }
+.hero-teaser-titles > *:nth-child(4) { animation-delay: 1.85s; }
+.hero-teaser-titles > *:nth-child(5) { animation-delay: 2.4s; }
+
+@keyframes ttFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
 
 .teaser-img-wrap {
   position: relative;
@@ -1055,8 +1186,8 @@ body.dark-mode .teaser-img-wrap {
   background: transparent;
 }
 
-.teaser-isocell .teaser-img-wrap { aspect-ratio: 1569 / 1909; }
-.teaser-global  .teaser-img-wrap { aspect-ratio: 4000 / 1279; }
+.teaser-isocell .teaser-img-wrap { aspect-ratio: 300 / 145; overflow: visible; }
+.teaser-global  .teaser-img-wrap { aspect-ratio: 16 / 9; }
 .teaser-crop    .teaser-img-wrap {
   aspect-ratio: 16 / 9;
   box-sizing: border-box;
@@ -1080,8 +1211,8 @@ body.dark-mode .teaser-img-wrap {
 }
 
 .teaser-label {
-  font-size: clamp(10px, 0.85vw, 12px);
-  color: var(--color-text-secondary);
+  font-size: clamp(12px, 1.1vw, 16px);
+  color: var(--color-text);
   text-align: center;
   letter-spacing: 0.02em;
 }
@@ -1100,6 +1231,14 @@ body.dark-mode .teaser-img-wrap {
   text-align: center;
   margin-top: 8px;
   letter-spacing: 0.02em;
+}
+
+.hero-teaser-blurb {
+  font-size: 16px;          /* matches .section-body (abstract text) */
+  line-height: 1.75;        /* matches .section-body */
+  color: var(--color-text);
+  text-align: left;
+  margin: 12px 0 0;
 }
 
 .teaser-dot {
@@ -1236,28 +1375,10 @@ body.dark-mode .tab-nav {
     flex-shrink: 0;
   }
 
+  /* Hero stays a full-viewport box; the JS scales the fixed design canvas
+     to fit, so no per-element mobile typography overrides are needed. */
   .hero {
-    min-height: auto;
-    padding: 100px 16px 60px;
-  }
-
-  .hero-title {
-    font-size: clamp(0.85rem, 4.5vw, 1.4rem);
-    white-space: nowrap;
-    margin-bottom: 40px;
-  }
-
-  .hero-authors {
-    font-size: 15px;
-  }
-
-  .pub-links {
-    gap: 10px;
-  }
-
-  .pub-links a {
-    font-size: 13px;
-    padding: 8px 18px;
+    padding: 56px 12px;
   }
 
   .content-section {

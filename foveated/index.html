@@ -64,14 +64,110 @@
           Video
         </a>
       </div>
-      <!-- Hero Teaser: ISOCELL prototype | low-res global view + ROI | foveated full-res crop -->
+      <!-- Hero Teaser: sensor-resolution plot (with 200 MP sensor inset) | low-res global + ROI | foveated full-res crop -->
       <div class="hero-teaser-wrap">
+        <div class="hero-teaser-titles">
+          <span class="tt-cell">Dual-Stream Ultra-High-Resolution Sensors</span>
+          <span class="tt-op">+</span>
+          <span class="tt-cell">Real-Time, Task-Aware Sensor Attention Policy</span>
+          <span class="tt-op">=</span>
+          <span class="tt-cell">Foveated Imaging And Perception</span>
+        </div>
         <div class="hero-teaser" id="hero-teaser">
           <div class="teaser-panel teaser-isocell">
             <div class="teaser-img-wrap">
-              <img src="images/isocell.png" alt="200 MP ISOCELL prototype sensor">
+              <svg class="isocell-plot-svg" viewBox="0 0 300 145" aria-hidden="true">
+                <!-- Axes -->
+                <line class="plot-axis" x1="35" y1="110" x2="290" y2="110"/>
+                <line class="plot-axis" x1="35" y1="15"  x2="35"  y2="110"/>
+
+                <!-- Y-axis ticks (linear MP: 0, 100, 200, 300, 400) -->
+                <g class="plot-tick">
+                  <line x1="32" y1="110"   x2="35" y2="110"/>
+                  <text x="30" y="113"   text-anchor="end">0</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="32" y1="86.83" x2="35" y2="86.83"/>
+                  <text x="30" y="89.83" text-anchor="end">100</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="32" y1="63.66" x2="35" y2="63.66"/>
+                  <text x="30" y="66.66" text-anchor="end">200</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="32" y1="40.49" x2="35" y2="40.49"/>
+                  <text x="30" y="43.49" text-anchor="end">300</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="32" y1="17.32" x2="35" y2="17.32"/>
+                  <text x="30" y="20.32" text-anchor="end">400</text>
+                </g>
+
+                <!-- X-axis ticks (1975, 2000, 2025) -->
+                <g class="plot-tick">
+                  <line x1="35"  y1="110" x2="35"  y2="113"/>
+                  <text x="35"  y="121" text-anchor="middle">1975</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="160" y1="110" x2="160" y2="113"/>
+                  <text x="160" y="121" text-anchor="middle">2000</text>
+                </g>
+                <g class="plot-tick">
+                  <line x1="285" y1="110" x2="285" y2="113"/>
+                  <text x="285" y="121" text-anchor="middle">2026</text>
+                </g>
+
+                <!-- Axis titles -->
+                <text class="plot-axis-label" x="160" y="134" text-anchor="middle">Year</text>
+                <text class="plot-axis-label" x="8"  y="62"  text-anchor="middle" transform="rotate(-90 8 62)">MP</text>
+
+                <!-- Trend line: solid 1975 → 2022 (mainstream/shipping) — linear scale -->
+                <polyline class="plot-line-solid"
+                          points="35,110 170,107.45 220,101.66 255,86.37 270,63.66"
+                          fill="none" stroke-width="2"/>
+
+                <!-- Trend line: dashed 2022 → 2025 (Canon 410 MP, industrial only) -->
+                <polyline class="plot-line-dashed"
+                          points="270,63.66 285,15"
+                          fill="none" stroke-width="2" stroke-dasharray="5 3"/>
+
+                <!-- Data points + MP labels -->
+                <g class="plot-point" style="--d:0s">
+                  <circle cx="35"  cy="110"   r="3"/>
+                  <text   x="40"  y="106"    text-anchor="start">0.01 MP</text>
+                </g>
+                <g class="plot-point" style="--d:.9s">
+                  <circle cx="170" cy="107.45" r="3"/>
+                  <text   x="170" y="102"     text-anchor="middle">11 MP</text>
+                </g>
+                <g class="plot-point" style="--d:1.2s">
+                  <circle cx="220" cy="101.66" r="3"/>
+                  <text   x="220" y="96"      text-anchor="middle">36 MP</text>
+                </g>
+                <g class="plot-point" style="--d:1.5s">
+                  <circle cx="255" cy="86.37"  r="3"/>
+                  <text   x="255" y="81"      text-anchor="middle">102 MP</text>
+                </g>
+                <g class="plot-point plot-point-prototype" style="--d:1.7s">
+                  <circle cx="270" cy="63.66"  r="4"/>
+                  <text   x="266" y="58"      text-anchor="end">200 MP</text>
+                </g>
+                <g class="plot-point" style="--d:2.0s">
+                  <circle cx="285" cy="15"     r="3"/>
+                  <text   x="281" y="11"      text-anchor="end">410 MP</text>
+                </g>
+
+                <!-- Connector from 200 MP point leftward to the enlarged sensor inset -->
+                <line class="plot-callout" x1="266" y1="63.66" x2="137" y2="59"
+                      stroke-width="1.2"/>
+
+                <!-- 200 MP prototype sensor, enlarged, to the left of the 200 MP point -->
+                <image href="images/isocell.png"
+                       x="55" y="18" width="95" height="82"
+                       preserveAspectRatio="xMidYMid meet"/>
+              </svg>
             </div>
-            <div class="teaser-label">200 MP Prototype Sensor</div>
+            <div class="teaser-label">Rapid Sensor Resolution Growth</div>
           </div>
           <div class="teaser-panel teaser-global">
             <div class="teaser-img-wrap">
@@ -89,13 +185,10 @@
         </div>
         <div class="hero-teaser-dots" id="hero-teaser-dots"></div>
         <div class="hero-teaser-credit">Image credit: NASA, ESA, J. Dalcanton (University of Washington, USA), B. F. Williams (University of Washington, USA), L. C. Johnson (University of Washington, USA), the PHAT team, and R. Gendler.</div>
+        <p class="hero-teaser-blurb">Ultra-high-resolution sensors capture fine details critical for visual perception, but acquiring all pixels at full resolution is often infeasible under realistic constraints. We introduce a real-time, task-aware foveated imaging framework that learns a sensor attention policy to dynamically allocate pixel bandwidth, extensively validated in simulation and on a 200-megapixel prototype.</p>
       </div>
 
       <div class="hero-scroll-row">
-        <div class="hero-tagline-wrapper">
-          <p class="hero-tagline-line" id="tagline-1"></p>
-          <p class="hero-tagline-line" id="tagline-2"></p>
-        </div>
         <div class="hero-scroll-cta">
           <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
             <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -264,6 +357,14 @@
     </a>
   </section>
 
+  <!-- ===== Tagline ===== -->
+  <section class="tagline-section">
+    <div class="hero-tagline-wrapper">
+      <p class="hero-tagline-line" id="tagline-1"></p>
+      <p class="hero-tagline-line" id="tagline-2"></p>
+    </div>
+  </section>
+
   <!-- ===== BibTeX ===== -->
   <section id="bibtex" class="content-section">
     <div class="section-inner">
@@ -294,80 +395,38 @@
       localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
 
-    // ===== Hero snap scroll → then native scrolling =====
-    const isMobile = window.innerWidth <= 768;
-    const heroSection = document.getElementById('hero');
+    // ===== Native scrolling: reveal-on-view + smooth anchor jumps =====
     const nav = document.querySelector('.nav-top');
-    let onHero = true;
-    let isScrolling = false;
 
-    // Start locked on hero (desktop only)
-    if (!isMobile) document.documentElement.classList.add('hero-locked');
-
-    function unlockScroll() {
-      onHero = false;
-      document.documentElement.classList.remove('hero-locked');
-      nav.classList.add('scrolled');
-      // Trigger reveals for all sections now that scrolling is unlocked
-      document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
+    // Reveal .reveal elements as they scroll into view
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            en.target.classList.add('revealed');
+            io.unobserve(en.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('revealed'));
     }
 
-    function lockToHero() {
-      onHero = true;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => {
-        document.documentElement.classList.add('hero-locked');
-        nav.classList.remove('scrolled');
-      }, 800);
-    }
-
-    // Track scroll position — lock back to hero when at top
+    // Nav background once scrolled away from the very top
     window.addEventListener('scroll', () => {
-      if (!onHero) {
-        if (window.scrollY <= 0 && !isMobile) {
-          lockToHero();
-        } else {
-          nav.classList.toggle('scrolled', window.scrollY > 100);
-        }
-      }
+      nav.classList.toggle('scrolled', window.scrollY > 100);
     });
 
-    if (!isMobile) {
-      window.addEventListener('wheel', (e) => {
-        if (!onHero) return; // native scrolling after hero
-        e.preventDefault();
-        if (isScrolling) return;
-        if (e.deltaY > 0) {
-          // Scroll down from hero → unlock and go to abstract
-          isScrolling = true;
-          unlockScroll();
-          document.getElementById('abstract').scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => { isScrolling = false; }, 1000);
-        }
-      }, { passive: false });
-    }
-
-    // Nav link clicks
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = link.getAttribute('href').replace('#', '');
-        if (target === 'hero') {
-          lockToHero();
-        } else {
-          if (onHero) unlockScroll();
-          document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    // Scroll arrow + link clicks
-    document.querySelectorAll('.scroll-arrow, .scroll-link').forEach(el => {
+    // Smooth-scroll for nav links + scroll arrows/links
+    document.querySelectorAll('.nav-link, .scroll-arrow, .scroll-link').forEach(el => {
       el.addEventListener('click', (e) => {
+        const href = el.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
         e.preventDefault();
-        const target = el.getAttribute('href').replace('#', '');
-        if (onHero) unlockScroll();
-        document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
+        const target = document.getElementById(href.slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
     });
 
@@ -1014,9 +1073,19 @@
         restartTimer();
       }));
 
+      // Render the first crop so the panel isn't empty when the reveal fade-in starts.
+      // Auto-advance is held back until the orchestration triggers the teaser stage,
+      // so we don't lose the first crop to the fade-in window.
       show(0);
-      restartTimer();
+      window._heroTeaserStartTimer = restartTimer;
     })();
+
+    // ===== Carousel start =====
+    // Hold the auto-advance until the sensor-resolution plot finishes drawing (~2.4 s),
+    // so the moving rectangle on the global panel doesn't compete with the line draw.
+    setTimeout(() => {
+      if (window._heroTeaserStartTimer) window._heroTeaserStartTimer();
+    }, 2900);
 
     // Tab switching + lazy carousel init for Results (scoped to #results-tabs only)
     document.querySelectorAll('#results-tabs .tab-btn').forEach(btn => {

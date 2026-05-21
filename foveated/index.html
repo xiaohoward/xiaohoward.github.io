@@ -1213,9 +1213,18 @@
         });
       });
 
-      // Method video: play once, freeze on last frame; click section to replay
+      // Method video: play, freeze on last frame, auto-replay every ~30s
+      // (click also restarts immediately).
       const methodVideo = document.getElementById('method-video');
       if (methodVideo) {
+        const CYCLE_MS = 30000;
+        methodVideo.addEventListener('ended', () => {
+          const remain = Math.max(0, CYCLE_MS - (methodVideo.duration || 0) * 1000);
+          setTimeout(() => {
+            methodVideo.currentTime = 0;
+            methodVideo.play().catch(() => {});
+          }, remain);
+        });
         document.getElementById('method').addEventListener('click', () => {
           methodVideo.currentTime = 0;
           methodVideo.play();

@@ -1,4 +1,10 @@
 {
   "duration_seconds": 24.4,
-  "frames": []
+  "frames": [
+    "frame_000000.jpg",
+    "frame_000401.jpg",
+    "frame_000501.jpg",
+    "frame_000601.jpg",
+    "frame_000701.jpg"
+  ]
 }

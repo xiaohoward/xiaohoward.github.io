@@ -483,6 +483,25 @@ body.dark-mode .title-rect {
   margin-bottom: 16px;
 }
 
+/* ===== Abstract: repeating animated underline on key phrases ===== */
+.section-body .ul {
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  padding-bottom: 2px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: ulLoop 30s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+}
+@keyframes ulLoop {
+  0%    { background-size: 0% 2px; }
+  3.3%  { background-size: 100% 2px; }
+  95%   { background-size: 100% 2px; }
+  100%  { background-size: 0% 2px; }
+}
+
 .placeholder-block {
   background: var(--color-card-bg);
   border-radius: 16px;
@@ -643,6 +662,22 @@ body.dark-mode .title-rect {
   display: block;
 }
 
+.hero-presentation-note {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #c5960c;
+  text-align: center;
+}
+.hero-presentation-note a {
+  color: #c5960c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.hero-presentation-note a:hover {
+  color: #a87c08;
+}
+
 /* ===== Scroll Down Arrow ===== */
 .scroll-arrow {
   display: block;
@@ -684,6 +719,81 @@ body.dark-mode .title-rect {
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+}
+
+/* ===== Results: quantitative tables + collapsible sections (borrowed from speed) ===== */
+.fov-subhead {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 36px 0 14px;
+}
+details.fov-collapse { margin: 0; }
+details.fov-collapse > summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+details.fov-collapse > summary::-webkit-details-marker { display: none; }
+details.fov-collapse > summary::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 7px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-right: 12px;
+  vertical-align: middle;
+  transition: transform .2s ease;
+}
+details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
+
+.fov-table-wrap {
+  margin-top: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fov-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+.fov-table th,
+.fov-table td {
+  padding: 9px 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+.fov-table tbody td:first-child,
+.fov-table thead th:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+.fov-table thead th {
+  font-weight: 600;
+  color: var(--color-text);
+  border-top: 2px solid var(--color-text);
+  border-bottom: 1px solid var(--color-text);
+}
+.fov-table tbody tr:not(:first-child) td {
+  border-top: 1px solid var(--color-border);
+}
+.fov-table tbody tr:last-child td {
+  border-bottom: 2px solid var(--color-text);
+}
+.fov-table .ours {
+  font-weight: 700;
+}
+.fov-tcap {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-align: left;
+  line-height: 1.6;
 }
 
 .hero-scroll-cta {
@@ -867,6 +977,12 @@ body.dark-mode .title-rect {
   min-height: 2.4em;
 }
 
+/* Hide captions under qualitative result videos (real prototype + simulated). */
+.results-carousel .video-caption,
+.sim-carousel .video-caption {
+  display: none;
+}
+
 .panel video {
   width: 100%;
   height: 100%;
@@ -949,6 +1065,21 @@ body.dark-mode .title-rect {
 }
 
 /* ===== Carousel Controls ===== */
+.carousel-stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.carousel-stage > .video-3panel {
+  flex: 1;
+  min-width: 0;
+}
+/* JS sets --arrow-offset so arrows align to center of the first video panel
+   (not the whole stage, which includes labels/controls below). */
+.carousel-stage > .carousel-arrow {
+  margin-top: var(--arrow-offset, 0px);
+}
+
 .carousel-controls {
   display: flex;
   align-items: center;
@@ -958,11 +1089,13 @@ body.dark-mode .title-rect {
 }
 
 .carousel-arrow {
-  width: 32px;
-  height: 32px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
   border: 1px solid var(--color-border);
   border-radius: 50%;
   background: none;
+  color: var(--color-text);
   cursor: pointer;
   opacity: 0.6;
   display: flex;
@@ -977,13 +1110,15 @@ body.dark-mode .title-rect {
 }
 
 .carousel-arrow svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .carousel-dots {
   display: flex;
+  justify-content: center;
   gap: 8px;
+  margin-top: 18px;
 }
 
 .carousel-dot {

@@ -64,6 +64,7 @@
           Video
         </a>
       </div>
+      <p class="hero-presentation-note"><strong>Please check out our <a href="https://s2026.conference-schedule.org/session/?sess=sess237" target="_blank" rel="noopener">fast forward presentation</a> on July 19th and our <a href="https://s2026.conference-schedule.org/presentation/?id=papers_1502&amp;sess=sess147" target="_blank" rel="noopener">paper presentation</a> on July 23rd @2:50pm in LA!</strong></p>
       <!-- Hero Teaser: sensor-resolution plot (with 200 MP sensor inset) | low-res global + ROI | foveated full-res crop -->
       <div class="hero-teaser-wrap">
         <div class="hero-teaser-titles">
@@ -205,7 +206,7 @@
       <h2 class="section-heading reveal">Abstract</h2>
 
       <div class="section-body reveal">
-        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details critical for many visual perception tasks, but acquiring and processing all pixels at full resolution is often infeasible under realistic bandwidth, latency, and power constraints. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably discard information before task relevance can be assessed. This results in degraded performance across multiple perception tasks, including object tracking, text recognition, and robotic manipulation.</p>
+        <p>Ultra-high-resolution image sensors offer the potential to capture fine spatial details <span class="ul" style="--i:0">critical for many visual perception tasks</span>, but acquiring and processing all pixels at full resolution is often <span class="ul" style="--i:1">infeasible under realistic bandwidth, latency, and power constraints</span>. Existing approaches address this challenge through acquisition strategies such as spatial or temporal downsampling, which irrevocably <span class="ul" style="--i:2">discard information before task relevance can be assessed</span>. This results in <span class="ul" style="--i:3">degraded performance</span> across multiple perception tasks, including object tracking, text recognition, and robotic manipulation.</p>
       </div>
 
       <!-- Bandwidth comparison demo -->
@@ -254,7 +255,7 @@
       </div>
 
       <div class="section-body reveal">
-        <p>In this work, we introduce a real-time, predictive, and task-aware foveated imaging system that operates directly at image acquisition time. Leveraging emerging dual-stream sensor architectures, our method dynamically allocates limited pixel bandwidth to task-relevant regions of interest while maintaining a low-resolution global context. We formulate foveated acquisition as a sensor attention policy-learning problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
+        <p>In this work, we introduce a <span class="ul" style="--i:4">real-time, predictive, and task-aware</span> foveated imaging system that operates <span class="ul" style="--i:5">directly at image acquisition time</span>. Leveraging <span class="ul" style="--i:6">emerging dual-stream sensor architectures</span>, our method dynamically allocates limited pixel bandwidth to <span class="ul" style="--i:7">task-relevant regions of interest</span> while maintaining a <span class="ul" style="--i:8">low-resolution global context</span>. We formulate foveated acquisition as a <span class="ul" style="--i:9">sensor attention policy-learning</span> problem, in which past observations guide actions that determine future measurements, closing the perception-acquisition loop.</p>
       </div>
 
       <!-- Interactive foveated demo -->
@@ -282,7 +283,7 @@
       </div>
 
       <div class="section-body reveal">
-        <p>Through extensive simulation across multiple perception tasks, we demonstrate that our approach achieves high task performance under strict pixel budgets and significantly outperforms relevant baselines operating at the same bandwidth. We further validate our system on a 200-megapixel dual-stream sensor, capturing real-world videos under realistic bandwidth and latency constraints, demonstrating the practical feasibility of task-driven, acquisition-time foveated imaging.</p>
+        <p>Through extensive simulation across multiple perception tasks, we demonstrate that our approach achieves <span class="ul" style="--i:10">high task performance under strict pixel budgets</span> and significantly <span class="ul" style="--i:11">outperforms relevant baselines</span> operating at the same bandwidth. We further validate our system on a <span class="ul" style="--i:12">200-megapixel dual-stream sensor</span>, capturing <span class="ul" style="--i:13">real-world videos</span> under realistic bandwidth and latency constraints, demonstrating the <span class="ul" style="--i:14">practical feasibility</span> of task-driven, acquisition-time foveated imaging.</p>
         <p><a href="#results" class="scroll-link">See more of our results here.</a></p>
       </div>
     </div>
@@ -300,6 +301,10 @@
           <source src="videos/method.mp4" type="video/mp4">
         </video>
       </div>
+      <div class="section-body reveal">
+        <p>Rather than learning the sensor attention policy end-to-end from raw pixels, we decompose the problem into three lightweight, interpretable components: (i) a saliency detector, (ii) a motion model, and (iii) a scanpath selection policy. This modular design enables real-time inference on edge hardware and avoids the instability and latency of monolithic policies.</p>
+        <p>Please check <a href="paper/main_lowres.pdf">our paper</a> for further method details.</p>
+      </div>
     </div>
     <a href="#results" class="scroll-arrow">
       <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -312,6 +317,10 @@
       <h2 class="section-heading reveal">Results</h2>
 
       <h3 class="results-subtitle">200 MP Foveated Imaging Prototype</h3>
+
+      <div class="section-body reveal">
+        <p>We demonstrate both smooth-pursuit scanpaths for object tracking and saccading scanpaths for scene text recognition. The predictive attention policy consistently directs high-resolution sensing to task-relevant regions that remain indistinguishable in the FFoV context stream. This enables recovery of fine spatial details such as object boundaries and textures under real-world lighting conditions and sensor noise.</p>
+      </div>
 
       <div class="tab-nav" id="results-tabs">
         <button class="tab-btn active" data-tab="text_outdoor">Text Saccade (Outdoor)</button>
@@ -336,20 +345,80 @@
       <!-- Simulation Results -->
       <h3 class="results-subtitle" style="margin-top: 48px;">Simulation Results for Multiple Perception Tasks</h3>
 
-      <div class="tab-nav" id="sim-tabs">
-        <button class="tab-btn active" data-sim-tab="sim_tracking">Object Tracking</button>
-        <button class="tab-btn" data-sim-tab="sim_text">Text Recognition</button>
-        <button class="tab-btn" data-sim-tab="sim_robotics">Robotics</button>
+      <div class="section-body reveal">
+        <p>Our policy-based foveated imaging consistently outperforms task-agnostic baselines and, in some cases, matches full-resolution performance while using less than one-eighth of the pixel bandwidth.</p>
       </div>
 
-      <div class="tab-panel active" id="tab-sim_tracking">
-        <div class="video-carousel sim-carousel" data-videos='["tracking_ball1","tracking_ball2","tracking_player1"]' data-basepath="videos/simulated_results"></div>
-      </div>
-      <div class="tab-panel" id="tab-sim_text">
-        <div class="video-carousel sim-carousel" data-videos='["text1","text2","text3","text4"]' data-basepath="videos/simulated_results"></div>
-      </div>
-      <div class="tab-panel" id="tab-sim_robotics">
-        <div class="placeholder-block">Robotics results coming soon.</div>
+      <details class="fov-collapse" open>
+        <summary class="fov-subhead">Qualitative Results</summary>
+        <div class="tab-nav" id="sim-tabs">
+          <button class="tab-btn active" data-sim-tab="sim_tracking">Object Tracking</button>
+          <button class="tab-btn" data-sim-tab="sim_text">Text Recognition</button>
+          <button class="tab-btn" data-sim-tab="sim_robotics">Robotic Manipulation</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-sim_tracking">
+          <div class="video-carousel sim-carousel" data-videos='["tracking_ball1","tracking_ball2","tracking_player1"]' data-basepath="videos/simulated_results"></div>
+        </div>
+        <div class="tab-panel" id="tab-sim_text">
+          <div class="video-carousel sim-carousel" data-videos='["text1","text2","text3","text4"]' data-basepath="videos/simulated_results"></div>
+        </div>
+        <div class="tab-panel" id="tab-sim_robotics">
+          <div class="placeholder-block">Robotics results coming soon.</div>
+        </div>
+      </details>
+
+      <details class="fov-collapse" open>
+        <summary class="fov-subhead">Quantitative Results</summary>
+        <div class="fov-table-wrap">
+          <table class="fov-table">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Metric</th>
+                <th>Full-resolution</th>
+                <th>GT Oracle</th>
+                <th>Spatial<br>downsampling</th>
+                <th>Temporal<br>downsampling</th>
+                <th class="ours">Foveated<br>(Ours)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Object Tracking</td>
+                <td>IoU &uarr;</td>
+                <td>0.281</td>
+                <td>0.405</td>
+                <td>0.122</td>
+                <td>0.148</td>
+                <td class="ours">0.283</td>
+              </tr>
+              <tr>
+                <td>Text Recognition</td>
+                <td>Transcription Rate &uarr;</td>
+                <td>0.333</td>
+                <td>0.271</td>
+                <td>0.067</td>
+                <td>0.248</td>
+                <td class="ours">0.264</td>
+              </tr>
+              <tr>
+                <td>Robotic Manipulation</td>
+                <td>Success Rate &uarr;<br>(Complete | Partial)</td>
+                <td>0.15 | 0.61</td>
+                <td>N/A</td>
+                <td>0.10 | 0.51</td>
+                <td>0.07 | 0.30</td>
+                <td class="ours">0.12 | 0.57</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fov-tcap"><strong>Quantitative results of policy-based foveated perception.</strong> We compare downstream task performance of our method against same-pixel-bandwidth downsampling baselines and include full-resolution and oracle performance with ground truth (GT) ROI selections. <strong>Row 1:</strong> downstream soccer ball tracking Intersection-over-Union (IoU) of the baseline methods and our approach. Temporal downsampling IoU is computed only on kept frames. <strong>Row 2:</strong> percentage of distinct text objects correctly detected and transcribed in the road scene text recognition task. <strong>Row 3:</strong> partial and complete task success rate over 100 trials of the ALOHA insertion task. The GT Oracle is not applicable because no ground-truth foveation labels are available for this task. Our approach performs the best among relevant baselines with a comparable bandwidth.</p>
+      </details>
+
+      <div class="section-body reveal">
+        <p>Please see <a href="paper/main_lowres.pdf">our paper</a> for more detailed analysis and further evaluations.</p>
       </div>
     </div>
     <a href="#bibtex" class="scroll-arrow">
@@ -381,7 +450,7 @@
 
   <!-- ===== Footer ===== -->
   <footer class="site-footer">
-    <p><a href="../">Howard Xiao</a> | Website made with Claude.</a></p>
+    <p>Website made with Claude</p>
   </footer>
 
   <script>
@@ -707,49 +776,49 @@
       init() {
         const id = this.container.id || 'carousel-' + Math.random().toString(36).slice(2);
         this.container.innerHTML = `
-          <div class="video-3panel">
-            <div class="panel panel-global">
-              <div class="panel-loading-wrap">
-                <video muted autoplay playsinline></video>
-                <div class="panel-loader"><span class="loader-pct">0%</span></div>
-                ${this.isHero ? '<div class="video-category-label"></div>' : ''}
-              </div>
-              <div class="demo-label">Global View + ROI</div>
-            </div>
-            <div class="panel panel-roi">
-              <div class="panel-loading-wrap">
-                <video muted autoplay playsinline></video>
-                <div class="panel-loader"><span class="loader-pct">0%</span></div>
-              </div>
-              <div class="demo-label">Foveated ROI</div>
-            </div>
-            <div class="panel panel-frames">
-              <div class="frame-slideshow">
-                <img class="slideshow-img" alt="ROI Frame">
-                <div class="panel-loader frame-loader"><span class="loader-pct">Loading...</span></div>
-              </div>
-              <div class="frame-controls">
-                <button class="frame-arrow frame-prev" aria-label="Previous frame">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
-                </button>
-                <div class="frame-dots"></div>
-                <button class="frame-arrow frame-next" aria-label="Next frame">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
-                </button>
-              </div>
-              <div class="demo-label">ROI Highlights</div>
-            </div>
-          </div>
-          <div class="carousel-controls">
+          <div class="carousel-stage">
             <button class="carousel-arrow carousel-prev" aria-label="Previous">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
             </button>
-            <div class="carousel-dots">
-              ${this.videos.map((_, i) => `<button class="carousel-dot${i === 0 ? ' active' : ''}" data-index="${i}"></button>`).join('')}
+            <div class="video-3panel">
+              <div class="panel panel-global">
+                <div class="panel-loading-wrap">
+                  <video muted autoplay playsinline></video>
+                  <div class="panel-loader"><span class="loader-pct">0%</span></div>
+                  ${this.isHero ? '<div class="video-category-label"></div>' : ''}
+                </div>
+                <div class="demo-label">Global View + ROI</div>
+              </div>
+              <div class="panel panel-roi">
+                <div class="panel-loading-wrap">
+                  <video muted autoplay playsinline></video>
+                  <div class="panel-loader"><span class="loader-pct">0%</span></div>
+                </div>
+                <div class="demo-label">Foveated ROI</div>
+              </div>
+              <div class="panel panel-frames">
+                <div class="frame-slideshow">
+                  <img class="slideshow-img" alt="ROI Frame">
+                  <div class="panel-loader frame-loader"><span class="loader-pct">Loading...</span></div>
+                </div>
+                <div class="frame-controls">
+                  <button class="frame-arrow frame-prev" aria-label="Previous frame">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                  </button>
+                  <div class="frame-dots"></div>
+                  <button class="frame-arrow frame-next" aria-label="Next frame">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                  </button>
+                </div>
+                <div class="demo-label">ROI Highlights</div>
+              </div>
             </div>
             <button class="carousel-arrow carousel-next" aria-label="Next">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
             </button>
+          </div>
+          <div class="carousel-dots">
+            ${this.videos.map((_, i) => `<button class="carousel-dot${i === 0 ? ' active' : ''}" data-index="${i}"></button>`).join('')}
           </div>
           <p class="video-caption"></p>
         `;
@@ -803,6 +872,23 @@
         // Frame slideshow arrows
         this.container.querySelector('.frame-prev').addEventListener('click', () => this.prevFrame());
         this.container.querySelector('.frame-next').addEventListener('click', () => this.nextFrame());
+
+        // Vertically center side arrows on the first video panel (not on the
+        // whole stage, which also contains demo-labels / frame-controls).
+        const stage = this.container.querySelector('.carousel-stage');
+        const refPanel = this.container.querySelector('.panel-loading-wrap');
+        if (stage && refPanel) {
+          const updateArrowOffset = () => {
+            const h = refPanel.offsetHeight;
+            if (!h) return;
+            stage.style.setProperty('--arrow-offset', (h / 2 - 18) + 'px');
+          };
+          updateArrowOffset();
+          if (typeof ResizeObserver !== 'undefined') {
+            new ResizeObserver(updateArrowOffset).observe(refPanel);
+          }
+          window.addEventListener('resize', updateArrowOffset);
+        }
 
         this.loadVideo(0);
       }

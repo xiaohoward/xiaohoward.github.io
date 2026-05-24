@@ -14,11 +14,18 @@ foveated/videos/bandwidth/*/*.txt
 foveated/videos/bandwidth/*/*.ini
 foveated/videos/bandwidth/*/gt/
 foveated/videos/bandwidth/*/det/
-# Simulated results: ignore all subdirs except frames/, and all files except processed + manifest
-foveated/videos/simulated_results/*/ROI/
+# Simulated results: ignore source subdirs/files; track only processed mp4s,
+# manifests, frames/ (text/tracking), and robotics*/roi/ (used as highlights).
+foveated/videos/simulated_results/text*/roi/
+foveated/videos/simulated_results/tracking_*/roi/
+foveated/videos/simulated_results/*/fullres/
+foveated/videos/simulated_results/*/global_downsampled/
 foveated/videos/simulated_results/*/global_yolo/
 foveated/videos/simulated_results/*/hungarian/
 foveated/videos/simulated_results/*/kf/
+foveated/videos/simulated_results/*/overlay/
+foveated/videos/simulated_results/*/overlay.mp4
+foveated/videos/simulated_results/*/results.json
 foveated/videos/simulated_results/*/*.jpg
 foveated/videos/simulated_results/*/*.txt
 foveated/videos/simulated_results/*/*.png

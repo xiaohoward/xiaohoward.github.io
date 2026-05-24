@@ -364,7 +364,7 @@
           <div class="video-carousel sim-carousel" data-videos='["text1","text2","text3","text4"]' data-basepath="videos/simulated_results"></div>
         </div>
         <div class="tab-panel" id="tab-sim_robotics">
-          <div class="placeholder-block">Robotics results coming soon.</div>
+          <div class="video-carousel sim-carousel" data-videos='["robotics1","robotics2","robotics3"]' data-basepath="videos/simulated_results"></div>
         </div>
       </details>
 
@@ -439,10 +439,16 @@
     <div class="section-inner">
       <h2 class="section-heading reveal">BibTeX</h2>
       <div class="reveal">
-        <pre class="bibtex-block"><code>@article{xiao2026foveated,
+        <pre class="bibtex-block"><code>@inproceedings{xiao2026foveated,
   author    = {Xiao, Howard and Ackermann, Jan and Deng, Boyang and Wetzstein, Gordon},
   title     = {Policy-based Foveated Imaging and Perception},
   year      = {2026},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  booktitle = {Special Interest Group on Computer Graphics and Interactive Techniques Conference Conference Papers (SIGGRAPH Conference Papers '26), July 19--23, 2026, Los Angeles, CA, USA},
+  numpages  = {11},
+  location  = {Los Angeles, CA, USA},
+  series    = {SIGGRAPH Conference Papers '26}
 }</code></pre>
       </div>
     </div>
@@ -759,6 +765,9 @@
       tracking_ball1: { label: 'Object Tracking', caption: 'Simulated foveated object tracking: the policy tracks a ball in motion, maintaining high-resolution focus on the target while the surrounding scene streams at low resolution.' },
       tracking_ball2: { label: 'Object Tracking', caption: 'The foveated attention policy follows a ball across the field of view, demonstrating predictive bandwidth allocation for fast-moving objects.' },
       tracking_player1: { label: 'Object Tracking', caption: 'Player tracking with foveated acquisition: the policy maintains the athlete within the high-resolution ROI, enabling detailed pose and motion analysis under bandwidth constraints.' },
+      robotics1: { label: 'Robotic Manipulation', caption: '' },
+      robotics2: { label: 'Robotic Manipulation', caption: '' },
+      robotics3: { label: 'Robotic Manipulation', caption: '' },
     };
 
     class VideoCarousel {

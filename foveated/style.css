@@ -1368,6 +1368,11 @@ body.dark-mode .teaser-img-wrap {
   letter-spacing: 0.02em;
 }
 
+.hero-teaser-credit a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .hero-teaser-blurb {
   font-size: 16px;          /* matches .section-body (abstract text) */
   line-height: 1.75;        /* matches .section-body */

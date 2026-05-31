@@ -1275,8 +1275,8 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
   flex: 0 0 auto;
   white-space: nowrap;
   text-align: center;
-  color: #c5960c;
-  font-weight: 600;
+  color: #000;
+  font-weight: 700;
   font-size: clamp(15px, 1.35vw, 19px);   /* matches SIGGRAPH 2026 (.hero-venue) */
   line-height: 1.3;
 }

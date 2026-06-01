@@ -1257,17 +1257,17 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
 .teaser-global  { --panel-aspect: 1.778; }   /* 16 / 9 — matches foveated crop panel */
 .teaser-crop    { --panel-aspect: 1.778; }   /* 16  / 9    */
 
-/* Titles row sits ABOVE the teaser, mirroring the panel flex-grow weights so
-   each subtitle lines up over its panel and the plot panel itself stays
-   vertically aligned with the global + foveated panels (no title offset). */
-/* Equation-style titles: phrases sized to content, operators centered exactly
-   between consecutive phrases (equal gap on both sides). Sequential reveal. */
+/* Titles are an independent, centered equation line — deliberately NOT tied to
+   the panel widths below. The image panels align among themselves (.hero-teaser),
+   and this text aligns separately, so neither disturbs the other when the window
+   gets very narrow/tall. Phrases sized to content; operators centered between
+   consecutive phrases; the whole line scales to stay single-line. Sequential reveal. */
 .hero-teaser-titles {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;          /* equation stays on ONE line at any window size */
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 0.7vw;                 /* scales with width so the line never wraps */
   margin-bottom: 14px;
 }
 
@@ -1277,7 +1277,9 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
   text-align: center;
   color: #000;
   font-weight: 700;
-  font-size: clamp(15px, 1.35vw, 19px);   /* matches SIGGRAPH 2026 (.hero-venue) */
+  /* Scales with viewport so the whole equation holds one line down to phones;
+     capped at 19px on wide screens (matches SIGGRAPH 2026 .hero-venue). */
+  font-size: min(1.18vw, 19px);
   line-height: 1.3;
 }
 
@@ -1285,7 +1287,7 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
   flex: 0 0 auto;
   color: var(--color-text);
   font-weight: 700;
-  font-size: 32px;
+  font-size: min(1.95vw, 32px);   /* scales with the phrases (see .tt-cell) */
 }
 
 /* Sequential reveal: phrase1 → + → phrase2 → = → phrase3 */

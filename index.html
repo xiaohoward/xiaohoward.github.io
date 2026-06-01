@@ -18,6 +18,7 @@
       <div class="nav-inner">
         <a href="#hero" class="nav-link nav-home">Home</a>
         <a href="#updates" class="nav-link">Recent Updates</a>
+        <a href="#imaging" class="nav-link nav-foveated" aria-label="Policy-based Foveated Imaging and Perception" style="font-size:18px;line-height:1;text-decoration:none;">📷+👁️</a>
         <a href="#genvision" class="nav-link nav-prism" aria-label="Spectral Progressive Diffusion"><img src="images/prism.png" alt="Spectral Progressive Diffusion" style="height:22px;width:auto;vertical-align:middle;display:block;"></a>
         <a href="#research" class="nav-link">Research</a>
         <a href="#teaching" class="nav-link">Teaching & Talks</a>
@@ -65,6 +66,13 @@
         <div class="timeline-scroll-wrapper reveal">
           <div class="timeline-scroll" id="timeline-scroll">
             <div class="timeline-vertical">
+
+              <div class="timeline-item">
+                <div class="timeline-item-dot"></div>
+                <div class="timeline-item-date">July 2026</div>
+                <div class="timeline-item-title">New SIGGRAPH 2026 Paper: Policy-based Foveated Imaging and Perception</div>
+                <div class="timeline-item-desc">New paper released, see <a href="#imaging">below</a>.</div>
+              </div>
 
               <div class="timeline-item">
                 <div class="timeline-item-dot"></div>
@@ -171,6 +179,34 @@
 
         <div class="papers-scroll-wrapper reveal">
           <div class="papers-scroll">
+            <article class="paper-card">
+              <div class="paper-media">
+                <video autoplay loop muted playsinline>
+                  <source src="video/papers/real_results_twitter.mp4">
+                </video>
+              </div>
+              <div>
+                <div class="paper-title">
+                  <a href="https://howardxiao.ca/foveated/">Policy-based Foveated Imaging and Perception</a>
+                </div>
+                <div class="paper-authors">
+                  <strong>Howard Xiao</strong>,
+                  <a href="https://janackermann.info">Jan Ackermann</a>,
+                  <a href="https://boyangdeng.com/">Boyang Deng</a>,
+                  <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>.
+                </div>
+                <div class="paper-venue">
+                  <em>SIGGRAPH</em>, 2026
+                </div>
+                <div class="paper-links">
+                  <a href="https://howardxiao.ca/foveated/">Project website</a>
+                </div>
+                <p class="paper-desc">
+                  We introduce a real-time, task-aware foveated imaging framework that learns a sensor attention policy to dynamically allocate pixel bandwidth, extensively validated in simulation and on a 200-megapixel prototype.
+                </p>
+              </div>
+            </article>
+
             <article class="paper-card">
               <div class="paper-media">
                 <video autoplay loop muted playsinline>

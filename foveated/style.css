@@ -1275,7 +1275,7 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
   flex: 0 0 auto;
   white-space: nowrap;
   text-align: center;
-  color: #000;
+  color: var(--color-text);
   font-weight: 700;
   /* Scales with viewport so the whole equation holds one line down to phones;
      capped at 19px on wide screens (matches SIGGRAPH 2026 .hero-venue). */

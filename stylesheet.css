@@ -382,7 +382,7 @@ h1, h2, h3 {
   display: flex;
   gap: 24px;
   margin-top: 28px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .hero-links a {
@@ -393,6 +393,7 @@ h1, h2, h3 {
   border-radius: 980px;
   border: 1px solid var(--color-accent);
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .hero-links a:hover {
@@ -1077,12 +1078,12 @@ h1, h2, h3 {
 
   .hero-links {
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .hero-links a {
-    font-size: 13px;
-    padding: 6px 16px;
+    font-size: 12px;
+    padding: 6px 10px;
   }
 
   /* Section headings */

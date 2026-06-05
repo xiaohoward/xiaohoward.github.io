@@ -824,11 +824,13 @@ details.fov-collapse[open] > summary::before { transform: rotate(90deg); }
 }
 
 .site-footer a {
-  color: var(--color-text-secondary);
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .site-footer a:hover {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
 }
 
 /* ===== Bandwidth Comparison Demo ===== */

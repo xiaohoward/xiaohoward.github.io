@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview Prep — Conceptual Drills</title>
+<!--__KATEX__-->
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#ffffff;--ink:#1b1f24;--muted:#5d6672;--line:#e1e5ea;--accent:#2f6df6;--accent-ink:#fff;
+  --ok:#1f9d55;--warn:#d98a06;--bad:#d93f3f;--chip:#eef2f7;--code:#f0f2f5;--shadow:0 1px 2px rgba(0,0,0,.06);
+  --focus:#2f6df6;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1216;--panel:#171b21;--ink:#e6e9ee;--muted:#9aa4b2;--line:#2a313b;--accent:#5b8cff;--chip:#222a35;--code:#20262e;--shadow:none;
+}}
+:root[data-theme="dark"]{--bg:#0f1216;--panel:#171b21;--ink:#e6e9ee;--muted:#9aa4b2;--line:#2a313b;--accent:#5b8cff;--chip:#222a35;--code:#20262e;--shadow:none;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 10px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.small{padding:3px 8px;font-size:13px}
+button:disabled{opacity:.5;cursor:default}
+input[type=text],select,input[type=number],textarea{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font-size:.92em}
+pre{background:var(--code);padding:10px 12px;border-radius:8px;overflow-x:auto;font-size:.9em;line-height:1.4}
+pre code{background:none;padding:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-size:.93em}
+th,td{border:1px solid var(--line);padding:4px 8px;text-align:left;vertical-align:top}
+blockquote{border-left:3px solid var(--line);margin:8px 0;padding:2px 12px;color:var(--muted)}
+h5,h6{margin:12px 0 4px;font-size:1em}
+
+#app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+#side{border-right:1px solid var(--line);background:var(--panel);padding:14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+#main{padding:18px 26px;max-width:1000px}
+@media (max-width:900px){#app{grid-template-columns:1fr}#side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line)}}
+h1{font-size:18px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.topic{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:8px;cursor:pointer;font-size:14px}
+.topic:hover{background:var(--chip)}
+.topic.active{background:var(--chip);outline:1px solid var(--accent)}
+.topic .n{color:var(--muted);font-size:12px;margin-left:auto}
+.bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;flex:0 0 46px}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bar i.w{background:var(--warn)}
+.section{margin:14px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:var(--chip);border-radius:999px;padding:2px 9px;font-size:12px;cursor:pointer;border:1px solid transparent}
+.chip.on{border-color:var(--accent);color:var(--accent)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card.focus{outline:2px solid var(--focus)}
+.meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.dots{letter-spacing:2px}
+.q{font-size:16.5px;font-weight:600;margin:6px 0 4px}
+.ctx{color:var(--muted);font-size:14px}
+.ctx ul{margin:4px 0 0 0;padding-left:20px}
+.ans{display:none;border-top:1px dashed var(--line);margin-top:10px;padding-top:10px}
+.card.open .ans{display:block}
+.ans p:first-child{margin-top:0}
+.grade{display:flex;gap:6px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.verdict{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--chip);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+.verdict .lbl{font-weight:600}
+.verdict button{padding:6px 14px;font-weight:500}
+.verdict .g1:hover{background:var(--ok);color:#fff}.verdict .g2:hover{background:var(--warn);color:#fff}.verdict .g3:hover{background:var(--bad);color:#fff}
+.acc{font-size:12px;color:var(--muted)}
+.grade .hist{color:var(--muted);font-size:12px;margin-left:auto}
+.g1{border-color:var(--ok)}.g2{border-color:var(--warn)}.g3{border-color:var(--bad)}
+.card[data-g="1"] .meta .st{color:var(--ok)}.card[data-g="2"] .meta .st{color:var(--warn)}.card[data-g="3"] .meta .st{color:var(--bad)}
+.note{width:100%;min-height:36px;margin-top:8px;font-size:13px;resize:vertical}
+.rate{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.rate button{padding:1px 7px;font-size:12px}
+.rate button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.abody[contenteditable="true"]{outline:2px dashed var(--accent);outline-offset:6px;border-radius:6px;padding:2px}
+.edited{color:var(--warn);font-size:11px}
+.due{font-size:11px;color:var(--muted)}
+.mathblock{overflow-x:auto;margin:8px 0}
+.katex-display{margin:6px 0;overflow-x:auto;overflow-y:hidden}
+.katex{font-size:1.06em}
+.topbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.count{color:var(--muted);font-size:13px}
+kbd{background:var(--chip);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px}
+.help{font-size:12px;color:var(--muted);margin-top:14px}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;padding:30px 12px;overflow-y:auto;z-index:10}
+#overlay.show{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:min(900px,100%);padding:20px 24px}
+.timer{font-variant-numeric:tabular-nums;font-size:22px;font-weight:600}
+.timer.low{color:var(--bad)}
+.dash{display:grid;grid-template-columns:1fr auto auto auto;gap:6px 14px;align-items:center;font-size:14px}
+.dash .bar{flex:0 0 160px}
+.hidden{display:none!important}
+.empty{color:var(--muted);padding:30px;text-align:center}
+.flashnav{display:flex;gap:8px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.flashnav .pos{font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.flashnav .prog{flex:1;min-width:120px}
+.flash .card{padding:22px 26px}
+.flash .q{font-size:20px;line-height:1.35;text-wrap:balance}
+.flash .reveal{padding:8px 16px;font-size:15px}
+.view button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side">
+    <h1>Conceptual drills</h1>
+    <div class="sub" id="summary"></div>
+    <div class="row" style="margin-top:10px">
+      <input type="text" id="search" placeholder="search (/) …" style="flex:1">
+    </div>
+    <div class="section">Modes</div>
+    <div class="row">
+      <button class="small" data-mode="all">All</button>
+      <button class="small" data-mode="weak" title="last answer partly or incorrect">Drill weak</button>
+      <button class="small" data-mode="due" title="spaced review">Due</button>
+      <button class="small" data-mode="new">Unseen</button>
+      <button class="small" data-mode="rapid" title="short definitional questions">Rapid-fire</button>
+      <button class="small primary" id="btnReview" title="due cards + new cards, misses auto-repeat">Review session</button>
+      <button class="small" id="btnMock">Mock interview</button>
+      <button class="small" id="btnDash">Dashboard</button>
+    </div>
+    <div class="section">Difficulty</div>
+    <div class="chips" id="diffChips">
+      <span class="chip on" data-d="1">1 warm-up</span><span class="chip on" data-d="2">2 standard</span><span class="chip on" data-d="3">3 deep</span>
+    </div>
+    <div class="section">Topics</div>
+    <div id="topics"></div>
+    <div class="section">Tags</div>
+    <div class="chips" id="tagChips"></div>
+    <div class="section">Data</div>
+    <div class="row">
+      <button class="small" id="btnExport">Export progress</button>
+      <label class="small" style="cursor:pointer"><input type="file" id="importFile" accept="application/json" class="hidden"><button class="small" type="button" onclick="document.getElementById('importFile').click()">Import</button></label>
+      <button class="small" id="btnReset">Reset</button>
+    </div>
+    <div class="help">
+      Scheduling is SM-2 (Anki-style): correct → 1 d, 6 d, then interval × ease; partly → shorter and ease drops; incorrect → relearn in 4 h. Questions under 60% accuracy come back sooner. <b>Review session</b> walks what's due and repeats misses until you get them. Rate each question 1–5 for how hard it is for you: it scales the gaps further (1 → ×2, 5 → ÷3) and how often mock mode picks it. Edit any answer in place; edits and notes are saved with your progress.<br>
+      <kbd>j</kbd>/<kbd>k</kbd> or <kbd>→</kbd>/<kbd>←</kbd> next/prev · <kbd>space</kbd> reveal · <kbd>1</kbd> correct <kbd>2</kbd> partly <kbd>3</kbd> incorrect · <kbd>r</kbd> random · <kbd>s</kbd> shuffle · <kbd>/</kbd> search
+    </div>
+  </aside>
+  <main id="main">
+    <div class="topbar">
+      <span class="view"><button class="small on" data-view="flash">Flashcards</button><button class="small" data-view="list">List</button></span>
+      <span class="count" id="count"></span>
+      <button class="small" id="btnRevealAll">Reveal all</button>
+      <button class="small" id="btnHideAll">Hide all</button>
+      <button class="small" id="btnShuffle">Shuffle</button>
+      <button class="small" id="btnRandom">Random question</button>
+    </div>
+    <div id="cards"></div>
+  </main>
+</div>
+<div id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+/*__DATA__*/
+/*__SEED__*/
+const KEY = 'interview-prep-conceptual-v1';
+const DAY = 86400e3;
+const GRADE_NAME = {1:'correct', 2:'partly', 3:'incorrect'};
+
+// Progress lives in conceptual/progress.json in the git repo. Three ways it reaches this page:
+//  1. SEED: build.py embeds progress.json into this file (so a fresh clone + build starts up to date);
+//  2. localStorage: this browser's own copy;
+//  3. serve.py: when the page is served from http://localhost, it GETs /progress.json on load and POSTs every
+//     change back, and serve.py commits the file. Records merge per question by their `updated` timestamp.
+function mergeState(a, b){
+  const out = Object.assign({}, a);
+  for (const id in b){ const x = out[id], y = b[id]; if (!x || (y.updated||0) > (x.updated||0)) out[id] = y; }
+  return out;
+}
+let state = mergeState(typeof SEED === 'object' && SEED ? (SEED.state || SEED) : {}, load());
+const SERVED = location.protocol.startsWith('http') && /^(localhost|127\.0\.0\.1)$/.test(location.hostname);  // only serve.py syncs; GitHub Pages is read-only
+let syncTimer = null, syncStatus = '';
+function pushToServer(){
+  if (!SERVED) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => {
+    fetch('/progress.json', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({exported:new Date().toISOString(), state})})
+      .then(r => { syncStatus = r.ok ? 'saved to progress.json' : 'save failed'; renderSide(); })
+      .catch(() => { syncStatus = 'server gone'; renderSide(); });
+  }, 800);
+}
+if (SERVED) fetch('/progress.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null).then(j => { if (j) { state = mergeState(state, j.state || j); save(); render(); } }).catch(()=>{});
+let mode = 'all';          // all | weak | due | new | rapid
+let view = 'flash';        // flash (one card at a time) | list
+let session = null;        // {queue:[ids], done:0, results:{id:g}, total} — review session with auto-repeat of misses
+let activeTopic = null;    // idx or null
+let diffs = new Set([1,2,3]);
+let tags = new Set();
+let query = '';
+let order = DATA.questions.map(q => q.id);
+let focusIdx = 0;
+
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)||'{}'); return s && typeof s==='object' ? s : {}; }catch(e){ return {}; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} pushToServer(); }
+function touch(id){ rec(id).updated = Date.now(); }
+function rec(id){ const r = state[id] || (state[id] = {n:0, g:0, streak:0, due:0, hist:[], note:''}); if (r.rating===undefined) r.rating = 0; if (r.aEdit===undefined) r.aEdit = ''; return r; }
+// Personal difficulty rating 1 (easy for me) .. 5 (very hard for me). Scales the review interval and mock sampling.
+const RATE_FACTOR = {0:1.0, 1:2.0, 2:1.4, 3:1.0, 4:0.6, 5:0.35};
+const BASE_DAYS = [1, 3, 7, 14, 30, 60];
+function rate(id, r){ const rec_ = rec(id); rec_.rating = rec_.rating===r ? 0 : r; touch(id); save(); }
+function accuracy(id){ const r = state[id]; if (!r || !r.hist.length) return null; const c = r.hist.filter(h=>h[1]===1).length, p = r.hist.filter(h=>h[1]===2).length; return {n:r.hist.length, pct:Math.round(100*(c+0.5*p)/r.hist.length)}; }
+function startSession(newCount){
+  const due = DATA.questions.filter(q=>isDue(q.id)).map(q=>q.id);
+  const fresh = shuffle(DATA.questions.filter(q=>!seen(q.id)).map(q=>q.id)).slice(0, newCount);
+  const queue = shuffle(due.concat(fresh));
+  if (!queue.length){ alert('Nothing is due and no new cards requested. Come back later or raise the new-card count.'); return; }
+  session = {queue, total:queue.length, done:0, results:{}, repeats:0};
+  view = 'flash'; mode = 'all'; activeTopic = null; tags.clear(); query=''; document.getElementById('search').value=''; focusIdx = 0; render();
+}
+function sessionGrade(id, g){
+  if (!session || session.queue[0]!==id) return;
+  session.queue.shift();
+  if (g===3){ // incorrect: show again later in this session (Anki-style relearn)
+    const pos = Math.min(session.queue.length, 3 + Math.floor(Math.random()*3));
+    session.queue.splice(pos, 0, id); session.repeats += 1;
+  } else { session.done += 1; session.results[id] = session.results[id] || g; }
+  if (!session.queue.length) { const s_ = session; session = null; render(); sessionSummary(s_); }
+  else setTimeout(render, 350);
+}
+function sessionSummary(s_){
+  const ids = Object.keys(s_.results); const correct = ids.filter(i=>s_.results[i]===1).length;
+  openModal(`<h2 style="margin-top:0">Review session complete</h2>
+    <p>${s_.total} cards · first-try correct ${correct} · partly ${ids.length-correct} · re-shown after a miss ${s_.repeats}×</p>
+    <p class="sub">Everything is rescheduled by the forgetting curve. Come back when the sidebar shows cards due; the Dashboard shows predicted recall.</p>
+    <div class="row"><button class="primary" onclick="closeModal();render()">Close</button></div>`);
+}
+function fmtDue(ms){ const d = (ms - Date.now())/DAY; if (d <= 0) return 'due now'; if (d < 1) return `due in ${Math.round(d*24)}h`; return `due in ${Math.round(d)}d`; }
+function answerHTML(q){ const r = state[q.id]; return r && r.aEdit ? r.aEdit : q.a; }
+function seen(id){ return state[id] && state[id].n>0; }
+function isDue(id){ const r = state[id]; return !r || r.n===0 ? false : r.due <= Date.now(); }
+function isWeak(id){ const r = state[id]; return !!r && r.n>0 && r.g>=2; }
+
+// SM-2 style scheduler (as in Anki / SuperMemo): each card carries an ease factor and an interval.
+// correct -> interval grows (1d, then 6d, then interval×ease); partly -> shorter interval, ease drops;
+// incorrect -> relearn in 4h, interval reset, ease drops. Your 1-5 "hard for me" rating scales intervals on top.
+function grade(id, g){
+  const r = rec(id); const now = Date.now();
+  if (r.ease===undefined){ r.ease = 2.5; r.ivl = 0; r.reps = 0; }
+  r.n += 1; r.g = g; r.hist.push([now, g]); if (r.hist.length>30) r.hist.shift(); r.updated = now;
+  const q = {1:5, 2:3, 3:1}[g];                              // SM-2 quality 0..5
+  r.ease = Math.max(1.3, Math.min(3.5, r.ease + (0.1 - (5-q)*(0.08 + (5-q)*0.02))));
+  const acc = accuracy(id); const accF = acc && acc.n>=3 ? Math.max(0.4, acc.pct/100 + 0.2) : 1;
+  const f = RATE_FACTOR[r.rating||0] * accF;
+  let ivlDays;
+  if (g===3){ r.reps = 0; r.streak = 0; ivlDays = 4/24; r.ivl = 0; }
+  else {
+    r.reps += 1; r.streak = g===1 ? r.streak + 1 : 0;
+    if (r.reps===1) ivlDays = 1;
+    else if (r.reps===2) ivlDays = g===1 ? 6 : 3;
+    else ivlDays = r.ivl * (g===1 ? r.ease : Math.max(1.2, r.ease*0.6));
+    ivlDays = Math.max(1, Math.round(ivlDays));
+    r.ivl = ivlDays;
+  }
+  r.due = now + ivlDays*DAY*f;
+  save();
+  if (session) sessionGrade(id, g);
+}
+// Predicted recall from an exponential forgetting curve: R = exp(-Δt / S), with stability S = the scheduled interval.
+function recall(id){ const r = state[id]; if (!r || !r.n) return null; const S = Math.max(4/24, r.ivl||4/24)*DAY*RATE_FACTOR[r.rating||0]; const last = r.hist.length ? r.hist[r.hist.length-1][0] : r.due - S; return Math.exp(-(Date.now()-last)/S); }
+
+const byId = Object.fromEntries(DATA.questions.map(q => [q.id, q]));
+const allTags = [...new Set(DATA.questions.flatMap(q => q.tags))].sort();
+
+function visible(){
+  if (session) return session.queue.map(id => byId[id]);
+  return order.map(id => byId[id]).filter(q => {
+    if (activeTopic!==null && q.t!==activeTopic) return false;
+    if (!diffs.has(q.d)) return false;
+    if (tags.size && !q.tags.some(t => tags.has(t))) return false;
+    if (query && !q.search.includes(query)) return false;
+    if (mode==='weak' && !isWeak(q.id)) return false;
+    if (mode==='due' && !isDue(q.id)) return false;
+    if (mode==='new' && seen(q.id)) return false;
+    if (mode==='rapid' && !q.tags.includes('rapid-fire')) return false;
+    return true;
+  });
+}
+
+function dots(d){ return '●'.repeat(d) + '○'.repeat(3-d); }
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function typeset(el){
+  if (typeof renderMathInElement !== 'function' || !el) return;
+  renderMathInElement(el, {delimiters:[{left:'$$', right:'$$', display:true}, {left:'$', right:'$', display:false}], throwOnError:false, ignoredTags:['script','noscript','style','textarea','pre','code']});
+}
+
+function cardHTML(q){
+  const r = state[q.id]; const t = DATA.topics[q.t];
+  const rc = recall(q.id);
+  const st = r && r.n ? `${GRADE_NAME[r.g]} · seen ${r.n}×${r.streak>1?' · streak '+r.streak:''} · <span class="due">${fmtDue(r.due)}${r.ivl?` · interval ${r.ivl}d · ease ${(r.ease||2.5).toFixed(2)}`:''}${rc!==null?` · recall ≈ ${Math.round(100*rc)}%`:''}</span>` : 'new';
+  const rating = r ? r.rating||0 : 0;
+  const rateBtns = [1,2,3,4,5].map(v=>`<button class="${rating===v?'on':''}" data-rate="${v}" title="${['','easy for me','fairly easy','average','hard for me','very hard for me'][v]}">${v}</button>`).join('');
+  return `<div class="card" data-id="${q.id}" data-g="${r?r.g:0}">
+    <div class="meta"><span>${q.id}</span><span>${esc(t.title)}</span><span class="dots" title="difficulty ${q.d}">${dots(q.d)}</span>
+      <span>${q.tags.map(x=>`<span class="chip" data-tag="${x}">${x}</span>`).join(' ')}</span><span class="st" style="margin-left:auto">${st}</span></div>
+    <div class="q">${q.q}</div>
+    ${q.ctx?`<div class="ctx">${q.ctx}</div>`:''}
+    <div class="row"><button class="small reveal">Reveal answer</button></div>
+    <div class="ans">
+      <div class="verdict"><span class="lbl">Did you answer correctly?</span>
+        <button class="g1" data-g="1">✓ Correct (1)</button><button class="g2" data-g="2">~ Partly (2)</button><button class="g3" data-g="3">✗ Incorrect (3)</button>
+        <span class="acc" style="margin-left:auto">${(a=>a?`${a.pct}% correct over ${a.n}`:'not answered yet')(accuracy(q.id))}</span></div>
+      <div class="abody">${answerHTML(q)}</div>
+      <div class="row" style="margin-top:8px"><button class="small edit">Edit answer</button><button class="small saveEdit hidden">Save</button><button class="small cancelEdit hidden">Cancel</button>${r&&r.aEdit?'<button class="small revertEdit">Revert to original</button><span class="edited">edited by you</span>':''}</div>
+      <div class="rate"><span>Hard for me:</span>${rateBtns}<span title="1 = review rarely (2× longer gaps), 5 = review often (gaps ÷3) and picked more in mock mode">?</span></div>
+      <div class="grade"><span class="sub">History:</span><span class="hist" style="margin-left:0">${r&&r.hist.length?r.hist.slice(-10).map(h=>['','✓','~','✗'][h[1]]).join(' '):'—'}</span></div>
+      <div class="sub" style="margin-top:8px">My notes</div>
+      <textarea class="note" placeholder="what to say better next time, a mnemonic, a follow-up you got asked…">${esc(r&&r.note||'')}</textarea>
+    </div></div>`;
+}
+
+function render(){
+  const vis = visible();
+  const el = document.getElementById('cards');
+  document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view===view));
+  document.getElementById('btnRevealAll').classList.toggle('hidden', view==='flash');
+  document.getElementById('btnHideAll').classList.toggle('hidden', view==='flash');
+  if (view==='flash'){
+    el.className = 'flash';
+    if (!vis.length){ el.innerHTML = '<div class="empty">Nothing matches. Change filters or mode.</div>'; }
+    else {
+      focusIdx = Math.max(0, Math.min(focusIdx, vis.length-1));
+      const q = vis[focusIdx];
+      if (session){ focusIdx = 0;
+        el.innerHTML = `<div class="flashnav"><span class="lbl" style="font-weight:600">Review session</span><span class="pos">${session.done} done · ${session.queue.length} left${session.repeats?` · ${session.repeats} repeats`:''}</span>
+          <span class="bar prog"><i style="width:${100*session.done/(session.done+session.queue.length)}%"></i></span><button class="small" id="fEnd">End session</button></div>` + cardHTML(q);
+        document.getElementById('fEnd').onclick = () => { if (confirm('End the review session? Graded cards keep their schedule.')) { session = null; render(); } };
+      } else {
+      el.innerHTML = `<div class="flashnav"><button class="small" id="fPrev" ${focusIdx===0?'disabled':''}>← Prev (k)</button>
+        <span class="pos">${focusIdx+1} / ${vis.length}</span><span class="bar prog"><i style="width:${100*(focusIdx+1)/vis.length}%"></i></span>
+        <button class="small" id="fNext" ${focusIdx>=vis.length-1?'disabled':''}>Next (j) →</button></div>` + cardHTML(q);
+      }
+      el.querySelector('.card').classList.add('focus'); typeset(el);
+      if (!session){ document.getElementById('fPrev').onclick = () => setFocus(focusIdx-1); document.getElementById('fNext').onclick = () => setFocus(focusIdx+1); }
+    }
+    document.getElementById('count').textContent = `${vis.length} of ${DATA.questions.length} questions` + (mode!=='all'?` · mode: ${mode}`:'') + (activeTopic!==null?` · ${DATA.topics[activeTopic].title}`:'');
+    renderSide();
+    return;
+  }
+  el.className = '';
+  el.innerHTML = vis.length ? vis.map(cardHTML).join('') : '<div class="empty">Nothing matches. Change filters or mode.</div>';
+  typeset(el);
+  document.getElementById('count').textContent = `${vis.length} of ${DATA.questions.length} questions` + (mode!=='all'?` · mode: ${mode}`:'') + (activeTopic!==null?` · ${DATA.topics[activeTopic].title}`:'');
+  focusIdx = Math.min(focusIdx, Math.max(0, vis.length-1));
+  setFocus(focusIdx, false);
+  renderSide();
+}
+
+function renderSide(){
+  const n = DATA.questions.length;
+  const seenN = DATA.questions.filter(q=>seen(q.id)).length;
+  const good = DATA.questions.filter(q=>state[q.id]&&state[q.id].g===1).length;
+  const weak = DATA.questions.filter(q=>isWeak(q.id)).length;
+  const due = DATA.questions.filter(q=>isDue(q.id)).length;
+  document.getElementById('summary').textContent = `${n} questions · answered ${seenN} · correct last time ${good} · weak ${weak} · due ${due}` + (SERVED ? ` · ${syncStatus || 'synced with progress.json'}` : location.protocol.startsWith('http') ? ' · published copy: history as of last push + this browser' : ' · local browser copy (run serve.py to sync to the repo)');
+  document.getElementById('topics').innerHTML = DATA.topics.map(t => {
+    const qs = DATA.questions.filter(q=>q.t===t.idx);
+    const g = qs.filter(q=>state[q.id]&&state[q.id].g===1).length, w = qs.filter(q=>isWeak(q.id)).length;
+    return `<div class="topic ${activeTopic===t.idx?'active':''}" data-t="${t.idx}"><span style="flex:1">${esc(t.title)}</span>
+      <span class="bar" title="got it ${g}, weak ${w} of ${qs.length}"><i style="width:${100*g/qs.length}%"></i><i class="w" style="width:${100*w/qs.length}%"></i></span><span class="n">${qs.length}</span></div>`;
+  }).join('');
+  document.getElementById('tagChips').innerHTML = allTags.map(t=>`<span class="chip ${tags.has(t)?'on':''}" data-tag="${t}">${t}</span>`).join('');
+}
+
+function setFocus(i, scroll=true){
+  if (view==='flash'){ const n = visible().length; focusIdx = Math.max(0, Math.min(i, n-1)); render(); window.scrollTo({top:0, behavior:'smooth'}); return; }
+  const cards = [...document.querySelectorAll('#cards .card')];
+  cards.forEach(c=>c.classList.remove('focus'));
+  if (!cards.length) return;
+  focusIdx = Math.max(0, Math.min(i, cards.length-1));
+  cards[focusIdx].classList.add('focus');
+  if (scroll) cards[focusIdx].scrollIntoView({block:'center', behavior:'smooth'});
+}
+function focusedCard(){ return document.querySelector('#cards .card.focus'); }
+
+function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+// ---------- events
+document.getElementById('cards').addEventListener('click', e => {
+  const card = e.target.closest('.card'); if (!card) return;
+  if (view!=='flash') setFocus([...card.parentNode.children].indexOf(card), false);
+  if (e.target.classList.contains('reveal')) { card.classList.toggle('open'); e.target.textContent = card.classList.contains('open')?'Hide answer':'Reveal answer'; }
+  else if (e.target.dataset.g) { const wasSession = !!session; grade(card.dataset.id, +e.target.dataset.g); if (wasSession) return; if (view==='flash' && focusIdx < visible().length-1) setTimeout(()=>setFocus(focusIdx+1), 350); else updateCard(card); }
+  else if (e.target.dataset.rate) { rate(card.dataset.id, +e.target.dataset.rate); updateCard(card); }
+  else if (e.target.dataset.tag) { toggleTag(e.target.dataset.tag); }
+  else if (e.target.classList.contains('edit')) { startEdit(card); }
+  else if (e.target.classList.contains('saveEdit')) { const body = card.querySelector('.abody'); body.contentEditable = 'false'; rec(card.dataset.id).aEdit = body.innerHTML; touch(card.dataset.id); save(); updateCard(card); }  // saved as raw $...$ text; re-typeset on render
+  else if (e.target.classList.contains('cancelEdit')) { updateCard(card); }
+  else if (e.target.classList.contains('revertEdit')) { if (confirm('Discard your edits and restore the original answer?')) { rec(card.dataset.id).aEdit = ''; touch(card.dataset.id); save(); updateCard(card); } }
+});
+document.getElementById('cards').addEventListener('input', e => {
+  if (e.target.classList.contains('note')) { const id = e.target.closest('.card').dataset.id; rec(id).note = e.target.value; touch(id); save(); }
+});
+function startEdit(card){
+  const body = card.querySelector('.abody');
+  body.querySelectorAll('.katex-display, .katex').forEach(k => { const src = k.querySelector('annotation[encoding="application/x-tex"]'); if (!src) return; const disp = k.classList.contains('katex-display'); if (!disp && k.closest('.katex-display')) return; k.replaceWith(document.createTextNode((disp?'$$':'$') + src.textContent + (disp?'$$':'$'))); });
+  body.contentEditable = 'true'; body.focus();
+  card.querySelector('.edit').classList.add('hidden'); card.querySelector('.saveEdit').classList.remove('hidden'); card.querySelector('.cancelEdit').classList.remove('hidden');
+}
+function updateCard(card){
+  const q = byId[card.dataset.id]; const wasOpen = card.classList.contains('open');
+  const tmp = document.createElement('div'); tmp.innerHTML = cardHTML(q); const fresh = tmp.firstElementChild;
+  if (wasOpen){ fresh.classList.add('open'); fresh.querySelector('.reveal').textContent='Hide answer'; }
+  fresh.classList.add('focus');
+  card.replaceWith(fresh); typeset(fresh); renderSide();
+}
+document.getElementById('topics').addEventListener('click', e => {
+  const t = e.target.closest('.topic'); if (!t) return;
+  activeTopic = activeTopic===+t.dataset.t ? null : +t.dataset.t; focusIdx=0; render();
+});
+document.getElementById('diffChips').addEventListener('click', e => {
+  if (!e.target.dataset.d) return; const d=+e.target.dataset.d; diffs.has(d)?diffs.delete(d):diffs.add(d); e.target.classList.toggle('on'); render();
+});
+function toggleTag(t){ tags.has(t)?tags.delete(t):tags.add(t); focusIdx=0; render(); }
+document.getElementById('tagChips').addEventListener('click', e => { if (e.target.dataset.tag) toggleTag(e.target.dataset.tag); });
+document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { session=null; mode=b.dataset.mode; focusIdx=0; render(); }));
+document.getElementById('btnReview').onclick = () => {
+  const due = DATA.questions.filter(q=>isDue(q.id)).length, fresh = DATA.questions.filter(q=>!seen(q.id)).length;
+  openModal(`<h2 style="margin-top:0">Review session</h2>
+    <p>${due} cards are due by the forgetting curve · ${fresh} never seen.</p>
+    <p class="sub">The session shows each due card once; anything you mark incorrect comes back a few cards later until you get it. New cards are mixed in so the deck keeps growing at a steady pace (Anki default: 20/day).</p>
+    <div class="row"><label>New cards to add <input type="number" id="rNew" value="${Math.min(20, fresh)}" min="0" max="${fresh}" style="width:80px"></label></div>
+    <div class="row"><button class="primary" id="rStart">Start</button><button onclick="closeModal()">Cancel</button></div>`);
+  document.getElementById('rStart').onclick = () => { const n = +document.getElementById('rNew').value; closeModal(); startSession(n); };
+};
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { view=b.dataset.view; render(); }));
+document.getElementById('search').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); focusIdx=0; render(); });
+document.getElementById('btnRevealAll').onclick = () => document.querySelectorAll('#cards .card').forEach(c=>{c.classList.add('open'); c.querySelector('.reveal').textContent='Hide answer';});
+document.getElementById('btnHideAll').onclick = () => document.querySelectorAll('#cards .card').forEach(c=>{c.classList.remove('open'); c.querySelector('.reveal').textContent='Reveal answer';});
+document.getElementById('btnShuffle').onclick = () => { order = shuffle(order.slice()); focusIdx=0; render(); };
+document.getElementById('btnRandom').onclick = () => { const n=visible().length; if(n) setFocus(Math.floor(Math.random()*n)); };
+document.getElementById('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify({exported:new Date().toISOString(), state}, null, 1)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'interview-prep-progress.json'; a.click();
+};
+document.getElementById('importFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return; const rd = new FileReader();
+  rd.onload = () => { try { const j = JSON.parse(rd.result); state = j.state || j; save(); render(); } catch(err){ alert('bad file'); } };
+  rd.readAsText(f);
+});
+document.getElementById('btnReset').onclick = () => { if (confirm('Erase all grades and notes?')) { state = {}; save(); render(); } };
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea') || e.target.isContentEditable) { if (e.key==='Escape') e.target.blur(); return; }
+  if (document.getElementById('overlay').classList.contains('show')) { mockKey(e); return; }
+  const c = focusedCard();
+  if ((e.key==='j' || e.key==='ArrowRight') && !session) setFocus(focusIdx+1);
+  else if ((e.key==='k' || e.key==='ArrowLeft') && !session) setFocus(focusIdx-1);
+  else if (e.key===' ' && c) { e.preventDefault(); c.querySelector('.reveal').click(); }
+  else if ('123'.includes(e.key) && c && c.classList.contains('open')) { const wasSession = !!session; grade(c.dataset.id, +e.key); if (wasSession) return; if (view==='flash' && focusIdx < visible().length-1) setTimeout(()=>setFocus(focusIdx+1), 350); else updateCard(c); }
+  else if (e.key==='r') document.getElementById('btnRandom').click();
+  else if (e.key==='s') document.getElementById('btnShuffle').click();
+  else if (e.key==='/') { e.preventDefault(); document.getElementById('search').focus(); }
+});
+
+// ---------- dashboard
+document.getElementById('btnDash').onclick = () => {
+  const rows = DATA.topics.map(t => {
+    const qs = DATA.questions.filter(q=>q.t===t.idx);
+    const s = qs.filter(q=>seen(q.id)).length, g = qs.filter(q=>state[q.id]&&state[q.id].g===1).length, w = qs.filter(q=>isWeak(q.id)).length;
+    return `<span>${esc(t.title)}</span><span class="bar"><i style="width:${100*g/qs.length}%"></i><i class="w" style="width:${100*w/qs.length}%"></i></span><span class="sub">seen ${s}/${qs.length}</span><span class="sub">got ${g} · weak ${w}</span>`;
+  }).join('');
+  const tagStats = allTags.map(t => { const qs = DATA.questions.filter(q=>q.tags.includes(t)); const w = qs.filter(q=>isWeak(q.id)).length; return [t, w, qs.length]; }).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,12);
+  const missedList = DATA.questions.filter(q=>state[q.id]&&state[q.id].g===3).map(q=>`<li>${q.id} — ${q.q}</li>`).join('');
+  const rated = [1,2,3,4,5].map(v=>[v, DATA.questions.filter(q=>state[q.id]&&state[q.id].rating===v).length]);
+  const hardest = DATA.questions.filter(q=>state[q.id]&&state[q.id].rating>=4).map(q=>`<li>${q.id} — ${q.q}</li>`).join('');
+  const accs = DATA.questions.map(q=>[q, accuracy(q.id)]).filter(x=>x[1]);
+  const overall = accs.length ? Math.round(accs.reduce((s,x)=>s+x[1].pct,0)/accs.length) : null;
+  const lowest = accs.filter(x=>x[1].n>=2).sort((a,b)=>a[1].pct-b[1].pct).slice(0,10).map(x=>`<li>${x[0].id} — ${x[0].q} <span class="sub">(${x[1].pct}% over ${x[1].n})</span></li>`).join('');
+  const edited = DATA.questions.filter(q=>state[q.id]&&state[q.id].aEdit).length, noted = DATA.questions.filter(q=>state[q.id]&&state[q.id].note).length;
+  openModal(`<h2 style="margin-top:0">Dashboard</h2><div class="dash">${rows}</div>
+    <h3>Weakest tags</h3><div class="chips">${tagStats.map(x=>`<span class="chip">${x[0]} · ${x[1]}/${x[2]}</span>`).join('')||'<span class="sub">none yet</span>'}</div>
+    <h3>Forgetting curve</h3>
+    <p class="sub">${(() => { const rs = DATA.questions.map(q=>recall(q.id)).filter(x=>x!==null); if (!rs.length) return 'no reviews yet'; const avg = Math.round(100*rs.reduce((a,b)=>a+b,0)/rs.length); const low = rs.filter(x=>x<0.5).length; return `average predicted recall ${avg}% over ${rs.length} reviewed cards · ${low} below 50%`; })()}</p>
+    <p class="sub">Due: ${(() => { const now=Date.now(); const c = d => DATA.questions.filter(q=>state[q.id]&&state[q.id].n&&state[q.id].due<=now+d*DAY).length; return `today ${c(0)} · within 3 days ${c(3)} · within 7 days ${c(7)}`; })()}</p>
+    <h3>Accuracy</h3><p class="sub">${overall===null?'no answers yet':`${overall}% average over ${accs.length} answered questions`}</p>
+    <p class="sub">Lowest accuracy (answered at least twice):</p><ul>${lowest||'<li class="sub">none yet</li>'}</ul>
+    <h3>Missed last time</h3><ul>${missedList||'<li class="sub">none</li>'}</ul>
+    <h3>Your difficulty ratings</h3><div class="chips">${rated.map(x=>`<span class="chip">${x[0]} · ${x[1]}</span>`).join('')}</div>
+    <p class="sub">Rated 4–5 (reviewed most often): </p><ul>${hardest||'<li class="sub">none yet</li>'}</ul>
+    <p class="sub">${edited} answers edited by you · ${noted} with notes</p>
+    <div class="row"><button class="primary" onclick="closeModal()">Close</button></div>`);
+};
+function openModal(html){ const m = document.getElementById('modal'); m.innerHTML = html; typeset(m); document.getElementById('overlay').classList.add('show'); }
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); mock = null; if (mockTimer) clearInterval(mockTimer); }
+document.getElementById('overlay').addEventListener('click', e => { if (e.target.id==='overlay') closeModal(); });
+
+// ---------- mock interview
+let mock = null, mockTimer = null;
+document.getElementById('btnMock').onclick = () => {
+  openModal(`<h2 style="margin-top:0">Mock interview</h2>
+    <p class="sub">Questions are sampled by topic weight (core topics more often), biased toward items you marked shaky/missed. You get a timer per question, answer out loud, then reveal and grade.</p>
+    <div class="row"><label>Questions <input type="number" id="mN" value="8" min="1" max="40" style="width:70px"></label>
+      <label>Seconds each <input type="number" id="mT" value="180" min="30" step="30" style="width:80px"></label>
+      <label><input type="checkbox" id="mScope" checked> respect current topic/difficulty filters</label></div>
+    <div class="row"><button class="primary" id="mStart">Start</button><button onclick="closeModal()">Cancel</button></div>`);
+  document.getElementById('mStart').onclick = startMock;
+};
+function startMock(){
+  const N = +document.getElementById('mN').value, T = +document.getElementById('mT').value, scoped = document.getElementById('mScope').checked;
+  let pool = scoped ? visible() : DATA.questions.slice();
+  if (!pool.length) pool = DATA.questions.slice();
+  const w = q => DATA.topics[q.t].weight * (isWeak(q.id) ? 2.5 : 1) * (seen(q.id) ? 1 : 1.3) * (1 + 0.5*((state[q.id]&&state[q.id].rating||3) - 3));
+  const picked = [];
+  pool = pool.slice();
+  while (picked.length < Math.min(N, pool.length)) {
+    const tot = pool.reduce((s,q)=>s+w(q),0); let r = Math.random()*tot, i=0;
+    for (; i<pool.length; i++){ r -= w(pool[i]); if (r<=0) break; }
+    picked.push(pool.splice(Math.min(i,pool.length-1),1)[0]);
+  }
+  mock = {qs:picked, i:0, T, left:T, results:[], revealed:false};
+  showMockQ();
+}
+function showMockQ(){
+  const q = mock.qs[mock.i]; mock.left = mock.T; mock.revealed = false;
+  openModal(`<div class="row"><span class="sub">Question ${mock.i+1} / ${mock.qs.length} · ${esc(DATA.topics[q.t].title)} · ${dots(q.d)}</span><span class="timer" id="mTimer" style="margin-left:auto">${fmt(mock.left)}</span></div>
+    <div class="q" style="font-size:19px">${q.q}</div>${q.ctx?`<div class="ctx">${q.ctx}</div>`:''}
+    <div class="row" id="mCtl"><button class="primary" id="mReveal">Reveal (space)</button><button onclick="closeModal()">Abort</button></div>
+    <div id="mAns" class="hidden">${answerHTML(q)}<div class="verdict" style="margin-top:12px"><span class="lbl">Did you answer correctly?</span><button class="g1" data-g="1">✓ Correct (1)</button><button class="g2" data-g="2">~ Partly (2)</button><button class="g3" data-g="3">✗ Incorrect (3)</button></div></div>`);
+  document.getElementById('mReveal').onclick = mockReveal;
+  document.getElementById('mAns').addEventListener('click', e => { if (e.target.dataset.g) mockGrade(+e.target.dataset.g); });
+  if (mockTimer) clearInterval(mockTimer);
+  mockTimer = setInterval(() => { mock.left -= 1; const t = document.getElementById('mTimer'); if (!t) return; t.textContent = fmt(mock.left); if (mock.left<=30) t.classList.add('low'); if (mock.left<=0){ clearInterval(mockTimer); t.textContent='time'; } }, 1000);
+}
+function fmt(s){ s=Math.max(0,s); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+function mockReveal(){ if (!mock || mock.revealed) return; mock.revealed = true; clearInterval(mockTimer); document.getElementById('mAns').classList.remove('hidden'); document.getElementById('mReveal').disabled = true; mock.used = mock.T - mock.left; }
+function mockGrade(g){
+  const q = mock.qs[mock.i]; grade(q.id, g); mock.results.push([q, g, mock.used]);
+  mock.i += 1;
+  if (mock.i < mock.qs.length) showMockQ(); else mockSummary();
+}
+function mockKey(e){
+  if (!mock) { if (e.key==='Escape') closeModal(); return; }
+  if (e.key===' ') { e.preventDefault(); mockReveal(); }
+  else if ('123'.includes(e.key) && mock.revealed) mockGrade(+e.key);
+  else if (e.key==='Escape') closeModal();
+}
+function mockSummary(){
+  clearInterval(mockTimer);
+  const rows = mock.results.map(([q,g,u]) => `<tr><td>${q.id}</td><td>${q.q}</td><td style="color:var(--${['','ok','warn','bad'][g]})">${GRADE_NAME[g]}</td><td>${fmt(u||0)}</td></tr>`).join('');
+  const score = mock.results.reduce((s,r)=>s+(r[1]===1?1:r[1]===2?0.5:0),0);
+  openModal(`<h2 style="margin-top:0">Session summary — ${score}/${mock.results.length}</h2>
+    <div class="tbl"><table><thead><tr><th>id</th><th>question</th><th>grade</th><th>time to reveal</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="sub">Shaky and missed items now appear under <b>Drill weak</b>; re-grade them there after you rehearse the answer.</p>
+    <div class="row"><button class="primary" onclick="closeModal();render()">Close</button></div>`);
+  mock = null;
+}
+
+render();
+</script>
+</body>
+</html>

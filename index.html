@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Howard Xiao</title>
+    <meta name="author" content="Howard Xiao">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <!-- Apply the saved theme before first paint to avoid a flash -->
+    <script>try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+  </head>
+
+  <body>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+
+    <main class="page">
+
+      <!-- ===== Intro ===== -->
+      <header class="intro">
+        <div class="intro-id">
+          <div class="intro-photo">
+            <img class="active" src="images/howard/5.JPG" alt="Howard Xiao">
+          </div>
+          <div class="intro-name">
+          <h1>Howard Xiao</h1>
+          <p class="tagline">Ph.D. Student, <a href="https://www.stanford.edu/">Stanford University</a></p>
+          <nav class="links">
+            <div class="links-row">
+              <a href="mailto:howardx@stanford.edu">Email</a>
+              <a href="https://www.linkedin.com/in/howard-xiao/">LinkedIn</a>
+              <a href="https://github.com/howardhx/">GitHub</a>
+            </div>
+            <div class="links-row">
+              <a href="data/Howard's CV - Sept 2026.pdf">CV</a>
+              <!-- TODO: replace # with your Google Scholar profile URL -->
+              <a href="#">Google Scholar</a>
+              <a href="https://x.com/howard_xhc">X</a>
+            </div>
+          </nav>
+          </div>
+        </div>
+        <div class="intro-bio">
+          <p>
+            I'm a second-year Ph.D. student at the <a href="https://psai.stanford.edu/">Stanford Physical and Spatial Intelligence Lab</a>, advised by <a href="https://stanford.edu/~gordonwz/">Prof. Gordon Wetzstein</a>.
+          </p>
+          <p>
+            I study the fundamentals and applications of diffusion models, from fundamentals for efficient generation to long-context generation, causal video generation, and physical AI.
+          </p>
+          <p>
+            Previously, I worked on single-photon imaging with <a href="https://www.cs.toronto.edu/~kyros/">Prof. Kyros Kutulakos</a> and <a href="https://davidlindell.com/">Prof. David Lindell</a>.
+          </p>
+        </div>
+      </header>
+
+      <!-- ===== Publications ===== -->
+      <section class="pubs">
+        <h2>Publications</h2>
+
+        <article class="pub">
+          <div class="pub-media">
+            <video autoplay loop muted playsinline><source src="video/papers/speed.mp4"></video>
+          </div>
+          <div class="pub-body">
+            <a class="pub-title" href="https://howardxiao.ca/speed/">Spectral Progressive Diffusion for Efficient Image and Video Generation</a>
+            <div class="pub-authors">
+              <strong>Howard Xiao</strong>,
+              <a href="https://bchao1.github.io/">Brian Chao</a>,
+              <a href="https://lioryariv.github.io/">Lior Yariv</a>,
+              <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
+            </div>
+            <div class="pub-venue"><em>NeurIPS</em>, 2026</div>
+            <div class="pub-links">
+              <a href="https://howardxiao.ca/speed/">Project website</a>
+              <a href="https://arxiv.org/abs/2605.18736">Paper</a>
+              <a href="https://github.com/howardhx/speed">Code</a>
+              <a href="https://huggingface.co/spaces/howardhx/speed">Demo</a>
+            </div>
+            <p class="pub-desc">Spectral Progressive Diffusion framework that grows resolution along the denoising trajectory of pretrained models for efficient, high-quality image and video generation.</p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="pub-media">
+            <video autoplay loop muted playsinline><source src="video/papers/real_results_twitter.mp4"></video>
+          </div>
+          <div class="pub-body">
+            <a class="pub-title" href="https://howardxiao.ca/foveated/">Policy-based Foveated Imaging and Perception</a>
+            <div class="pub-authors">
+              <strong>Howard Xiao</strong>,
+              <a href="https://janackermann.info">Jan Ackermann</a>,
+              <a href="https://boyangdeng.com/">Boyang Deng</a>,
+              <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
+            </div>
+            <div class="pub-venue"><em>SIGGRAPH</em>, 2026</div>
+            <div class="pub-links">
+              <a href="https://howardxiao.ca/foveated/">Project website</a>
+              <a href="https://arxiv.org/abs/2606.02565">Paper</a>
+            </div>
+            <p class="pub-desc">We introduce a real-time, task-aware foveated imaging framework that learns a sensor attention policy to dynamically allocate pixel bandwidth, extensively validated in simulation and on a 200-megapixel prototype.</p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="pub-media">
+            <video autoplay loop muted playsinline><source src="video/papers/foveated_diffusion_center.mp4"></video>
+          </div>
+          <div class="pub-body">
+            <a class="pub-title" href="https://bchao1.github.io/foveated-diffusion/">Foveated Diffusion: Efficient Spatially Adaptive Image and Video Generation</a>
+            <div class="pub-authors">
+              <a href="https://bchao1.github.io/">Brian Chao</a><sup>*</sup>,
+              <a href="https://lioryariv.github.io/">Lior Yariv</a><sup>*</sup>,
+              <strong>Howard Xiao</strong>,
+              <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
+              <span class="note"><sup>*</sup>Joint first authors</span>
+            </div>
+            <div class="pub-venue"><em>arXiv</em>, March 2026</div>
+            <div class="pub-links">
+              <a href="https://bchao1.github.io/foveated-diffusion/">Project website</a>
+              <a href="https://arxiv.org/abs/2603.23491">Paper</a>
+              <a href="https://github.com/bchao1/foveated_diffusion">Code</a>
+              <a href="https://huggingface.co/spaces/bchao1/foveated-diffusion">Demo</a>
+            </div>
+            <p class="pub-desc">A human-centric framework for efficient image and video generation while preserving perceptual quality.</p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="pub-media">
+            <video autoplay loop muted playsinline><source src="video/papers/osp_tof_compressed.mp4"></video>
+          </div>
+          <div class="pub-body">
+            <a class="pub-title" href="https://dgp.toronto.edu/projects/opportunistic">Opportunistic Single-Photon Time of Flight</a>
+            <div class="pub-authors">
+              <a href="https://sotirisnousias.com">Sotiris Nousias</a><sup>*</sup>,
+              <a href="https://mianwei.ca">Mian Wei</a><sup>*</sup>,
+              <strong>Howard Xiao</strong>,
+              <a href="http://www.cs.toronto.edu/~wumaxx/">Maxx Wu</a>,
+              <a href="https://ca.linkedin.com/in/shahmeerathar">Shahmeer Athar</a>,
+              <a href="https://ca.linkedin.com/in/kevin-j-wang">Kevin J. Wang</a>,
+              <a href="https://anaghmalik.com/">Anagh Malik</a>,
+              <a href="https://davidbar.org/">David A. Barmherzig</a>,
+              <a href="http://davidlindell.com">David B. Lindell</a>,
+              <a href="http://www.cs.toronto.edu/~kyros/">Kiriakos N. Kutulakos</a>
+              <span class="note"><sup>*</sup>Joint first authors</span>
+            </div>
+            <div class="pub-venue"><em>CVPR</em>, 2025 <span class="oral">Oral Presentation</span></div>
+            <div class="pub-links">
+              <a href="https://dgp.toronto.edu/projects/opportunistic">Project website</a>
+              <a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Nousias_Opportunistic_Single-Photon_Time_of_Flight_CVPR_2025_paper.pdf">Paper</a>
+              <a href="https://www.dgp.toronto.edu/projects/opportunistic/static/docs/supp/supp.mp4">Video</a>
+              <a href="https://cvpr.thecvf.com/media/PosterPDFs/CVPR%202025/34248.png?t=1748828875.6218216">Poster</a>
+            </div>
+            <p class="pub-desc">An approach that uses single-photon cameras to harvest ambient light in our environment, such as those from asynchronous pulsed lidar systems, for passive 3D vision.</p>
+          </div>
+        </article>
+
+        <article class="pub">
+          <div class="pub-media">
+            <img src="images/papers/virasoro.png" alt="Virasoro groupoid">
+          </div>
+          <div class="pub-body">
+            <a class="pub-title" href="https://arxiv.org/abs/2605.07682">Virasoro extensions for diffeomorphisms with breaks</a>
+            <div class="pub-authors">
+              <a href="https://aizosimov.github.io/index.html">Anton Izosimov</a>,
+              <a href="https://www.math.toronto.edu/khesin/">Boris Khesin</a>,
+              <strong>Howard Xiao</strong>
+            </div>
+            <div class="pub-venue"><em>arXiv</em>, May 2026</div>
+            <div class="pub-links">
+              <a href="https://arxiv.org/abs/2605.07682">Paper</a>
+            </div>
+            <p class="pub-desc">We study homeomorphisms of the circle that are smooth diffeomorphisms away from a finite set of n points.</p>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <p>Website created using the template <a href="https://github.com/howardhx/website_template/" target="_blank" rel="noopener">here</a>.</p>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

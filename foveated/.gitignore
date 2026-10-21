@@ -1,0 +1,14 @@
+/*
+
+!/.gitignore
+!/paper/
+!/videos/
+!/images/
+!/index.html
+!/style.css
+
+# macOS metadata, anywhere in the tree
+.DS_Store
+
+# Too large for GitHub (>100MB hard limit); host externally if needed
+/videos/supplementary_video.mov

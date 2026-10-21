@@ -1,0 +1,66 @@
+/claude_tasks
+foveated/nerfies.github.io/
+foveated/preprocess.py
+foveated/CVPR2026_Foveated/
+foveated/preprocess_videos.py
+foveated/videos/prototype/*/global_video.mp4
+foveated/videos/prototype/*/roi_video.mp4
+foveated/videos/prototype/*/overlay_video.mp4
+# Bandwidth: only ship mp4s, not source frames
+foveated/videos/bandwidth/*/groundtruth*.txt
+foveated/videos/bandwidth/*/yolo*.txt
+foveated/videos/bandwidth/*/*.jpg
+foveated/videos/bandwidth/*/*.txt
+foveated/videos/bandwidth/*/*.ini
+foveated/videos/bandwidth/*/gt/
+foveated/videos/bandwidth/*/det/
+# Simulated results: ignore source subdirs/files; track only processed mp4s,
+# manifests, frames/ (text/tracking), and robotics*/roi/ (used as highlights).
+foveated/videos/simulated_results/text*/roi/
+foveated/videos/simulated_results/tracking_*/roi/
+foveated/videos/simulated_results/*/fullres/
+foveated/videos/simulated_results/*/global_downsampled/
+foveated/videos/simulated_results/*/global_yolo/
+foveated/videos/simulated_results/*/hungarian/
+foveated/videos/simulated_results/*/kf/
+foveated/videos/simulated_results/*/overlay/
+foveated/videos/simulated_results/*/overlay.mp4
+foveated/videos/simulated_results/*/results.json
+foveated/videos/simulated_results/*/*.jpg
+foveated/videos/simulated_results/*/*.txt
+foveated/videos/simulated_results/*/*.png
+.DS_Store
+**/.DS_Store
+
+# Old version of the site, kept locally only
+*_old.html
+*_old.css
+*_old.js
+
+# Local-only files, not part of the published site
+/.claude/
+/.vscode/
+/codex/
+/interview/
+/data/abstract_algebra.pdf
+/data/analysis.pdf
+/images/howard/1.JPG
+/images/howard/2.JPG
+/images/howard/3.JPG
+/images/howard/4.JPG
+/images/howard/6.JPG
+/images/howard/7.JPG
+/images/papers/lie.png
+/images/papers/maximal_tori.jpg
+/images/papers/osp_tof.png
+/images/papers/uwb1d_code.png
+/images/papers/virasoro1.png
+/images/papers/virasoro2.png
+/images/prism.png
+/images/research/
+/images/ta.png
+/video/2026.mov
+*.mov
+/foveated/videos/prototype/global_vs_roi_2x2.mp4
+/foveated/videos/simulated_results/global_vs_roi_2x2.mp4
+/foveated/videos/simulated_results/side_by_side_global_vs_roi.mp4

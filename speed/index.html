@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spectral Progressive Diffusion</title>
+  <meta name="description" content="Spectral Progressive Diffusion for Efficient Image and Video Generation">
+  <link rel="icon" type="image/png" href="images/prism.png">
+  <link rel="stylesheet" href="style.css">
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark-mode-pending')</script>
+  <style>
+    .dark-mode-pending body{background:#000;color:#f5f5f7}
+
+    /* Nudge the title slightly down and the authors slightly up */
+    .hero-title { padding: 60px 0 26px; margin-bottom: 2px; }
+
+    /* ===== Title animation: slow "Spectral Progressive Diffusion",
+       rainbow "SpeeD" letters, then a fast silver-bullet sweep ===== */
+    /* Two centered lines: "Spectral Progressive Diffusion" /
+       "for Efficient Image and Video Generation" */
+    .title-p1 { display: block; }
+    .title-p2 { display: inline-block; }
+
+    /* Part 1 — slow left-to-right reveal */
+    .title-p1 { clip-path: inset(0 100% 0 0); }
+    .hero-title.show-p1 .title-p1 {
+      animation: p1reveal 2.4s cubic-bezier(.16, 1, .3, 1) forwards;
+    }
+    @keyframes p1reveal {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+
+    /* Part 2 — very fast reveal with a silver bullet streak */
+    .title-p2-wrap {
+      position: relative;
+      display: block;
+      margin-top: 0.12em;
+      overflow: visible;
+    }
+    .title-p2 { clip-path: inset(0 100% 0 0); }
+    .hero-title.show-p2 .title-p2 {
+      /* delay so the silver bullet appears and leads first, then the
+         text speedruns in tracking just behind the bullet */
+      animation: p2reveal .32s ease-out .14s forwards;
+    }
+    @keyframes p2reveal {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+
+    .title-bullet {
+      position: absolute;
+      top: 50%;
+      left: -22%;
+      width: clamp(80px, 13vw, 180px);
+      height: clamp(2px, .14em, 6px);
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 4;
+      border-radius: 999px;
+      filter: blur(.5px);
+      /* horizontal comet: faint trailing tail on the left, bright
+         metallic head on the right that races through the title */
+      background: linear-gradient(90deg,
+        rgba(140,144,160,0) 0%,
+        rgba(140,144,160,.3) 45%,
+        rgba(170,174,190,.7) 72%,
+        rgba(230,232,240,.95) 90%,
+        #ffffff 100%);
+      box-shadow: 0 0 0 rgba(150,156,180,0);
+    }
+    body.dark-mode .title-bullet {
+      background: linear-gradient(90deg,
+        rgba(180,184,200,0) 0%,
+        rgba(180,184,200,.3) 45%,
+        rgba(210,214,230,.7) 72%,
+        rgba(245,246,250,.95) 90%,
+        #ffffff 100%);
+    }
+    .hero-title.show-p2 .title-bullet {
+      /* fast across, then decelerate hard and LAND at the title's end */
+      animation: bulletDash .72s cubic-bezier(.12, .75, .25, 1) forwards;
+    }
+    @keyframes bulletDash {
+      /* left is declared ONLY at the start and the arrival point, so the
+         travel is a single continuous eased glide (no double pump) */
+      0%   { opacity: 0; left: -22%; box-shadow: 0 0 0 rgba(150,156,180,0); }
+      8%   { opacity: 1; }
+      68%  { left: 100%; box-shadow: 0 0 0 rgba(150,156,180,0); }   /* arrives at the end */
+      78%  { opacity: 1; box-shadow: 0 0 22px 4px rgba(170,176,205,.85); } /* landing flash */
+      88%  { opacity: .9; box-shadow: 0 0 10px 2px rgba(170,176,205,.4); }  /* settle */
+      100% { opacity: 0;  box-shadow: 0 0 0 rgba(150,156,180,0); }
+    }
+
+    /* Rainbow "SpeeD" letters */
+    .rb {
+      background: var(--rainbow);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: var(--color-text);
+      transition: -webkit-text-fill-color .45s ease;
+    }
+    .hero-title.rb-on .rb {
+      -webkit-text-fill-color: transparent;
+      animation: rainbowShimmer 2.4s linear infinite;
+      transition-delay: calc(var(--i) * .06s);
+    }
+
+    /* ===== Abstract: repeating animated underline on key phrases ===== */
+    .section-body .ul {
+      background-image: linear-gradient(var(--color-accent), var(--color-accent));
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      background-size: 0% 2px;
+      padding-bottom: 2px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      /* cascade in (~1s each, staggered), stay ~30s, then restart */
+      animation: ulLoop 30s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.8s);
+    }
+    @keyframes ulLoop {
+      0%    { background-size: 0% 2px; }
+      3.3%  { background-size: 100% 2px; }   /* drawn (~1s) */
+      95%   { background-size: 100% 2px; }   /* stay underlined */
+      100%  { background-size: 0% 2px; }     /* erase, then loop redraws */
+    }
+
+    /* ===== Results: pill tab buttons (no underline bar) ===== */
+    #results-tabs {
+      border-bottom: none;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      overflow-x: visible;
+    }
+    #results-tabs .tab-btn {
+      border: 1px solid var(--color-text);
+      border-radius: 980px;
+      padding: 8px 18px;
+      color: var(--color-text);
+    }
+    #results-tabs .tab-btn:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    #results-tabs .tab-btn.active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    /* ===== Results: latent-space video two-pane carousel ===== */
+    .spd-carousel { max-width: 1100px; margin: 0 auto; }
+    .spd-labels {
+      display: flex;
+      gap: 24px;
+      padding: 0 52px;          /* arrow width (36) + stage gap (16) */
+      margin-bottom: 10px;
+    }
+    .spd-labels .spd-col-label {
+      flex: 1;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+    .spd-stage {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .spd-video-grid {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .spd-video-col {
+      flex: 1;
+      min-width: 0;
+    }
+    .spd-col-label {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--color-text);
+      text-align: center;
+    }
+    .spd-col-badge {
+      display: block;
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    .spd-badge-baseline { color: var(--color-text-secondary); }
+    .spd-badge-ours { color: var(--color-accent); }
+    .schedule-video {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    /* FLUX.1-dev qualitative image carousel (6-pane strips, 3 stacked) */
+    .spd-img-labels {
+      display: flex;
+      padding: 0 52px;          /* arrow (36) + stage gap (16): align over images */
+      margin-bottom: 8px;
+    }
+    .spd-img-labels > span {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      font-size: clamp(9px, 0.95vw, 13px);
+      font-weight: 600;
+      color: var(--color-text);
+      padding: 0 2px;
+    }
+    .spd-img-labels a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .spd-img-labels a:hover { color: var(--color-accent); }
+    .flux-img-grid {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .flux-img-grid img {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+      opacity: 0;   /* hidden until loaded, then .in triggers the pop-in */
+    }
+    .flux-img-grid img.in {
+      animation: fluxPop .5s cubic-bezier(.16, 1, .3, 1) both;
+      animation-delay: calc(var(--n, 0) * .15s);
+    }
+    @keyframes fluxPop {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .spd-video-col video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1248 / 720;   /* reserve space so swapping slides doesn't jump */
+      object-fit: contain;
+      border-radius: 10px;
+      background: #000;
+    }
+    .spd-prompt {
+      margin: 18px auto 0;
+      max-width: 1100px;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      text-align: left;
+      min-height: 3rem;
+    }
+    .spd-prompt strong { color: var(--color-text-secondary); font-weight: 600; }
+    .spd-arrow {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: none;
+      color: var(--color-text);
+      cursor: pointer;
+      opacity: 0.6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity var(--transition-fast), background var(--transition-fast);
+    }
+    .spd-arrow:hover { opacity: 1; background: rgba(128, 128, 128, 0.1); }
+    .spd-arrow svg { width: 20px; height: 20px; }
+    .spd-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .spd-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-border);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+    .spd-dot.active {
+      background: var(--color-accent);
+      transform: scale(1.2);
+    }
+
+    /* ===== Results: quantitative tables (booktabs style) ===== */
+    .spd-table-wrap {
+      margin-top: 32px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .spd-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+    .spd-table th,
+    .spd-table td {
+      padding: 7px 14px;
+      text-align: center;
+    }
+    /* Only the Method column is left-aligned (body cells + the Method
+       header). Every metric column — including the first metric cell in
+       a grouped second header row — stays centered. */
+    .spd-table tbody td:first-child,
+    .spd-table thead tr:first-child th:first-child {
+      text-align: left;
+    }
+    .spd-table a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .spd-table a:hover { color: var(--color-accent); }
+    .spd-table thead th {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .spd-table thead tr:first-child th {
+      border-top: 2px solid var(--color-text);
+      border-bottom: none;
+    }
+    .spd-table thead tr:last-child th {
+      border-bottom: 1px solid var(--color-text);
+    }
+    .spd-table .grp th {
+      font-weight: 600;
+      padding-bottom: 2px;
+    }
+    .spd-table .grp .grp-span {
+      border-bottom: 1px solid var(--color-border);
+    }
+    .spd-table tbody tr.tier td {
+      border-top: 1px solid var(--color-border);
+    }
+    .spd-table tbody tr:last-child td {
+      border-bottom: 2px solid var(--color-text);
+    }
+    .spd-table .ours td:first-child {
+      font-weight: 700;
+    }
+    .spd-best { font-weight: 700; }
+    .spd-second { text-decoration: underline; text-underline-offset: 2px; }
+    .spd-tcap {
+      margin: 14px 0 0;
+      font-size: 12.5px;
+      color: var(--color-text-secondary);
+      text-align: left;
+      line-height: 1.55;
+    }
+    .spd-tcap a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .spd-tcap a:hover { color: var(--color-accent); }
+    .spd-tcap-center { text-align: center; }
+    .section-body a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .section-body a:hover { color: var(--color-accent); }
+    .spd-subhead {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin: 44px 0 18px;
+    }
+    .tab-panel > .spd-subhead:first-child { margin-top: 4px; }
+    .spd-subsubhead {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 28px 0 12px;
+    }
+    .spd-subsubhead a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .spd-subsubhead a:hover { color: var(--color-accent); }
+    details.spd-collapse { margin: 0; }
+    details.spd-collapse > summary {
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+    details.spd-collapse > summary::-webkit-details-marker { display: none; }
+    details.spd-collapse > summary::before {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 7px solid currentColor;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      margin-right: 12px;
+      vertical-align: middle;
+      transition: transform .2s ease;
+    }
+    details.spd-collapse[open] > summary::before { transform: rotate(90deg); }
+    .tab-panel > details.spd-collapse:first-of-type > summary.spd-subhead { margin-top: 4px; }
+    /* ===== Hero teaser video + tagline ===== */
+    .hero-teaser {
+      display: block;   /* override foveated .hero-teaser flex from style.css */
+      width: 100%;
+      margin: 32px auto 0;
+    }
+    .hero-teaser video {
+      display: block;
+      width: 100%;
+    }
+    /* Match the hero background to each teaser video's actual background
+       color so the video doesn't read as a box. */
+    body:not(.dark-mode) .hero { background: #fdfdfd; }
+    body.dark-mode .hero { background: #090d12; }
+    /* In dark mode, all content sections (incl. the alternating ones)
+       share the hero/title section background color. */
+    body.dark-mode .content-section,
+    body.dark-mode .content-section:nth-child(even) { background: #090d12; }
+    .hero-teaser-prompt {
+      margin: 12px 0 0;
+      width: 100%;
+      font-size: clamp(11px, 1vw, 13px);
+      color: var(--color-text-secondary);
+      text-align: left;
+      line-height: 1.5;
+    }
+    .hero-teaser-prompt strong { color: var(--color-text-secondary); font-weight: 600; }
+    .hero-teaser-tagline {
+      margin: 14px 0 0;
+      font-size: clamp(11px, 1vw, 13px);
+      color: var(--color-text-secondary);
+      text-align: center;
+      font-style: italic;
+      line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+      .spd-video-grid { flex-direction: column; }
+      /* Let the long title wrap instead of overflowing/cutting off */
+      .hero-title { white-space: normal; line-height: 1.2; padding: 40px 0 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Top Navigation ===== -->
+  <nav class="nav-top">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-link nav-home">Home</a>
+      <a href="#abstract" class="nav-link">Abstract</a>
+      <a href="#method" class="nav-link">Method</a>
+      <a href="#results" class="nav-link">Results</a>
+      <a href="#bibtex" class="nav-link">BibTeX</a>
+      <a href="https://howardxiao.ca/foveated/" target="_blank" rel="noopener" class="nav-link nav-foveated" aria-label="Policy-based Foveated Imaging and Perception" style="font-size:18px;line-height:1;text-decoration:none;">📷+👁️</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== Hero: Title, Authors ===== -->
+  <section id="hero" class="hero snap-section">
+    <div class="hero-inner">
+      <h1 class="hero-title" id="hero-title"><span class="title-p1"><span class="rb" style="--i:0">S</span>pectral <span class="rb" style="--i:1">P</span>rogr<span class="rb" style="--i:2">e</span>ssiv<span class="rb" style="--i:3">e</span> <span class="rb" style="--i:4">D</span>iffusion</span><span class="title-p2-wrap"><span class="title-p2">for Efficient Image and Video Generation</span><span class="title-bullet" aria-hidden="true"></span></span></h1>
+      <div class="hero-authors">
+        <a href="https://howardxiao.ca">Howard Xiao</a>,
+        <a href="http://bchao1.github.io/">Brian Chao</a>,
+        <a href="https://lioryariv.github.io/">Lior Yariv</a>,
+        <a href="https://stanford.edu/~gordonwz/">Gordon Wetzstein</a>
+      </div>
+      <div class="hero-affiliation">
+        <a href="https://www.stanford.edu/">Stanford University</a>
+      </div>
+      <div class="hero-venue">
+        <a href="https://neurips.cc/">NeurIPS 2026</a>
+      </div>
+      <div class="pub-links">
+        <a href="paper/paper.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Paper
+        </a>
+        <a href="https://arxiv.org/abs/2605.18736" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          arXiv
+        </a>
+        <a href="https://github.com/howardhx/speed" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Code and ComfyUI
+        </a>
+        <a href="https://huggingface.co/spaces/howardhx/speed" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Demo
+        </a>
+      </div>
+      <div class="hero-teaser">
+        <video id="hero-teaser-video" autoplay muted loop playsinline
+               data-light="videos/teaser_white.mp4"
+               data-dark="videos/teaser_dark.mp4"></video>
+        <p class="hero-teaser-prompt"><strong>Prompt:</strong> Bald eagle in direct forward flight, wings fully extended filling the frame, dramatic aerial portrait, overcast silver light diffused evenly, Canon 600mm f/4, fine primary feather detail, intense yellow eye.</p>
+      </div>
+      <div class="hero-scroll-row">
+        <div class="hero-scroll-cta">
+          <a href="#abstract" class="scroll-arrow hero-scroll-arrow">
+            <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <span class="scroll-hint">Scroll to view more</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Abstract ===== -->
+  <section id="abstract" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Abstract</h2>
+      <div class="section-body reveal">
+        <p>Computational demands for visual generative models are increasing rapidly as image resolutions and video sequence lengths continue to grow. This trend reveals a fundamental scaling crisis: while scaling model and data sizes consistently yields better generation quality, the underlying cost of self-attention in Diffusion Transformers scales quadratically with the number of generated tokens.</p>
+        <p>Diffusion models have been shown to implicitly generate visual content autoregressively in the frequency domain, where low-frequency components are generated earlier in the denoising process while high-frequency details emerge only in later timesteps. This structure offers a natural opportunity for efficient generation, as high-resolution computation on noise-dominated frequencies is largely redundant.</p>
+        <p>We propose <strong>Spectral Progressive Diffusion</strong>, a general framework that progressively grows resolution along the denoising trajectory of pretrained diffusion models. To this end, we develop a <span class="ul" style="--i:0">spectral noise expansion mechanism</span> and derive an <span class="ul" style="--i:1">optimal resolution schedule</span> from the model&rsquo;s power spectrum. Our framework supports <span class="ul" style="--i:2">training-free acceleration</span> and a <span class="ul" style="--i:3">fine-tuning recipe</span> that further improves efficiency and quality, enabling <span class="ul" style="--i:4">significant speedups</span> on state-of-the-art pretrained image and video generation models while <span class="ul" style="--i:5">preserving visual quality</span>.</p>
+      </div>
+    </div>
+    <a href="#method" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== Method ===== -->
+  <section id="method" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Method</h2>
+      <div class="reveal">
+        <video class="method-video freeze-loop" autoplay muted playsinline src="videos/method.mp4"></video>
+      </div>
+      <h3 class="spd-subhead reveal">Optimal Resolution Schedule</h3>
+      <div class="section-body reveal">
+        <p>Our optimal resolution schedule determines when to grow resolution by matching the frequencies that are beginning to emerge from noise with the spatial resolutions that can represent them. Using the model&rsquo;s measured power spectrum and each resolution&rsquo;s Nyquist limit, we estimate when high-frequency bands become informative rather than noise-dominated. This yields principled transition times from a single error tolerance parameter, reducing brittle hyperparameter tuning while avoiding unnecessary high-resolution computation early in denoising.</p>
+      </div>
+      <div class="reveal">
+        <video class="method-video schedule-video" autoplay muted loop playsinline
+               data-light="videos/schedule_light.mp4"
+               data-dark="videos/schedule_dark.mp4"></video>
+      </div>
+      <h3 class="spd-subhead reveal">Spectral Noise Expansion</h3>
+      <div class="section-body reveal">
+        <p>Motivated by the spectral autoregression property of diffusion, we progressively increase image resolution by injecting higher-frequency components along the denoising trajectory using a spectral transformation. Our framework applies natively to existing pretrained image and video generation models, without additional custom modules or architectural modifications.</p>
+      </div>
+      <div class="reveal">
+        <video class="method-video freeze-loop" autoplay muted playsinline
+               data-light="videos/spectral_noise_expansion_white.mp4"
+               data-dark="videos/spectral_noise_expansion_dark.mp4"></video>
+      </div>
+      <div class="section-body reveal">
+        <p>Please refer to <a href="paper/paper.pdf" target="_blank" rel="noopener">our paper</a> for further method details.</p>
+      </div>
+    </div>
+    <a href="#results" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== Results ===== -->
+  <section id="results" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">Results</h2>
+
+      <div class="section-body reveal">
+        <p>Spectral Progressive Diffusion accelerates pretrained image generation models while preserving visual quality across both latent- and pixel-space settings. In training-free inference, our method improves the speed-quality tradeoff on <a href="https://github.com/black-forest-labs/flux" target="_blank" rel="noopener">FLUX.1-dev</a>, reaching up to 7.09&times; wall-clock speedup and 7.36&times; FLOPs reduction. With lightweight fine-tuning, the same framework further improves quality and efficiency on <a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a> and <a href="https://arxiv.org/abs/2602.02493" target="_blank" rel="noopener">PixelGen</a>, showing that spectral progressive generation can be used both as a plug-and-play acceleration method and as a fine-tunable recipe. The framework also extends naturally to video generation. On <a href="https://arxiv.org/abs/2503.20314" target="_blank" rel="noopener">WAN 2.1</a> latent-space video generation, Spectral Progressive Diffusion achieves more than 2&times; speedup while maintaining high-fidelity VBench performance.</p>
+        <p>Please refer to <a href="paper/paper.pdf" target="_blank" rel="noopener">our paper</a> for additional qualitative and quantitative results, including ablations and results on frequency-based editing.</p>
+      </div>
+
+      <div class="tab-nav reveal" id="results-tabs">
+        <button class="tab-btn active" data-tab="latent_img">Latent-space Image Generation</button>
+        <button class="tab-btn" data-tab="pixel_img">Pixel-space Image Generation</button>
+        <button class="tab-btn" data-tab="latent_vid">Training-free Latent-space Video Generation</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-latent_img">
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Qualitative Results</summary>
+          <details class="spd-collapse" open>
+            <summary class="spd-subsubhead">Training-free Latent Image Generation (<a href="https://github.com/black-forest-labs/flux" target="_blank" rel="noopener">FLUX.1-dev</a>)</summary>
+            <p class="section-body" style="margin:0 0 16px">Our approach delivers greater efficiency gains while maintaining higher visual fidelity than baseline methods such as reduced-step FLUX and <a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a>. The reduced-step FLUX baseline introduces color distortions and blur artifacts, while <a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> introduces noisy artifacts.</p>
+            <div class="spd-carousel">
+              <div class="spd-img-labels">
+                <span>FLUX (1&times;)</span>
+                <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (1.58&times;)</span>
+                <span><strong>Ours (1.66&times;)</strong></span>
+                <span>FLUX (4.84&times;)</span>
+                <span><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> (4.98&times;)</span>
+                <span><strong>Ours (5.77&times;)</strong></span>
+              </div>
+              <div class="spd-stage">
+                <button class="spd-arrow" id="flux-img-prev" aria-label="Previous images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                </button>
+                <div class="flux-img-grid" id="flux-img-grid"></div>
+                <button class="spd-arrow" id="flux-img-next" aria-label="Next images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                </button>
+              </div>
+              <div class="spd-dots" id="flux-img-dots"></div>
+            </div>
+          </details>
+          <details class="spd-collapse" open>
+            <summary class="spd-subsubhead">Finetuned Latent Image Generation (<a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a>)</summary>
+            <p class="section-body" style="margin:0 0 16px">Our training-free approach maintains high quality while providing greater efficiency gains. Our finetuning recipe significantly improves visual quality while delivering speedups of more than 5&times;. Notably, our finetuned model outperforms baselines that achieve only ~1.5&times; speedups using more denoising steps.</p>
+            <div class="spd-carousel">
+              <div class="spd-img-labels">
+                <span>Z-Image (1&times;)</span>
+                <span>Z-Image (1.56&times;)</span>
+                <span><strong>Ours-TF (1.65&times;)</strong></span>
+                <span>Z-Image (4.99&times;)</span>
+                <span><strong>Ours-TF (5.04&times;)</strong></span>
+                <span><strong>Ours-LoRA (5.01&times;)</strong></span>
+              </div>
+              <div class="spd-stage">
+                <button class="spd-arrow" id="zimg-img-prev" aria-label="Previous images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+                </button>
+                <div class="flux-img-grid" id="zimg-img-grid"></div>
+                <button class="spd-arrow" id="zimg-img-next" aria-label="Next images">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+                </button>
+              </div>
+              <div class="spd-dots" id="zimg-img-dots"></div>
+            </div>
+            <p class="spd-tcap spd-tcap-center"><strong>TF</strong> denotes training-free and <strong>LoRA</strong> the finetuned version with Low-Rank Adaptation (LoRA).</p>
+          </details>
+        </details>
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Quantitative Results</summary>
+          <details class="spd-collapse" open>
+            <summary class="spd-subsubhead">Training-free Latent Image Generation (<a href="https://github.com/black-forest-labs/flux" target="_blank" rel="noopener">FLUX.1-dev</a>)</summary>
+        <div class="spd-table-wrap">
+          <table class="spd-table">
+            <thead>
+              <tr class="grp">
+                <th rowspan="2">Method</th>
+                <th rowspan="2">Speedup&nbsp;&uarr;</th>
+                <th rowspan="2">TFLOPs&nbsp;&darr;</th>
+                <th class="grp-span">Overall</th>
+                <th class="grp-span" colspan="2">Image quality</th>
+                <th class="grp-span" colspan="2">Text alignment</th>
+              </tr>
+              <tr>
+                <th>ImageReward&nbsp;&uarr;</th>
+                <th>CLIP-IQA&nbsp;&uarr;</th>
+                <th>NIQE&nbsp;&darr;</th>
+                <th>T2I-Comp.&nbsp;&uarr;</th>
+                <th>GenEval&nbsp;&uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>FLUX (50 steps)</td><td>1.00&times;</td><td>2991.01</td><td class="spd-best">1.095</td><td>0.707</td><td>6.75</td><td class="spd-best">0.634</td><td class="spd-best">0.698</td></tr>
+              <tr><td><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a></td><td class="spd-second">1.58&times;</td><td class="spd-best">1749.94</td><td>1.028</td><td class="spd-second">0.712</td><td class="spd-best">6.07</td><td>0.613</td><td>0.648</td></tr>
+              <tr class="ours"><td>Ours (S=2)</td><td class="spd-best">1.66&times;</td><td class="spd-second">1755.22</td><td class="spd-second">1.049</td><td class="spd-best">0.719</td><td class="spd-second">6.43</td><td class="spd-second">0.617</td><td class="spd-second">0.654</td></tr>
+              <tr class="tier"><td>FLUX (10 steps)</td><td>4.84&times;</td><td>610.02</td><td>0.981</td><td>0.679</td><td>6.93</td><td>0.618</td><td>0.647</td></tr>
+              <tr><td><a href="https://arxiv.org/pdf/2503.18940v1" target="_blank" rel="noopener">Bottleneck</a></td><td>4.67&times;</td><td>571.23</td><td>0.889</td><td>0.661</td><td>9.16</td><td>0.620</td><td class="spd-best">0.687</td></tr>
+              <tr><td><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a></td><td>4.98&times;</td><td>540.47</td><td>1.022</td><td class="spd-second">0.700</td><td class="spd-best">6.43</td><td class="spd-best">0.626</td><td>0.652</td></tr>
+              <tr class="ours"><td>Ours (S=2)</td><td class="spd-second">5.77&times;</td><td class="spd-second">500.34</td><td class="spd-best">1.059</td><td>0.696</td><td>6.69</td><td class="spd-second">0.624</td><td class="spd-second">0.655</td></tr>
+              <tr class="ours"><td>Ours (S=3)</td><td class="spd-best">6.09&times;</td><td class="spd-best">469.15</td><td class="spd-second">1.042</td><td class="spd-best">0.701</td><td class="spd-second">6.53</td><td>0.623</td><td>0.637</td></tr>
+              <tr class="tier"><td>FLUX (7 steps)</td><td>6.62&times;</td><td>431.45</td><td>0.920</td><td>0.660</td><td>8.25</td><td>0.594</td><td>0.583</td></tr>
+              <tr><td><a href="https://arxiv.org/pdf/2503.18940v1" target="_blank" rel="noopener">Bottleneck</a></td><td>6.64&times;</td><td>431.52</td><td>0.792</td><td>0.631</td><td>8.71</td><td>0.605</td><td class="spd-second">0.672</td></tr>
+              <tr><td><a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a></td><td>6.69&times;</td><td class="spd-second">426.01</td><td>0.999</td><td>0.681</td><td>6.87</td><td class="spd-best">0.633</td><td class="spd-best">0.682</td></tr>
+              <tr class="ours"><td>Ours (S=2)</td><td class="spd-second">6.78&times;</td><td>427.03</td><td class="spd-best">1.039</td><td class="spd-second">0.689</td><td class="spd-second">6.78</td><td>0.620</td><td>0.667</td></tr>
+              <tr class="ours"><td>Ours (S=3)</td><td class="spd-best">7.09&times;</td><td class="spd-best">406.24</td><td class="spd-second">1.015</td><td class="spd-best">0.694</td><td class="spd-best">5.99</td><td class="spd-second">0.627</td><td>0.637</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spd-tcap"><strong>Training-free quantitative comparison on FLUX.1-dev</strong> (1024&sup2; resolution), grouped into 1&times;, 5&times;, and 7&times; wall-clock speedup tiers. <strong>Bold</strong> = best, <u>underline</u> = second best within each tier. Baseline rows follow the <a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> evaluation protocol. <strong>S</strong> denotes the number of resolution levels. The <a href="https://arxiv.org/pdf/2507.08422" target="_blank" rel="noopener">RALU</a> and <a href="https://arxiv.org/pdf/2503.18940v1" target="_blank" rel="noopener">Bottleneck</a> method names are hyperlinked to their original papers.</p>
+          </details>
+          <details class="spd-collapse" open>
+            <summary class="spd-subsubhead">Finetuned Latent Image Generation (<a href="https://arxiv.org/abs/2511.22699" target="_blank" rel="noopener">Z-Image</a>)</summary>
+        <div class="spd-table-wrap">
+          <table class="spd-table">
+            <thead>
+              <tr class="grp">
+                <th rowspan="2">Method</th>
+                <th rowspan="2">Speedup&nbsp;&uarr;</th>
+                <th rowspan="2">TFLOPs&nbsp;&darr;</th>
+                <th class="grp-span">Overall</th>
+                <th class="grp-span" colspan="2">Image quality</th>
+                <th class="grp-span" colspan="2">Text alignment</th>
+              </tr>
+              <tr>
+                <th>ImageReward&nbsp;&uarr;</th>
+                <th>CLIP-IQA&nbsp;&uarr;</th>
+                <th>NIQE&nbsp;&darr;</th>
+                <th>T2I-Comp.&nbsp;&uarr;</th>
+                <th>GenEval&nbsp;&uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Z-Image (50 steps)</td><td>1.00&times;</td><td>4941.23</td><td>0.965</td><td>0.700</td><td>5.41</td><td>0.731</td><td>0.745</td></tr>
+              <tr class="tier"><td>Z-Image (32 steps)</td><td>1.56&times;</td><td>3166.62</td><td class="spd-second">0.957</td><td>0.697</td><td class="spd-best">5.44</td><td>0.686</td><td>0.725</td></tr>
+              <tr class="ours"><td>Ours (TF, S=2)</td><td>1.65&times;</td><td>3132.03</td><td>0.904</td><td>0.688</td><td>5.87</td><td>0.658</td><td class="spd-second">0.730</td></tr>
+              <tr class="ours"><td>Ours (TF, S=3)</td><td class="spd-best">1.74&times;</td><td class="spd-best">2871.09</td><td>0.875</td><td>0.690</td><td class="spd-second">5.59</td><td>0.650</td><td>0.682</td></tr>
+              <tr class="ours"><td>Ours (LoRA, S=2)</td><td>1.65&times;</td><td>3132.03</td><td class="spd-best">0.982</td><td class="spd-best">0.699</td><td>5.72</td><td class="spd-best">0.725</td><td class="spd-best">0.731</td></tr>
+              <tr class="ours"><td>Ours (LoRA, S=3)</td><td class="spd-best">1.74&times;</td><td class="spd-best">2871.09</td><td>0.954</td><td class="spd-second">0.697</td><td>5.75</td><td class="spd-second">0.717</td><td>0.728</td></tr>
+              <tr class="tier"><td>Z-Image (10 steps)</td><td>4.99&times;</td><td>997.68</td><td>0.851</td><td>0.659</td><td>5.95</td><td class="spd-second">0.678</td><td class="spd-second">0.705</td></tr>
+              <tr class="ours"><td>Ours (TF, S=2)</td><td class="spd-second">5.04&times;</td><td class="spd-second">962.95</td><td class="spd-second">0.860</td><td class="spd-second">0.668</td><td>6.17</td><td>0.677</td><td>0.693</td></tr>
+              <tr class="ours"><td>Ours (TF, S=3)</td><td class="spd-best">5.30&times;</td><td class="spd-best">875.97</td><td>0.827</td><td>0.662</td><td class="spd-second">5.78</td><td>0.676</td><td>0.655</td></tr>
+              <tr class="ours"><td>Ours (LoRA, S=2)</td><td>5.01&times;</td><td class="spd-second">962.95</td><td class="spd-best">0.923</td><td class="spd-best">0.683</td><td class="spd-best">5.58</td><td class="spd-best">0.706</td><td class="spd-best">0.738</td></tr>
+              <tr class="tier"><td>Z-Image (7 steps)</td><td>5.97&times;</td><td>701.92</td><td>0.763</td><td>0.631</td><td class="spd-best">6.14</td><td>0.648</td><td>0.667</td></tr>
+              <tr class="ours"><td>Ours (TF, S=2)</td><td>7.73&times;</td><td class="spd-second">678.77</td><td class="spd-second">0.804</td><td class="spd-second">0.641</td><td>6.46</td><td class="spd-second">0.665</td><td class="spd-second">0.680</td></tr>
+              <tr class="ours"><td>Ours (TF, S=3)</td><td class="spd-best">8.08&times;</td><td class="spd-best">609.18</td><td>0.759</td><td>0.630</td><td class="spd-second">6.16</td><td>0.658</td><td>0.645</td></tr>
+              <tr class="ours"><td>Ours (LoRA, S=2)</td><td class="spd-second">7.81&times;</td><td class="spd-second">678.77</td><td class="spd-best">0.918</td><td class="spd-best">0.658</td><td>6.57</td><td class="spd-best">0.683</td><td class="spd-best">0.744</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spd-tcap"><strong>Fine-tuning quantitative comparison on latent-space image generation (Z-Image)</strong> at 1024&sup2; resolution (full table, including appendix results), grouped into wall-clock speedup tiers. <strong>Bold</strong> = best, <u>underline</u> = second best within each tier. In method names, <strong>S</strong> denotes the number of resolution levels; <strong>TF</strong> denotes training-free and <strong>LoRA</strong> the finetuned version with Low-Rank Adaptation (LoRA).</p>
+          </details>
+        </details>
+      </div>
+      <div class="tab-panel" id="tab-pixel_img">
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Qualitative Results</summary>
+          <p class="section-body" style="margin:0 0 16px">While the PixelGen model does not natively support lower-than-full-resolution generation, our finetuning framework bridges the pretraining and inference gap, maintaining visual quality while delivering significant speedups.</p>
+          <div class="spd-carousel">
+            <div class="spd-img-labels">
+              <span>PixelGen (1&times;)</span>
+              <span>PixelGen (1.9&times;)</span>
+              <span><strong>Ours-TF (1.6&times;)</strong></span>
+              <span><strong>Ours-LoRA (1.6&times;)</strong></span>
+            </div>
+            <div class="spd-stage">
+              <button class="spd-arrow" id="pix-img-prev" aria-label="Previous images">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+              </button>
+              <div class="flux-img-grid" id="pix-img-grid"></div>
+              <button class="spd-arrow" id="pix-img-next" aria-label="Next images">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+              </button>
+            </div>
+            <div class="spd-dots" id="pix-img-dots"></div>
+          </div>
+          <p class="spd-tcap spd-tcap-center"><strong>TF</strong> denotes training-free and <strong>LoRA</strong> the finetuned version with Low-Rank Adaptation (LoRA).</p>
+        </details>
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Quantitative Results</summary>
+        <div class="spd-table-wrap">
+          <table class="spd-table">
+            <thead>
+              <tr class="grp">
+                <th rowspan="2">Method</th>
+                <th rowspan="2">Speedup&nbsp;&uarr;</th>
+                <th rowspan="2">TFLOPs&nbsp;&darr;</th>
+                <th class="grp-span">Overall</th>
+                <th class="grp-span" colspan="2">Image quality</th>
+                <th class="grp-span" colspan="2">Text alignment</th>
+              </tr>
+              <tr>
+                <th>ImageReward&nbsp;&uarr;</th>
+                <th>CLIP-IQA&nbsp;&uarr;</th>
+                <th>NIQE&nbsp;&darr;</th>
+                <th>T2I-Comp.&nbsp;&uarr;</th>
+                <th>GenEval&nbsp;&uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>PixelGen (25 steps)</td><td>1.00&times;</td><td>65.36</td><td>0.921</td><td>0.734</td><td>5.95</td><td>0.574</td><td>0.794</td></tr>
+              <tr class="ours tier"><td>Ours (TF, S=2)</td><td>1.60&times;</td><td>33.72</td><td>0.799</td><td>0.718</td><td>6.10</td><td>0.568</td><td class="spd-best">0.782</td></tr>
+              <tr class="ours"><td>Ours (LoRA, S=2)</td><td>1.55&times;</td><td>33.72</td><td class="spd-best">0.913</td><td class="spd-best">0.728</td><td class="spd-best">5.87</td><td class="spd-best">0.580</td><td>0.776</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spd-tcap"><strong>Fine-tuning quantitative comparison on pixel-space image generation (PixelGen)</strong> at 512&sup2; resolution. Our fine-tuning recipe bridges pretraining and progressive-resolution inference, improving quality while preserving the efficiency gains. <strong>Bold</strong> = best. <strong>S</strong> denotes the number of resolution levels.</p>
+        </details>
+      </div>
+      <div class="tab-panel" id="tab-latent_vid">
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Qualitative Results</summary>
+        <p class="section-body" style="margin:0 0 16px">Our DCT-based spectral progressive diffusion framework leverages the generation resolutions of 480P and 720P of <a href="https://arxiv.org/abs/2503.20314" target="_blank" rel="noopener">WAN 2.1</a> and works training-free, achieving more than 2&times; speedup while maintaining high generation quality.</p>
+        <div class="spd-carousel">
+          <div class="spd-labels" id="spd-labels"></div>
+          <div class="spd-stage">
+            <button class="spd-arrow spd-prev" id="spd-prev" aria-label="Previous video">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,6 9,12 15,18"/></svg>
+            </button>
+            <div class="spd-video-grid" id="spd-grid"></div>
+            <button class="spd-arrow spd-next" id="spd-next" aria-label="Next video">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,6 15,12 9,18"/></svg>
+            </button>
+          </div>
+          <div class="spd-prompt" id="spd-prompt"></div>
+          <div class="spd-dots" id="spd-dots"></div>
+        </div>
+        </details>
+        <details class="spd-collapse" open>
+          <summary class="spd-subhead">Quantitative Results</summary>
+        <div class="spd-table-wrap">
+          <table class="spd-table">
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Speedup&nbsp;&uarr;</th>
+                <th>TFLOPs&nbsp;&darr;</th>
+                <th>Subject<br>Consistency&nbsp;&uarr;</th>
+                <th>Background<br>Consistency&nbsp;&uarr;</th>
+                <th>Motion<br>Smoothness&nbsp;&uarr;</th>
+                <th>Dynamic<br>Degree&nbsp;&uarr;</th>
+                <th>Aesthetic<br>Quality&nbsp;&uarr;</th>
+                <th>Image<br>Quality&nbsp;&uarr;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>WAN&nbsp;2.1 (50 steps)</td><td>1.00&times;</td><td>119292</td><td>0.9492</td><td>0.9621</td><td>0.9874</td><td>0.4800</td><td>0.5993</td><td>0.6133</td></tr>
+              <tr class="tier"><td>WAN&nbsp;2.1 (25 steps)</td><td>2.00&times;</td><td>59646</td><td>0.9434</td><td>0.9597</td><td class="spd-best">0.9879</td><td>0.4250</td><td>0.5893</td><td>0.5706</td></tr>
+              <tr class="ours"><td>Ours (S=2)</td><td class="spd-best">2.03&times;</td><td class="spd-best">57417</td><td class="spd-best">0.9462</td><td class="spd-best">0.9598</td><td>0.9859</td><td class="spd-best">0.4950</td><td class="spd-best">0.5975</td><td class="spd-best">0.6114</td></tr>
+              <tr class="ours tier"><td>Ours (S=3)</td><td>2.54&times;</td><td>45953</td><td>0.9299</td><td>0.9499</td><td>0.9815</td><td>0.5700</td><td>0.5696</td><td>0.5990</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spd-tcap"><strong>Quantitative comparison on latent-space video generation (WAN&nbsp;2.1)</strong> at 720p on VBench. Our training-free approach achieves more than 2&times; speedup while matching or outperforming the 25-step full-resolution baseline. <strong>Bold</strong> = best among accelerated methods. <strong>S</strong> denotes the number of resolution levels.</p>
+        </details>
+      </div>
+    </div>
+    <a href="#bibtex" class="scroll-arrow">
+      <svg width="30" height="30" viewBox="0 0 30 30"><polyline points="7,12 15,20 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </section>
+
+  <!-- ===== BibTeX ===== -->
+  <section id="bibtex" class="content-section">
+    <div class="section-inner">
+      <h2 class="section-heading reveal">BibTeX</h2>
+      <div class="reveal">
+        <pre class="bibtex-block"><code>@article{xiao2026spectral,
+  author    = {Xiao, Howard and Chao, Brian and Yariv, Lior and Wetzstein, Gordon},
+  title     = {Spectral Progressive Diffusion for Efficient Image and Video Generation},
+  year      = {2026},
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <p>Website created using the template <a class="footer-template-link" href="https://github.com/howardhx/website_template/" target="_blank" rel="noopener">here</a>.</p>
+  </footer>
+
+  <script>
+    // Dark mode toggle (synced with main site via localStorage)
+    const toggle = document.getElementById('theme-toggle');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Theme-aware videos: swap source for light/dark mode
+    const themeVideos = Array.from(document.querySelectorAll('video[data-light][data-dark]'));
+    function setThemeVideoSrcs() {
+      const dark = document.body.classList.contains('dark-mode');
+      themeVideos.forEach(v => {
+        const file = dark ? v.dataset.dark : v.dataset.light;
+        if (v.getAttribute('src') === file) return;
+        v.setAttribute('src', file);
+        v.load();
+        v.play().catch(() => {});
+      });
+    }
+    setThemeVideoSrcs();
+
+    toggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+      setThemeVideoSrcs();
+    });
+
+    // ===== Native scrolling: reveal-on-view + smooth anchor jumps =====
+    const nav = document.querySelector('.nav-top');
+
+    // Reveal .reveal elements as they scroll into view
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            en.target.classList.add('revealed');
+            io.unobserve(en.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('revealed'));
+    }
+
+    // Mobile browsers won't autoplay offscreen videos; (re)play the
+    // method-section videos whenever they scroll into view.
+    const methodVids = document.querySelectorAll('video.method-video');
+    if ('IntersectionObserver' in window) {
+      const vio = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+          const v = en.target;
+          if (en.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      }, { threshold: 0.2 });
+      methodVids.forEach(v => vio.observe(v));
+    } else {
+      methodVids.forEach(v => v.play().catch(() => {}));
+    }
+
+    // Method + Spectral Noise Expansion: hold the last frame for 5s,
+    // then restart (instead of an immediate native loop).
+    document.querySelectorAll('video.freeze-loop').forEach(v => {
+      v.loop = false;
+      v.addEventListener('ended', () => {
+        setTimeout(() => { v.currentTime = 0; v.play().catch(() => {}); }, 5000);
+      });
+    });
+
+    // Nav background once scrolled away from the very top
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 100);
+    });
+
+    // Smooth-scroll for nav links + scroll arrows
+    document.querySelectorAll('.nav-link, .scroll-arrow, .scroll-link').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const href = el.getAttribute('href');
+        if (!href || href.charAt(0) !== '#') return;
+        e.preventDefault();
+        const target = document.getElementById(href.slice(1));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // ===== Title animation orchestration =====
+    const heroTitle = document.getElementById('hero-title');
+    const CYCLE = 7800;
+
+    function runTitleAnimation() {
+      heroTitle.classList.remove('show-p1', 'rb-on', 'show-p2');
+      void heroTitle.offsetWidth; // force reflow so the animation restarts cleanly
+
+      // Phase 1: slow reveal of "Spectral Progressive Diffusion" (1.6s)
+      heroTitle.classList.add('show-p1');
+
+      // Phase 2: rainbow lights up the "SpeeD" letters (after the slower p1 reveal)
+      setTimeout(() => heroTitle.classList.add('rb-on'), 2500);
+
+      // Phase 3: silver bullet appears and leads, then the rest of the
+      // title speedruns in just behind it
+      setTimeout(() => heroTitle.classList.add('show-p2'), 3300);
+    }
+
+    setTimeout(() => {
+      runTitleAnimation();
+      setInterval(runTitleAnimation, CYCLE);
+    }, 400);
+
+    // ===== Results tab switching =====
+    document.querySelectorAll('#results-tabs .tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#results-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#results .tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'latent_vid' && window.spdVideoRestart) {
+          setTimeout(window.spdVideoRestart, 60);
+        }
+      });
+    });
+  </script>
+
+  <script src="videos/eval200_prompts_en.js"></script>
+  <script>
+    // ===== Results: Latent-space video two-pane carousel =====
+    (function() {
+      const grid = document.getElementById('spd-grid');
+      if (!grid) return;
+
+      const promptsData = (typeof eval200Prompts !== 'undefined') ? eval200Prompts : [];
+      const VIDEO_BASE = 'videos';
+      const METHODS = [
+        { folder: 'r720_s5_fullres_n50', label: 'Full Resolution', detail: '720p · 50 steps · 1.00× (reference)', badge: 'baseline' },
+        { folder: 'r720_s5_dct_rewind',  label: 'Ours',            detail: '720p · 50 steps · 2.03× faster',     badge: 'ours' },
+      ];
+      const VIDEO_IDS = [7,12,14,18,19,31,36,50,58,70,76,82,110,133,153,156,160,165,190,194];
+      const VIDEO_FILES = VIDEO_IDS.map(n => `p${String(n).padStart(3,'0')}_seed${n}.mp4`);
+      const promptsById = Object.fromEntries(promptsData.map(p => [p.id, p.prompt]));
+      const CAPTIONS = VIDEO_IDS.map(n => promptsById[n] || '');
+
+      const prompt = document.getElementById('spd-prompt');
+      const dotsWrap = document.getElementById('spd-dots');
+      const labelsWrap = document.getElementById('spd-labels');
+      let idx = 0, vids = [], syncLock = false;
+
+      labelsWrap.innerHTML = '';
+      grid.innerHTML = '';
+      METHODS.forEach((m, c) => {
+        const label = document.createElement('div');
+        label.className = 'spd-col-label';
+        label.innerHTML = m.label + '<span class="spd-col-badge spd-badge-' + m.badge + '">' + m.detail + '</span>';
+        labelsWrap.appendChild(label);
+
+        const col = document.createElement('div');
+        col.className = 'spd-video-col';
+        const v = document.createElement('video');
+        v.preload = 'auto';
+        v.loop = false;
+        v.muted = true;
+        v.autoplay = true;
+        v.controls = true;
+        v.playsInline = true;
+        v.addEventListener('seeked',  () => syncTo('seek', v));
+        v.addEventListener('playing', () => syncTo('play', v));
+        v.addEventListener('pause',   () => syncTo('pause', v));
+        // Loop both panes together from a single leader so the wrap is in sync
+        if (c === 0) v.addEventListener('ended', restartLoop);
+        col.appendChild(v);
+        grid.appendChild(col);
+      });
+      vids = Array.from(grid.querySelectorAll('video'));
+
+      dotsWrap.innerHTML = VIDEO_FILES.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Video ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+
+      function restartLoop() {
+        syncLock = true;
+        vids.forEach(v => { v.currentTime = 0; });
+        Promise.all(vids.map(v => v.play().catch(() => {})))
+          .finally(() => { syncLock = false; });
+      }
+
+      function syncTo(type, src) {
+        if (syncLock) return;
+        syncLock = true;
+        vids.forEach(v => {
+          if (v === src) return;
+          if (type === 'seek')  v.currentTime = src.currentTime;
+          if (type === 'play'  && v.paused)  v.play().catch(() => {});
+          if (type === 'pause' && !v.paused) v.pause();
+        });
+        syncLock = false;
+      }
+
+      // Warm the browser cache for adjacent slides so navigating between
+      // videos doesn't jump/flash while the new file downloads.
+      const preloadCache = {};
+      function srcFor(c, slide) {
+        return VIDEO_BASE + '/' + METHODS[c].folder + '/' + VIDEO_FILES[slide];
+      }
+      function preloadSlide(slide) {
+        const s = (slide + VIDEO_FILES.length) % VIDEO_FILES.length;
+        METHODS.forEach((m, c) => {
+          const key = c + ':' + s;
+          if (preloadCache[key]) return;
+          const pv = document.createElement('video');
+          pv.preload = 'auto';
+          pv.muted = true;
+          pv.src = srcFor(c, s);
+          pv.load();
+          preloadCache[key] = pv;
+        });
+      }
+
+      function show(i) {
+        idx = (i + VIDEO_FILES.length) % VIDEO_FILES.length;
+        syncLock = true;
+        vids.forEach((v, c) => {
+          v.pause();
+          v.src = srcFor(c, idx);
+          v.load();
+          delete preloadCache[c + ':' + idx];
+        });
+        syncLock = false;
+        vids.forEach(v => v.play().catch(() => {}));
+        prompt.innerHTML = CAPTIONS[idx] ? '<strong>Prompt:</strong> ' + CAPTIONS[idx] : '';
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        // Preload the neighbours in the background
+        preloadSlide(idx + 1);
+        preloadSlide(idx - 1);
+      }
+
+      document.getElementById('spd-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('spd-next').addEventListener('click', () => show(idx + 1));
+
+      // Restart from the first frame when the video tab becomes visible
+      // (it may have run to the end while initialized in a hidden panel).
+      window.spdVideoRestart = restartLoop;
+
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== FLUX.1-dev qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('flux-img-grid');
+      if (!grid) return;
+      const BASE = 'images/flux-1.dev/baseline_ranked_v2/';
+      const NAMES = ['00000','00001','00002','00003','00005','00007','00008','00016','00018','00022','00024','00025','00030','00039','00040','00043','00044','00045','00052','00057','00058','00060','00064','00072','00073','00079','00080','00083','00085','00088','00097','00099','00101','00105','00109','00110'];
+
+      // Randomly shuffle, then take 30, grouped 3-per-slide => 10 slides
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 30);
+      const PER = 3;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('flux-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'FLUX.1-dev qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();   // cached: load may not fire
+          grid.appendChild(img);
+        });
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('flux-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('flux-img-next').addEventListener('click', () => show(idx + 1));
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== Z-Image qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('zimg-img-grid');
+      if (!grid) return;
+      const BASE = 'images/zimage_ranked/';
+      const NAMES = ['00004','00007','00008','00011','00014','00016','00018','00027','00040','00057','00058','00060','00061','00075','00079','00086','00094','00102','00103'];
+
+      // Randomly shuffle, take up to 20, grouped 2-per-slide
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 16);
+      const PER = 2;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('zimg-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'Z-Image qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();
+          grid.appendChild(img);
+        });
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('zimg-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('zimg-img-next').addEventListener('click', () => show(idx + 1));
+      show(0);
+    })();
+  </script>
+
+  <script>
+    // ===== PixelGen qualitative image carousel =====
+    (function() {
+      const grid = document.getElementById('pix-img-grid');
+      if (!grid) return;
+      const BASE = 'images/pixelgen_ranked/';
+      const NAMES = ['00003','00004','00008','00009','00010','00011','00014','00018','00020','00021','00028','00030','00037','00039','00049','00051','00065','00079','00085','00113'];
+
+      const arr = NAMES.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      const chosen = arr.slice(0, 20);
+      const PER = 2;
+      const slides = [];
+      for (let i = 0; i < chosen.length; i += PER) slides.push(chosen.slice(i, i + PER));
+
+      const dotsWrap = document.getElementById('pix-img-dots');
+      dotsWrap.innerHTML = slides.map((_, i) =>
+        '<button class="spd-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '" aria-label="Image set ' + (i + 1) + '"></button>'
+      ).join('');
+      const dots = Array.from(dotsWrap.querySelectorAll('.spd-dot'));
+
+      let idx = 0;
+      const cache = {};
+      function preload(s) {
+        s = (s + slides.length) % slides.length;
+        slides[s].forEach(n => {
+          if (cache[n]) return;
+          const im = new Image();
+          im.src = BASE + n + '.png';
+          cache[n] = im;
+        });
+      }
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        grid.innerHTML = '';
+        slides[idx].forEach((n, k) => {
+          const img = document.createElement('img');
+          img.style.setProperty('--n', k);
+          img.alt = 'PixelGen qualitative comparison';
+          const reveal = () => img.classList.add('in');
+          img.addEventListener('load', reveal);
+          img.src = BASE + n + '.png';
+          if (img.complete) reveal();
+          grid.appendChild(img);
+        });
+        dots.forEach((d, k) => d.classList.toggle('active', k === idx));
+        preload(idx + 1);
+        preload(idx - 1);
+      }
+      dots.forEach(d => d.addEventListener('click', () => show(parseInt(d.dataset.i))));
+      document.getElementById('pix-img-prev').addEventListener('click', () => show(idx - 1));
+      document.getElementById('pix-img-next').addEventListener('click', () => show(idx + 1));
+      show(0);
+    })();
+  </script>
+
+</body>
+</html>

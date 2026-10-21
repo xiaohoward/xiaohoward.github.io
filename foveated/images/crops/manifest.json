@@ -1,0 +1,92 @@
+{
+  "source_width": 35690,
+  "source_height": 28030,
+  "global_window_bbox": [
+    0,
+    3977,
+    35690,
+    24053
+  ],
+  "crops": [
+    {
+      "file": "crop_1_cite.jpg",
+      "label": "Ile de la Cite - Notre-Dame & Hotel-Dieu",
+      "bbox_norm": [
+        0.4931073129728215,
+        0.3931061964534768,
+        0.5469038946483609,
+        0.4469017732616059
+      ],
+      "bbox_pixels": [
+        17599,
+        11869,
+        19519,
+        12949
+      ]
+    },
+    {
+      "file": "crop_2_quays.jpg",
+      "label": "Seine quays (Port au Foin)",
+      "bbox_norm": [
+        0.4330905015410479,
+        0.3030982267383941,
+        0.4868870832165873,
+        0.3568938035465232
+      ],
+      "bbox_pixels": [
+        15457,
+        10062,
+        17377,
+        11142
+      ]
+    },
+    {
+      "file": "crop_3_marais.jpg",
+      "label": "Hotels of the Marais",
+      "bbox_norm": [
+        0.2931073129728215,
+        0.2130902570233114,
+        0.3469038946483609,
+        0.26688583383144054
+      ],
+      "bbox_pixels": [
+        10461,
+        8255,
+        12381,
+        9335
+      ]
+    },
+    {
+      "file": "crop_4_halles.jpg",
+      "label": "Les Halles & Cimetiere des Innocents",
+      "bbox_norm": [
+        0.4230876996357523,
+        0.5530982267383941,
+        0.4768842813112917,
+        0.6068938035465232
+      ],
+      "bbox_pixels": [
+        15100,
+        15081,
+        17020,
+        16161
+      ]
+    },
+    {
+      "file": "crop_5_faubourg.jpg",
+      "label": "Faubourg gardens",
+      "bbox_norm": [
+        0.7931073129728216,
+        0.1730922494520821,
+        0.8469038946483609,
+        0.2268878262602112
+      ],
+      "bbox_pixels": [
+        28306,
+        7452,
+        30226,
+        8532
+      ]
+    }
+  ]
+}

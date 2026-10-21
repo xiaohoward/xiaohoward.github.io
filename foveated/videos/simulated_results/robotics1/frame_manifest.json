@@ -1,0 +1,4 @@
+{
+  "duration_seconds": 16,
+  "frames": ["../roi/frame_000025.jpg","../roi/frame_000050.jpg","../roi/frame_000139.jpg","../roi/frame_000140.jpg","../roi/frame_000190.jpg","../roi/frame_000290.jpg","../roi/frame_000360.jpg","../roi/frame_000370.jpg"]
+}

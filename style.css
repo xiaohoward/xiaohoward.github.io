@@ -1,0 +1,275 @@
+/* ===== Theme ===== */
+:root {
+  --bg: #ffffff;
+  --surface: #f5f5f7;
+  --text: #1d1d1f;
+  --muted: #6e6e73;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --border: #d2d2d7;
+  --oral: #bf4800;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html.dark {
+  --bg: #000000;
+  --surface: #161617;
+  --text: #f5f5f7;
+  --muted: #a1a1a6;
+  --accent: #2997ff;
+  --accent-hover: #4aa8ff;
+  --border: #424245;
+  --oral: #ff9f4a;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.47;
+  letter-spacing: -0.022em;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== Layout ===== */
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+/* ===== Theme toggle ===== */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  color: var(--text);
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+.theme-toggle:hover { opacity: 0.7; }
+.icon-sun { display: none; }
+html.dark .icon-sun { display: block; }
+html.dark .icon-moon { display: none; }
+
+/* ===== Intro ===== */
+.intro {
+  display: grid;
+  /* name block lines up with the publication videos (360px), the paragraph
+     with the publication text, and the photo sits at the far right */
+  grid-template-columns: 360px minmax(0, 1fr) 210px;
+  grid-template-areas: "name bio photo";
+  column-gap: 28px;
+  align-items: center;
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Let the photo and the name block sit directly in the intro grid */
+.intro-id { display: contents; }
+
+.intro-name { grid-area: name; text-align: center; }
+.intro-bio { grid-area: bio; }
+.intro-photo { grid-area: photo; }
+
+.intro-photo {
+  position: relative;
+  flex-shrink: 0;
+  width: 210px;
+  height: 270px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.intro-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.intro h1 {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.tagline {
+  margin: 8px 0 0;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+
+/* Looks like plain text until hovered */
+.tagline a { color: inherit; }
+.tagline a:hover { color: var(--accent); text-decoration: none; }
+
+.intro-bio {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+.intro-bio p { margin: 0 0 12px; }
+.intro-bio p:last-child { margin-bottom: 0; }
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.links-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.links a {
+  padding: 7px 16px;
+  border-radius: 980px;
+  font-size: 15px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.links a:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ===== Publications ===== */
+.pubs h2 {
+  margin: 28px 0 18px;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Every video has the same width (that of the first paper's video), with
+   its natural height. Shorter text is centered against the video; when the
+   text is taller, the video stays top-aligned with it. */
+.pub {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+.pub-media { align-self: start; }
+.pub-body { align-self: center; }
+
+.pub-media video,
+.pub-media img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
+.pub-title {
+  display: block;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.pub-title:hover { color: var(--accent); text-decoration: none; }
+
+.pub-authors,
+.pub-venue {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+  letter-spacing: -0.016em;
+}
+
+.pub-authors a { color: inherit; }
+.pub-authors a:hover { color: var(--accent); text-decoration: none; }
+.pub-authors strong { color: var(--text); font-weight: 600; }
+.pub-authors .note { display: block; font-size: 12px; }
+
+.pub-venue { margin-top: 0; }
+
+.oral {
+  margin-left: 6px;
+  color: var(--oral);
+  font-weight: 600;
+}
+
+.pub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 6px 0;
+}
+
+.pub-links a {
+  font-size: 14px;
+}
+.pub-links a::after {
+  content: ' \203A';
+}
+
+.pub-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 64px;
+  padding: 18px 0 32px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+
+/* ===== Small screens ===== */
+@media (max-width: 734px) {
+  .intro { grid-template-columns: 120px 1fr; grid-template-areas: "photo name" "bio bio"; column-gap: 18px; row-gap: 24px; padding: 64px 0 32px; }
+  .intro-name { text-align: left; }
+  .links { align-items: flex-start; }
+  .links-row { justify-content: flex-start; gap: 6px; }
+  .links a { padding: 5px 10px; font-size: 13px; }
+  .intro-photo { width: 120px; height: 156px; border-radius: 16px; }
+  .intro h1 { font-size: 30px; }
+  .tagline { font-size: 14px; }
+  .intro-bio { font-size: 15px; }
+  .pubs h2 { font-size: 24px; }
+  .pub { grid-template-columns: 1fr; gap: 14px; }
+}
